@@ -1,6 +1,6 @@
 
 
-#' @include kiener4.R
+#' @include l_regression.R
 
 
 
@@ -47,6 +47,29 @@
 #' squares. The median is calculated before the regression and is injected 
 #' as a mandatory value in the regression function. 
 #'
+#' Kiener distributions use the following parameters, some of them being redundant. 
+#' See \code{\link{aw2k}} and \code{\link{pk2pk}} for the formulas and 
+#' the conversion between parameters:
+#' \itemize{
+#'   \item{ \code{m} (mu) is the median of the distribution,. }
+#'   \item{ \code{g} (gamma) is the scale parameter. }
+#'   \item{ \code{a} (alpha) is the left tail parameter. } 
+#'   \item{ \code{k} (kappa) is the harmonic mean of \code{a} and \code{w} 
+#'          and describes a global tail parameter. }
+#'   \item{ \code{w} (omega) is the right tail parameter. } 
+#'   \item{ \code{d} (delta) is the distorsion parameter. }
+#'   \item{ \code{e} (epsilon) is the eccentricity parameter. }
+#' }
+#' Where:
+#' \itemize{
+#'   \item{c(m, g, k) of length 3 for distribution "k1".}
+#'   \item{c(m, g, a, w) of length 4 for distribution "k2".}
+#'   \item{c(m, g, k, d) of length 4 for distribution "k3".}
+#'   \item{c(m, g, k, e) of length 4 for distribution "k4".}
+#'   \item{c(m, g, a, k, w, d, e) of length 7 extracted from object of class 
+#'         \code{clregk} like \code{regkienerLX} (typically \code{"reg$coefk"}).}
+#' }
+#' 
 #' Model \code{"k1"} return results with 1+2=3 parameters and describes a 
 #' (assumed) symmetric distribution. Parameters \code{d} and \code{e} are set 
 #' to 0. Models \code{"k2"}, \code{"k3"} and \code{"k4"} describe asymmetric 
@@ -75,7 +98,7 @@
 #' \eqn{k < 1} describes distribution with no stable mean.
 #' 
 #' The output is an object in a flat format of class \code{clregk}. It can be 
-#' listed with the function \code{attributes}. First are the data.frames with
+#' listed with the function \code{\link{attributes}}. First are the data.frames with
 #' the initial data and the estimated results. Second is the result of 
 #' the regression \code{regk0} given by \code{\link[minpack.lm]{nlsLM}} from 
 #' which a few information have been extracted and listed here. 
@@ -91,9 +114,9 @@
 #' c(0.001, 0.005, 0.01, 0.05, 0.5, 0.95, 0.99, 0.995, 0.999). 
 #' They are intended to subsequent calculations. 
 #' Fifth are the same parameters presented in a more readable format thanks 
-#' to the vector \code{dgts} which control the rounding of the parameters in
-#' the following order: c("m", "g", 
-#' "a", "k", "w", "d", "e", "vcovk0", "vcovk0m", "mcork0", "quantr").
+#' to the vector \code{dgts} which controls the rounding of the parameters in
+#' the following order: \code{dgts = c("m", "g", 
+#' "a", "k", "w", "d", "e", "vcovk0", "vcovk0m", "mcork0", "quantr")}.
 #' Sixth are the estimated quantiles and probabilities of interest stored 
 #' in a data.frame format.
 #' 
@@ -133,6 +156,7 @@
 #' @seealso    \code{\link[minpack.lm]{nlsLM}}, \code{\link{laplacegaussnorm}}, 
 #'     Kiener distributions of type I, II, III and IV: \code{\link{kiener1}}
 #'     \code{\link{kiener2}}, \code{\link{kiener3}}, \code{\link{kiener4}}.
+#'     Other functions: \code{\link{fitkienerLX}}, \code{\link{estimkienerX}}.
 #'     
 #' 
 #' 
@@ -142,35 +166,17 @@
 #' require(minpack.lm)
 #' require(timeSeries)
 #' 
-#' prices2returns <- function(x) { 100*diff(log(x)) }
-#' 
-#' ### Load the various datasets (1-16)
-#' DS <- list(
-#' "USDCHF"       = prices2returns(as.numeric(USDCHF)) ,
-#' "Microsoft"    = prices2returns(as.numeric(MSFT[,4])) ,
-#' "DAX"          = prices2returns(as.numeric(EuStockMarkets[,1])) ,
-#' "SMI"          = prices2returns(as.numeric(EuStockMarkets[,2])) ,
-#' "CAC"          = prices2returns(as.numeric(EuStockMarkets[,3])) ,
-#' "FTSE"         = prices2returns(as.numeric(EuStockMarkets[,4])) ,
-#' "SBI"          = as.numeric(LPP2005REC[,1]) ,
-#' "SPI"          = as.numeric(LPP2005REC[,2]) ,
-#' "SII"          = as.numeric(LPP2005REC[,3]) ,
-#' "LMI"          = as.numeric(LPP2005REC[,4]) ,
-#' "MPI"          = as.numeric(LPP2005REC[,5]) ,
-#' "ALT"          = as.numeric(LPP2005REC[,6]) ,
-#' "LPP25"        = as.numeric(LPP2005REC[,7]) ,
-#' "LPP40"        = as.numeric(LPP2005REC[,8]) ,
-#' "LPP60"        = as.numeric(LPP2005REC[,9]) ,
-#' "sunspot.year" = prices2returns(as.numeric(sunspot.year)+1000) )
-#' 
-#' 
-#' ### Select one dataset number (1-16)
+#' ### Load the datasets and select one number (1-16)
+#' DS     <- getDSdata()
 #' j      <- 5
+#' 
 #' 
 #' ### and run this block
 #' X      <- DS[[j]]
 #' nameX  <- names(DS)[j]
 #' reg    <- regkienerLX(X)
+#' 
+#' ## Plotting
 #' lleg   <- c("logit(0.999) = 6.9", "logit(0.99)   = 4.6", 
 #'            "logit(0.95)   = 2.9", "logit(0.50)   = 0", 
 #'            "logit(0.05)   = -2.9", "logit(0.01)   = -4.6", 
@@ -191,6 +197,9 @@
 #' lines(reg$dfrEP, col = 2, lwd = 2)
 #' plot(density(X), main = nameX)
 #' lines(reg$dfrED, col = 2, lwd = 2)
+#' round(cbind("k" = kmoments(reg$coefk, lengthx = nrow(reg$dfrXL)), "X" = xmoments(X)), 2)
+#' 
+#' ## Attributes
 #' attributes(reg)
 #' head(reg$dfrXP)
 #' head(reg$dfrXL)
@@ -217,21 +226,21 @@
 #' reg$quantr
 #' reg$dfrQkPk
 #' reg$dfrQkLk
+#' reg$fitk
 #' ### End block
-#' 
 #' 
 #' @export
 #' @name regkienerLX
 regkienerLX <- function(X, model = "k4", 
                         dgts = c(3, 3, 1, 1, 1, 3, 2, 4, 4, 2, 2),
-                        maxk = 10, mink = 0.7, app = 0 ) {
+                        maxk = 10, mink = 0.2, app = 0 ) {
 
 if (app < 0 || app > 0.5) { 
 	stop("app (the a of ppoints) must be between 0 and 0.5. 
           Recommended values: 0, 0.375, 0.5.")
 	}
-if (mink < 0.1 || mink > 2) { 
-	stop("mink must be between 0.1 and 2. Value lesser than 1 is for strange 
+if (mink < 0.2 || mink > 2) { 
+	stop("mink must be between 0.2 and 2. Value lesser than 1 is for strange 
           distributions!")
 	}
 if (maxk < 5 || maxk > 20) { 
@@ -247,7 +256,7 @@ if ( ! model %in% list("k1", "k2", "k3", "k4") ) {
 	stop("model must be either k1, k2, k3, k4. Default is k4 (m, g, k, e).")
 	}
 
-X        <- sort(as.numeric(X)) 
+X        <- sort(as.numeric(X[!is.na(X)])) 
 P        <- ppoints(length(X), a = app) 
 L        <- logit(P) 
 names(X) <- "X"
@@ -256,13 +265,25 @@ names(L) <- "L"
 dfrXP    <- data.frame(X, P)
 dfrXL    <- data.frame(X, L)
 Xmed     <- median(X)
-
-gini   <- sd(X) / 4
-aini   <- 4
-kini   <- 4
-wini   <- 4
-dini   <- 0
-eini   <- 0
+Xmean    <- mean(X)
+Xsd      <- sd(X)
+parini   <- estimkienerX5(X, parnames = FALSE)
+if (anyNA(parini)) { 
+	qqq    <- quantile(X, c(0.10, 0.50, 0.90), type = 6)
+	gini   <- 0.27*Xsd
+	dini   <- log(abs(qqq[3]-qqq[2])/abs(qqq[1]-qqq[2])) /4.394
+	kini   <- 4
+	eini   <- dini*kini
+	aini   <- kini/(1-eini)
+	wini   <- kini/(1+eini)
+	} else {
+	gini   <- parini[2]
+	aini   <- parini[3]
+	kini   <- parini[4]
+	wini   <- parini[5]
+	dini   <- parini[6]
+	eini   <- parini[7]
+	}
 
 gmin   <- 0
 amin   <- mink
@@ -385,6 +406,41 @@ coefr3    <- c(coefr[1], coefr[2], coefr[4], coefr[6])
 coefr4    <- c(coefr[1], coefr[2], coefr[4], coefr[7])
 quantr    <- round(quantk, dgts[11])
 
+# Moments
+momk		 <- kmoments(coefk, lengthx = length(X))[c("m1", "sd", "sk", "ke")]
+momx		 <- xmoments(X)[c("m1", "sd", "sk", "ke", "lh")]
+names(momx)  <- c("m1x", "sdx", "skx", "kex", "lh")
+
+# Proba and quantiles
+probak2      <- c(0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05, 0.10, 0.5,
+                  0.90, 0.95, 0.99, 0.995, 0.999, 0.9995, 0.9999)
+quantk2      <- qkiener2(p = probak2, m = coefk[1], g = coefk[2], 
+                                      a = coefk[3], w = coefk[5] )
+logisk         <- qlogis(p = probak2, location = coefk[1], scale = 2*coefk[2])
+dlogisk        <- quantk2 - logisk
+VaR		       <- Xmean - 2.326*Xsd
+gaussk	       <- c( VaR, quantk2[5] -VaR )  # quantk2[5] = quantk2["q.01"]
+names(quantk2) <- c("q.0001", "q.0005", "q.001", "q.005", "q.01", "q.05", "q.10",
+            "q.50", "q.90", "q.95", "q.99", "q.995", "q.999", "q.9995", "q.9999")
+names(logisk)  <- c("l.0001", "l.0005", "l.001", "l.005", "l.01", "l.05", "l.10",
+            "l.50", "l.90", "l.95", "l.99", "l.995", "l.999", "l.9995", "l.9999")
+names(dlogisk) <- c("d.0001", "d.0005", "d.001", "d.005", "d.01", "d.05", "d.10",
+            "d.50", "d.90", "d.95", "d.99", "d.995", "d.999", "d.9995", "d.9999")
+names(gaussk)  <- c("VaR", "dg.01")
+
+## CQE - FTC - Tail-korrection
+tailk          <- ckiener4(p = probak2, k = coefk[4], e = coefk[7])
+names(tailk)   <- c("c.0001", "c.0005", "c.001", "c.005", "c.01", "c.05", "c.10",
+            "c.50", "c.90", "c.95", "c.99", "c.995", "c.999", "c.9995", "c.9999")
+
+## Rendement
+ret            <- sum(X, na.rm = TRUE)
+names(ret)     <- "ret"
+
+## Final object fitk
+fitk   <- c(ret, coefk, momk, momx, quantk2, logisk, dlogisk, gaussk, tailk)
+
+
 # Final objet regk
 regk      <- list()
 regk$dfrXP     <- dfrXP
@@ -412,73 +468,11 @@ regk$coefr4    <- coefr4
 regk$quantr    <- quantr
 regk$dfrQkPk   <- dfrQkPk
 regk$dfrQkLk   <- dfrQkLk
+regk$fitk      <- fitk
 class(regk)    <- "clregk"
 
 
 return(regk)
 }
 
-
-
-
-
-
-#' @title Laplace-Gauss Normal Distribution Object
-#'
-#' @description
-#' An object designed after regkienerLX to summarize the information related to 
-#' a given dataset when the Laplace-Gauss normal distribution is applied on it.
-#' 
-#' @param    X       vector of quantiles.
-#' @details      This function is designed after regkienerLX to provide a 
-#'               similar framework.
-
-#' @return  
-#' \item{dfrXPn}{data.frame. X = initial quantiles. Pn = estimated normal probabilites.}
-#' \item{dfrXLn}{data.frame. X = initial quantiles. Ln = logit of estimated normal probabilites.}
-#' \item{dfrXDn}{data.frame. X = initial quantiles. Dn = estimated normal density.}
-#' \item{coefn}{numeric. The mean and the standard deviation of the dataset.}
-#' \item{dfrQnPn}{data.frame. Qn = estimated quantiles of interest. Pn = probability.} 
-#' \item{dfrQnPn}{data.frame. Qn = estimated quantiles of interest. Pn = logit of probability.}
-
-#' @examples     
-#' prices2returns <- function(x) { 100*diff(log(x)) }
-#' CAC  <- prices2returns(as.numeric(EuStockMarkets[,3])) 
-#' lgn  <- laplacegaussnorm( CAC )
-#' attributes(lgn)
-#' head(lgn$dfrXPn)
-#' head(lgn$dfrXLn)
-#' head(lgn$dfrXDn)
-#' lgn$coefn
-#' lgn$dfrQnPn
-#' lgn$dfrQnLn
-#'
-#' @seealso      The regression function \code{\link{regkienerLX}}.
-#' @export
-#' @name laplacegaussnorm
-         laplacegaussnorm <- function(X) {
-
-X       <- sort(as.numeric(X)) 
-mX      <- mean(X)
-sX      <- sd(X)
-proban  <- c(0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05, 0.5,
-               0.95, 0.99, 0.995, 0.999, 0.9995, 0.9999)
-quantn  <- qnorm(p = proban, mean = mX, sd = sX )
-names(quantn)  <- c("n.0001", "n.0005", "n.001", "n.005", "n.01", "n.05", 
-            "n.50", "n.95", "n.99", "n.995", "n.999", "n.9995", "n.9999")
-dfrQnPn <- data.frame( Qn = quantn, Pn = proban )
-dfrQnLn <- data.frame( Qn = quantn, Ln = logit(proban) )
-
-# Final objet lgn
-lgn     <- list()
-lgn$dfrXPn    <- data.frame( X = X, Pn = pnorm(X, mX, sX) )
-lgn$dfrXLn    <- data.frame( X = X, Ln = logit(pnorm(X, mX, sX)) )
-lgn$dfrXDn    <- data.frame( X = X, Dn = dnorm(X, mX, sX) )
-lgn$coefn     <- c( m = mX, sd = sX )
-lgn$dfrQnPn   <- dfrQnPn
-lgn$dfrQnLn   <- dfrQnLn
-class(lgn)    <- "cllgn"
-
-return(lgn)
-}
 

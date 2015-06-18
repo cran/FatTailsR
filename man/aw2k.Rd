@@ -10,7 +10,7 @@
 \alias{ke2a}
 \alias{ke2d}
 \alias{ke2w}
-\title{Conversion Functions}
+\title{Local Conversion Functions Between Kiener Distribution Parameters}
 \usage{
 aw2k(a, w)
 
@@ -65,7 +65,7 @@ They are defined by:
 \deqn{ ke2a(k, e) = k / (1 - e) = a }
 \deqn{ ke2w(k, e) = k / (1 + e) = w }
 \deqn{ ke2d(k, e) = e / k = d }
-\deqn{ kd2e(k, d) = d * k = e }
+\deqn{ kd2e(k, d) = k * d = e }
 \deqn{ de2k(k, e) = e / d = k }
 \code{aw2k} is equivalent to the harmonic mean.
 }

@@ -1,23 +1,25 @@
 Package: FatTailsR
-Title: Power Hyperbolic Functions and Kiener Distributions
-Description: A set of functions to manipulate power hyperbolas, power
-    hyperbolic functions and Kiener distributions of type I, II, III and IV
-    which exhibit left and right fat tails like those that occur in financial
-    markets. These distributions can be used to estimate with a high
-    accuracy market risks and value-at-risk.
+Title: Kiener Distributions and Fat Tails in Finance
+Description: Kiener distributions of type I, II, III and IV tailored to
+    distributions with left and right fat tails like those that occur
+    in financial markets. These distributions can be used to estimate
+    with a high accuracy market risks and value-at-risk. Also include power
+    hyperbolas and power hyperbolic functions.
 URL: http://www.inmodelia.com/fattailsr-en.html
-Version: 1.0-3
-Date: 2014-07-14
+Version: 1.2-0
+Date: 2015-06-18
 Author: Patrice Kiener
 Maintainer: Patrice Kiener <fattailsr@inmodelia.com>
 Depends: R (>= 3.1.0)
-Imports: minpack.lm
-Suggests: timeSeries, timeDate
+Imports: minpack.lm, timeSeries
+Suggests: xts
 License: GPL-2
 LazyData: true
 NeedsCompilation: no
-Collate: 'FatTailsR-package.r' 'trigohp.R' 'logishp.R' 'conversion.R'
-        'kiener1.R' 'kiener2.R' 'kiener3.R' 'kiener4.R' 'regression.R'
-Packaged: 2014-07-14 19:50:23 UTC; Patrice
+Collate: 'a_FatTailsR-package.R' 'b_trigohp.R' 'c_logishp.R'
+        'd_conversion.R' 'e_kiener1.R' 'f_kiener2.R' 'g_kiener3.R'
+        'h_kiener4.R' 'i_moments.R' 'j_tailskiener.R' 'k_estimation.R'
+        'l_regression.R' 'm_regression2.R' 'n_regression3.R' 'z_data.R'
+Packaged: 2015-06-18 10:04:05 UTC; Patrice
 Repository: CRAN
-Date/Publication: 2014-07-14 23:24:37
+Date/Publication: 2015-06-18 13:59:55

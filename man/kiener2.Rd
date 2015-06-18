@@ -64,7 +64,22 @@ Density, distribution function, quantile function, random generation
 and additional formulae for the Kiener distribution of type II.
 }
 \details{
-Kiener distributions of type II are distributions with asymmetric left
+Kiener distributions use the following parameters, some of them being redundant.
+See \code{\link{aw2k}} and \code{\link{pk2pk}} for the formulas and
+the conversion between parameters:
+\itemize{
+  \item{ \code{m} (mu) is the median of the distribution,. }
+  \item{ \code{g} (gamma) is the scale parameter. }
+  \item{ \code{a} (alpha) is the left tail parameter. }
+  \item{ \code{k} (kappa) is the harmonic mean of \code{a} and \code{w}
+         and describes a global tail parameter. }
+  \item{ \code{w} (omega) is the right tail parameter. }
+  \item{ \code{d} (delta) is the distorsion parameter. }
+  \item{ \code{e} (epsilon) is the eccentricity parameter. }
+}
+
+Kiener distributions of type II \code{k2 = c(m, g, a, w)} are distributions
+with asymmetrical left
 and right fat tails described by the parameters \code{a} (alpha) for
 the left tail and \code{w} (omega) for the right tail. These parameters
 correspond to the power exponent that appear in Pareto formula and
@@ -251,6 +266,11 @@ P. Kiener, Explicit models for bilateral fat-tailed distributions and
 applications in finance with the package FatTailsR, 8th R/Rmetrics Workshop
 and Summer School, Paris, 27 June 2014.  Download it from:
 \url{http://www.inmodelia.com/exemples/2014-0627-Rmetrics-Kiener-en.pdf}
+
+P. Kiener, Fat tail analysis and package FatTailsR - Season 2,
+9th R/Rmetrics Workshop and Summer School, Zurich, 27 June 2015.
+Download it from:
+\url{http://www.inmodelia.com/exemples/2015-0627-Rmetrics-Kiener-en.pdf}
 }
 \seealso{
 The symmetric Kiener distribution of type I \code{\link{kiener1}},

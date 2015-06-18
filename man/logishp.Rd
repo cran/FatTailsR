@@ -4,6 +4,8 @@
 \alias{dlogishp}
 \alias{dplogishp}
 \alias{dqlogishp}
+\alias{invkogit}
+\alias{kogit}
 \alias{llogishp}
 \alias{logishp}
 \alias{plogishp}
@@ -16,7 +18,11 @@ dlogishp(x, k = 1, log = FALSE)
 
 plogishp(q, k = 1)
 
+invkogit(q, k = 1)
+
 qlogishp(p, k = 1)
+
+kogit(p, k = 1)
 
 rlogishp(n, k = 1)
 
@@ -56,10 +62,10 @@ for the power hyperbola logistic distribution.
                 x in (-Inf, +Inf) by:
       \deqn{ dlogishp(x, k) =
              dkashp\_dx(x, k) * plogishp(x, k) * plogishp(-x, k) }
-\code{plogishp} function is defined for q in (-Inf, +Inf) by:
-      \deqn{ plogishp(q, k) = 1/(1 + exp(- kashp(q, k))) }
-\code{qlogishp} function is defined for p in (0, 1) by:
-      \deqn{ qlogishp(p, k) = 2 * k * sinh(logit(p) / k) }
+\code{invkogit=plogishp} functions are defined for q in (-Inf, +Inf) by:
+      \deqn{ invkogit(q, k) = plogishp(q, k) = 1/(1 + exp(- kashp(q, k))) }
+\code{kogit=qlogishp} functions are defined for p in (0, 1) by:
+      \deqn{ kogit(p, k) = qlogishp(p, k) = 2 * k * sinh(logit(p) / k) }
 \code{rlogishp} function generates \code{n} random values.
 
 In addition to the classical formats, the prefixes dp, dq, l, dl, ql

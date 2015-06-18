@@ -62,9 +62,24 @@ This distribution is similar to the power hyperbola logistic distribution
 but with additional parameters for location (\code{m}) and scale (\code{g}).
 }
 \details{
-Kiener distributions of type I describe distributions with symmetric
-left and right fat tails with tail parameter \code{k}. This parameter
-is the power exponent mentionned in Pareto formula and Karamata theorems.
+Kiener distributions use the following parameters, some of them being redundant.
+See \code{\link{aw2k}} and \code{\link{pk2pk}} for the formulas and
+the conversion between parameters:
+\itemize{
+  \item{ \code{m} (mu) is the median of the distribution,. }
+  \item{ \code{g} (gamma) is the scale parameter. }
+  \item{ \code{a} (alpha) is the left tail parameter. }
+  \item{ \code{k} (kappa) is the harmonic mean of \code{a} and \code{w}
+         and describes a global tail parameter. }
+  \item{ \code{w} (omega) is the right tail parameter. }
+  \item{ \code{d} (delta) is the distorsion parameter. }
+  \item{ \code{e} (epsilon) is the eccentricity parameter. }
+}
+
+Kiener distributions of type I \code{k1 = c(m, g, k)} describe distributions
+with symmetrical left and right fat tails with tail parameter \code{k}.
+This parameter is the power exponent mentionned in Pareto formula and
+Karamata theorems.
 
 \code{m} is the median of the distribution. \code{g} is the scale parameter
 and the inverse of the density at the median: \eqn{ g = 1 / 8 / f(m) }.
@@ -218,6 +233,11 @@ P. Kiener, Explicit models for bilateral fat-tailed distributions and
 applications in finance with the package FatTailsR, 8th R/Rmetrics Workshop
 and Summer School, Paris, 27 June 2014.  Download it from:
 \url{http://www.inmodelia.com/exemples/2014-0627-Rmetrics-Kiener-en.pdf}
+
+P. Kiener, Fat tail analysis and package FatTailsR - Season 2,
+9th R/Rmetrics Workshop and Summer School, Zurich, 27 June 2015.
+Download it from:
+\url{http://www.inmodelia.com/exemples/2015-0627-Rmetrics-Kiener-en.pdf}
 }
 \seealso{
 The power hyperbola logistic distribution \code{\link{logishp}},

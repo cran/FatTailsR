@@ -1,35 +1,49 @@
 
 
-#' @include kiener3.R
+#' @include f_kiener2.R
 
 
 
-#' @title Asymmetric Kiener Distribution (Type IV)
+#' @title Asymmetric Kiener Distribution (Type III)
 #'
 #' @description
 #' Density, distribution function, quantile function, random generation
-#' and additional formulae for the Kiener distribution of type IV.
+#' and additional formulae for the Kiener distribution of type III.
 #'
 #' @param x	vector of quantiles.
 #' @param q	vector of quantiles.
 #' @param m	numeric. The median.
 #' @param g	numeric. The scale parameter, preferably strictly positive.
 #' @param k	numeric. The tail parameter, preferably strictly positive.
-#' @param e	numeric. The eccentricity parameter between left and right tails.
+#' @param d	numeric. The distorsion parameter between left and right tails.
 #' @param p	vector of probabilities.
 #' @param lp	vector of logit of probabilities.
 #' @param n	number of observations. If length(n) > 1, the length is  
-#'          taken to be the number required.
+#'                                  taken to be the number required.
 #' @param log	logical; if TRUE, densities are given in log scale.
 #' @param log.p	logical; if TRUE, probabilities p are given as log(p).
 #' @param lower.tail	logical; if TRUE (default), probabilities are 
 #'                      P[X < x] otherwise, P[X > x].
 #'
 #' @details
-#' Kiener distributions of type IV are distributions with asymmetric left 
-#' and right fat tails described by a global tail parameter \code{k} 
-#' and an eccentricity parameter \code{e}. 
-#'  
+#' Kiener distributions use the following parameters, some of them being redundant. 
+#' See \code{\link{aw2k}} and \code{\link{pk2pk}} for the formulas and 
+#' the conversion between parameters:
+#' \itemize{
+#'   \item{ \code{m} (mu) is the median of the distribution,. }
+#'   \item{ \code{g} (gamma) is the scale parameter. }
+#'   \item{ \code{a} (alpha) is the left tail parameter. } 
+#'   \item{ \code{k} (kappa) is the harmonic mean of \code{a} and \code{w} 
+#'          and describes a global tail parameter. }
+#'   \item{ \code{w} (omega) is the right tail parameter. } 
+#'   \item{ \code{d} (delta) is the distorsion parameter. }
+#'   \item{ \code{e} (epsilon) is the eccentricity parameter. }
+#' }
+#' 
+#' Kiener distributions of type III \code{k3 = c(m, g, k, d)} are distributions 
+#' with asymmetrical left and right fat tails described by a global tail 
+#' parameter \code{k} and a distorsion parameter \code{d}. 
+#' 
 #' Distributions of type III (\code{\link{kiener3}}) 
 #' with parameters \code{k} (kappa) and \code{d} (delta) and
 #' distributions of type IV (\code{\link{kiener4}})
@@ -43,20 +57,20 @@
 #' \code{k} is the harmonic mean of \code{a} and \code{w} and represents a 
 #' global tail parameter.
 #'
-#' \code{e} is an eccentricity parameter between the left tail parameter
+#' \code{d} is a distorsion parameter between the left tail parameter
 #' \code{a} and the right tail parameter \code{w}.
-#' It verifies the inequality: \eqn{-1 < e < 1} 
-#' (whereas \code{d} of type III verifies \eqn{-k < d < k}).
+#' It verifies the inequality: \eqn{-k < d < k} 
+#' (whereas \code{e} of type IV verifies \eqn{-1 < e < 1}).
 #' The conversion functions (see \code{\link{aw2k}}) are:
 #'
 #' \deqn{1/k = (1/a + 1/w)/2 }
-#' \deqn{  e = (a - w)/(a + w) }
-#' \deqn{  a = k/(1 - e) }
-#' \deqn{  w = k/(1 + e) }
+#' \deqn{  d = (-1/a + 1/w)/2 } 
+#' \deqn{1/a = 1/k - d } 
+#' \deqn{1/w = 1/k + d}
 #'
-#' \code{e} (and \code{d}) should be of the same sign than the skewness. 
-#' A negative value \eqn{ e < 0 } implies \eqn{ a < w } and indicates a left 
-#' tail heavier than the right tail. A positive value \eqn{ e > 0 } implies 
+#' \code{d} (and \code{e}) should be of the same sign than the skewness. 
+#' A negative value \eqn{ d < 0 } implies \eqn{ a < w } and indicates a left  
+#' tail heavier than the right tail. A positive value \eqn{ d > 0 } implies 
 #' \eqn{ a > w } and a right tail heavier than the left tail.  
 #'
 #' \code{m} is the median of the distribution. \code{g} is the scale parameter 
@@ -67,67 +81,73 @@
 #' The d, p functions have no explicit forms. They are provided here for 
 #' convenience. They are estimated from a reverse optimization on the quantile 
 #' function and can be (very) slow, depending the number of points to estimate. 
-#' We recommand to use the quantile function as far as possible. 
+#' We recommand to use the quantile function as far as possible.
 #' WARNING: Results may become inconsistent when \code{k} is
-#' smaller than 1 or for very large absolute values of \code{e}. 
-#' Hopefully, these cases seldom happen in finance.
+#' smaller than 1 or for very large absolute values of \code{d}. 
+#' Hopefully, this case seldom happens in finance.
 #'
-#' \code{qkiener4} function is defined for p in (0, 1) by: 
-#'   \deqn{ qkiener4(p, m, g, k, e) = 
-#'               m + 2 * g * k * sinh(logit(p) / k) * exp(e / k * logit(p)) }
+#' \code{qkiener3} function is defined for p in (0, 1) by: 
+#'   \deqn{ qkiener3(p, m, g, k, d) = 
+#'               m + 2 * g * k * sinh(logit(p) / k) * exp(d * logit(p)) }
 #'
-#' \code{rkiener4} generates \code{n} random quantiles.
+#' \code{rkiener3} generates \code{n} random quantiles.
 #'
 #' In addition to the classical d, p, q, r functions, the prefixes 
 #' dp, dq, l, dl, ql are also provided.
 #'
-#' \code{dpkiener4} is the density function calculated from the probability p. 
+#' \code{dpkiener3} is the density function calculated from the probability p. 
 #' The formula is adapted from type II. It is defined for p in (0, 1) by: 
-#'   \deqn{ dpkiener4(p, m, g, k, e) = 
+#'   \deqn{ dpkiener3(p, m, g, k, d) = 
 #'          p * (1 - p) / k / g / ( exp(-logit(p)/a)/a + exp(logit(p)/w)/w }
-#' with \code{a} and \code{w} defined from \code{k} and \code{e}.
+#' with \code{a} and \code{w} defined from \code{k} and \code{d} 
+#' with the formula presented above.
 #'
-#' \code{dqkiener4} is the derivate of the quantile function calculated from 
+#' \code{dqkiener3} is the derivate of the quantile function calculated from 
 #' the probability p. The formula is adapted from type II. 
 #' It is defined for p in (0, 1) by: 
-#'   \deqn{ dqkiener4(p, m, g, k, e) = 
+#'   \deqn{ dqkiener3(p, m, g, k, d) = 
 #'          k * g / p / (1 - p) * ( exp(-logit(p)/a)/a + exp(logit(p)/w)/w ) } 
-#' with \code{a} and \code{w} defined with the formula presented above. 
+#' with \code{a} and \code{w} defined above. 
 #'
-#' \code{lkiener4} function is estimated from a reverse optimization and can 
+#' \code{lkiener3} function is estimated from a reverse optimization and can 
 #' be (very) slow depending the number of points to estimate. Initialization 
 #' is done with a symmetric distribution \code{\link{lkiener1}} 
-#' of parameter \code{k} (thus \eqn{ e = 0}). Then optimization is performed  
-#' to take into account the true value of \code{e}.  
+#' of parameter \code{k} (thus \eqn{ d = 0}). Then optimization is performed  
+#' to take into account the true value of \code{d}. 
 #' The results can then be compared to the empirical probability logit(p).
 #' WARNING: Results may become inconsistent when \code{k} is
-#' smaller than 1 or for very large absolute values of \code{e}. 
-#' Hopefully, these cases seldom happen in finance.
+#' smaller than 1 or for very large absolute values of \code{d}. 
+#' Hopefully, this case seldom happens in finance.
 #'
-#' \code{dlkiener4} is the density function calculated from the logit of the 
+#' \code{dlkiener3} is the density function calculated from the logit of the 
 #' probability lp = logit(p). The formula is adapted from type II.
 #' it is defined for lp in (-Inf, +Inf) by: 
-#'    \deqn{ dlkiener4(lp, m, g, k, e) = 
+#'    \deqn{ dlkiener3(lp, m, g, k, d) = 
 #'           p * (1 - p) / k / g / ( exp(-lp/a)/a + exp(lp/w)/w ) }
 #' with \code{a} and \code{w} defined above. 
 #'
-#' \code{qlkiener4} is the quantile function calculated from the logit of the 
+#' \code{qlkiener3} is the quantile function calculated from the logit of the 
 #' probability. It is defined for lp in (-Inf, +Inf) by: 
-#'    \deqn{ qlkiener4(lp, m, g, k, e) = 
-#'           m + 2 * g * k * sinh(lp / k) * exp(e / k * lp) }
-#'
+#'    \deqn{ qlkiener3(lp, m, g, k, d) = 
+#'           m + 2 * g * k * sinh(lp / k) * exp(d * lp) }
+#' 
 #' @references
 #' P. Kiener, Explicit models for bilateral fat-tailed distributions and 
 #' applications in finance with the package FatTailsR, 8th R/Rmetrics Workshop 
 #' and Summer School, Paris, 27 June 2014. Download it from:  
 #' \url{http://www.inmodelia.com/exemples/2014-0627-Rmetrics-Kiener-en.pdf}
-#
+#'
+#' P. Kiener, Fat tail analysis and package FatTailsR - Season 2, 
+#' 9th R/Rmetrics Workshop and Summer School, Zurich, 27 June 2015. 
+#' Download it from: 
+#' \url{http://www.inmodelia.com/exemples/2015-0627-Rmetrics-Kiener-en.pdf}
+#'
 #' @seealso 
 #' The symmetric Kiener distribution of type I \code{\link{kiener1}}, 
-#' the asymmetric Kiener distributions of type II and III 
-#' \code{\link{kiener2}}, \code{\link{kiener3}}, 
+#' the asymmetric Kiener distributions of type II and IV 
+#' \code{\link{kiener2}}, \code{\link{kiener4}}, 
 #' the conversion functions \code{\link{aw2k}}, 
-#  the regression function \code{\link{regkienerLX}}.
+#' the regression function \code{\link{regkienerLX}}.
 #'
 #' @examples
 #' 
@@ -136,22 +156,22 @@
 #' ### Example 1
 #' pp <- c(ppoints(11, a = 1), NA, NaN) ; pp
 #' lp <- logit(pp) ; lp
-#' qkiener4(  p = pp, m = 2, g = 1.5, k = aw2k(4, 6), e = aw2e(4, 6))
-#' qlkiener4(lp = lp, m = 2, g = 1.5, k = aw2k(4, 6), e = aw2e(4, 6))
-#' dpkiener4( p = pp, m = 2, g = 1.5, k = aw2k(4, 6), e = aw2e(4, 6))
-#' dlkiener4(lp = lp, m = 2, g = 1.5, k = aw2k(4, 6), e = aw2e(4, 6))
-#' dqkiener4( p = pp, m = 2, g = 1.5, k = aw2k(4, 6), e = aw2e(4, 6))
+#' qkiener3(  p = pp, m = 2, g = 1.5, k = aw2k(4, 6), d = aw2d(4, 6))
+#' qlkiener3(lp = lp, m = 2, g = 1.5, k = aw2k(4, 6), d = aw2d(4, 6))
+#' dpkiener3( p = pp, m = 2, g = 1.5, k = aw2k(4, 6), d = aw2d(4, 6))
+#' dlkiener3(lp = lp, m = 2, g = 1.5, k = aw2k(4, 6), d = aw2d(4, 6))
+#' dqkiener3( p = pp, m = 2, g = 1.5, k = aw2k(4, 6), d = aw2d(4, 6))
 #' 
 #' 
 #' ### Example 2
 #' k       <- 4.8
-#' e       <- 0.2
+#' d       <- 0.042
 #' set.seed(2014)
-#' mainTC  <- paste("qkiener4(p, m = 0, g = 1, k = ", k, ", e = ", e, ")")
-#' mainsum <- paste("cumulated qkiener4(p, m = 0, g = 1, k = ", k, ", e = ", e, ")")
+#' mainTC  <- paste("qkiener3(p, m = 0, g = 1, k = ", k, ", d = ", d, ")")
+#' mainsum <- paste("cumulated qkiener3(p, m = 0, g = 1, k = ", k, ", d = ", d, ")")
 #' T       <- 500
 #' C       <- 4
-#' TC      <- qkiener4(p = runif(T*C), m = 0, g = 1, k = k, e = e)
+#' TC      <- qkiener3(p = runif(T*C), m = 0, g = 1, k = k, d = d)
 #' matTC   <- matrix(TC, nrow = T, ncol = C, dimnames = list(1:T, letters[1:C]))
 #' head(matTC)
 #' plot.ts(matTC, main = mainTC)
@@ -165,7 +185,7 @@
 #' ### Example 3 (four plots: probability, density, logit, logdensity)
 #' x     <- q  <- seq(-15, 15, length.out=101)
 #' k     <- 3.2
-#' e     <- c(-0.3, -0.15, -0.07, 0.07, 0.15, 0.30) ; names(e) <- e
+#' d     <- c(-0.1, -0.03, -0.01, 0.01, 0.03, 0.1) ; names(d) <- d
 #' olty  <- c(2, 1, 2, 1, 2, 1, 1)
 #' olwd  <- c(1, 1, 2, 2, 3, 3, 2)
 #' ocol  <- c(2, 2, 4, 4, 3, 3, 1)
@@ -174,166 +194,166 @@
 #'            "logit(0.001) = -6.9  ")
 #' op    <- par(mfrow=c(2,2), mgp=c(1.5,0.8,0), mar=c(3,3,2,1))
 #' 
-#' plot(x, pkiener4(x, k = 3.2, e = 0), type = "l", lwd = 3, ylim = c(0, 1),
+#' plot(x, pkiener3(x, k = 3.2, d = 0), type = "l", lwd = 3, ylim = c(0, 1),
 #'      xaxs = "i", yaxs = "i", xlab = "", ylab = "", 
-#'      main = "pkiener4(q, m, g, k=3.2, e=...)")
-#' for (i in 1:length(e)) lines(x, pkiener4(x, k = 3.2, e = e[i]), 
+#'      main = "pkiener3(q, m, g, k=3.2, d=...)")
+#' for (i in 1:length(d)) lines(x, pkiener3(x, k = 3.2, d = d[i]), 
 #'        lty = olty[i], lwd = olwd[i], col = ocol[i] )
-#' legend("topleft", title = expression(epsilon), legend = c(e, "0"), 
+#' legend("topleft", title = expression(delta), legend = c(d, "0"), 
 #'        cex = 0.7, inset = 0.02, lty = olty, lwd = olwd, col = ocol )
 #' 
-#' plot(x, dkiener4(x, k = 3.2, e = 0), type = "l", lwd = 3, ylim = c(0, 0.14),
+#' plot(x, dkiener3(x, k = 3.2, d = 0), type = "l", lwd = 3, ylim = c(0, 0.14),
 #'      xaxs = "i", yaxs = "i", xlab = "", ylab = "", 
-#'      main = "dkiener4(q, m, g, k=3.2, e=...)")
-#' for (i in 1:length(e)) lines(x, dkiener4(x, k = 3.2, e = e[i]), 
+#'      main = "dkiener3(q, m, g, k=3.2, d=...)")
+#' for (i in 1:length(d)) lines(x, dkiener3(x, k = 3.2, d = d[i]), 
 #'        lty = olty[i], lwd = olwd[i], col = ocol[i] )
-#' legend("topright", title = expression(epsilon), legend = c(e, "0"), 
+#' legend("topright", title = expression(delta), legend = c(d, "0"), 
 #'        cex = 0.7, inset = 0.02, lty = olty, lwd = olwd, col = ocol )
 #' 
-#' plot(x, lkiener4(x, k = 3.2, e = 0), type = "l", lwd =3, ylim = c(-7.5, 7.5), 
+#' plot(x, lkiener3(x, k = 3.2, d = 0), type = "l", lwd =3, ylim = c(-7.5, 7.5), 
 #'      yaxt="n", xaxs = "i", yaxs = "i", xlab = "", ylab = "", 
-#'      main = "logit(pkiener4(q, m, g, k=3.2, e=...))")
+#'      main = "logit(pkiener3(q, m, g, k=3.2, d=...))")
 #' axis(2, las=1, at=c(-6.9, -4.6, -2.9, 0, 2.9, 4.6, 6.9) )
-#' for (i in 1:length(e)) lines(x, lkiener4(x, k = 3.2, e = e[i]),  
+#' for (i in 1:length(d)) lines(x, lkiener3(x, k = 3.2, d = d[i]),  
 #'        lty = olty[i], lwd = olwd[i], col = ocol[i] )
 #' legend("topleft", legend = lleg, cex = 0.7, inset = 0.02 )
-#' legend("bottomright", title = expression(epsilon), legend = c(e, "0"), 
+#' legend("bottomright", title = expression(delta), legend = c(d, "0"), 
 #'        cex = 0.7, inset = 0.02, lty = c(olty), lwd = c(olwd), col = c(ocol) )
 #' 
-#' plot(x, dkiener4(x, k = 3.2, e = 0, log = TRUE), type = "l", lwd = 3, 
+#' plot(x, dkiener3(x, k = 3.2, d = 0, log = TRUE), type = "l", lwd = 3, 
 #'      ylim = c(-8, -1.5), xaxs = "i", yaxs = "i", xlab = "", ylab = "", 
-#'      main = "log(dkiener4(q, m, g, k=2, e=...))")
-#' for (i in 1:length(e)) lines(x, dkiener4(x, k = 3.2, e = e[i], log=TRUE), 
+#'      main = "log(dkiener3(q, m, g, k=2, d=...))")
+#' for (i in 1:length(d)) lines(x, dkiener3(x, k = 3.2, d = d[i], log=TRUE), 
 #'        lty = olty[i], lwd = olwd[i], col = ocol[i] )
-#' legend("bottom", title = expression(epsilon), legend = c(e, "0"), 
+#' legend("bottom", title = expression(delta), legend = c(d, "0"), 
 #'        cex = 0.7, inset = 0.02, lty = olty, lwd = olwd, col = ocol )
 #' ### End example 3
 #' 
 #' 
 #' ### Example 4 (four plots: quantile, derivate, density and quantiles from p)
 #' p     <- ppoints(199, a=0)
-#' e     <- c(-0.3, -0.15, -0.07, 0.07, 0.15, 0.30) ; names(e) <- e
+#' d     <- c(-0.1, -0.03, -0.01, 0.01, 0.03, 0.1) ; names(d) <- d
 #' op    <- par(mfrow=c(2,2), mgp=c(1.5,0.8,0), mar=c(3,3,2,1))
 #' 
 #' plot(p, qlogis(p, scale = 2), type = "l", lwd = 2, xlim = c(0, 1),
-#'      ylim = c(-15, 15), xaxs = "i", yaxs = "i", xlab = "", ylab = "", 
-#'      main = "qkiener4(p, m, g, k=3.2, e=...)")
-#' for (i in 1:length(e)) lines(p, qkiener4(p, k = 3.2, e = e[i]), 
+#'       ylim = c(-15, 15), xaxs = "i", yaxs = "i", xlab = "", ylab = "", 
+#'      main = "qkiener3(p, m, g, k=3.2, d=...)")
+#' for (i in 1:length(d)) lines(p, qkiener3(p, k = 3.2, d = d[i]), 
 #'           lty = olty[i], lwd = olwd[i], col = ocol[i] )
-#' legend("topleft", title = expression(epsilon), legend = c(e, "qlogis(x/2)"), 
-#'         inset = 0.02, lty = olty, lwd = olwd, col = ocol, cex = 0.7 )
+#' legend("topleft", title = expression(delta), legend = c(d, "qlogis(x/2)"), 
+#'           inset = 0.02, lty = olty, lwd = olwd, col = ocol, cex = 0.7 )
 #' 
 #' plot(p, 2/p/(1-p), type = "l", lwd = 2, xlim = c(0, 1), ylim = c(0, 100),
 #'      xaxs = "i", yaxs = "i", xlab = "", ylab = "", 
-#'      main = "dqkiener4(p, m, g, k=3.2, e=...)")
-#' for (i in 1:length(e)) lines(p, dqkiener4(p, k = 3.2, e = e[i]), 
+#'      main = "dqkiener3(p, m, g, k=3.2, d=...)")
+#' for (i in 1:length(d)) lines(p, dqkiener3(p, k = 3.2, d = d[i]), 
 #'           lty = olty[i], lwd = olwd[i], col = ocol[i] )
-#' legend("top", title = expression(epsilon), legend = c(e, "p*(1-p)/2"), 
+#' legend("top", title = expression(delta), legend = c(d, "p*(1-p)/2"), 
 #'           inset = 0.02, lty = olty, lwd = olwd, col = ocol, cex = 0.7 )
 #' 
 #' plot(qlogis(p, scale = 2), p*(1-p)/2, type = "l", lwd = 2, xlim = c(-15, 15), 
 #'      ylim = c(0, 0.14), xaxs = "i", yaxs = "i", xlab = "", ylab = "", 
-#'      main = "qkiener4, dpkiener4(p, m, g, k=3.2, e=...)")
-#' for (i in 1:length(e)) { 
-#'      lines(qkiener4(p, k = 3.2, e = e[i]), dpkiener4(p, k = 3.2, e = e[i]),
+#'      main = "qkiener3, dpkiener3(p, m, g, k=3.2, d=...)")
+#' for (i in 1:length(d)) { 
+#'      lines(qkiener3(p, k = 3.2, d = d[i]), dpkiener3(p, k = 3.2, d = d[i]),
 #'            lty = olty[i], lwd = olwd[i], col = ocol[i] ) }
-#' legend("topleft", title = expression(epsilon), legend = c(e, "p*(1-p)/2"), 
+#' legend("topleft", title = expression(delta), legend = c(d, "p*(1-p)/2"), 
 #'           inset = 0.02, lty = olty, lwd = olwd, col = ocol, cex = 0.7 )
 #' 
 #' plot(qlogis(p, scale = 2), p, type = "l", lwd = 2, xlim = c(-15, 15), 
 #'      ylim = c(0, 1), xaxs = "i", yaxs = "i", xlab = "", ylab = "", 
-#'      main = "inverse axis qkiener4(p, m, g, k=3.2, e=...)")
-#' for (i in 1:length(e)) lines(qkiener4(p, k = 3.2, e = e[i]), p,
+#'      main = "inverse axis qkiener3(p, m, g, k=3.2, d=...)")
+#' for (i in 1:length(d)) lines(qkiener3(p, k = 3.2, d = d[i]), p,
 #'           lty = olty[i], lwd = olwd[i], col = ocol[i] )
-#' legend("topleft", title = expression(epsilon), legend = c(e, "qlogis(x/2)"), 
+#' legend("topleft", title = expression(delta), legend = c(d, "qlogis(x/2)"), 
 #'           inset = 0.02, lty = olty, lwd = olwd, col = ocol, cex = 0.7 )
 #' ### End example 4
 #' 
 #' 
-#' @name kiener4
+#' @name kiener3
 NULL
 
 #' @export 
-#' @rdname kiener4
-dkiener4 <- function(x, m = 0, g = 1, k = 3.2, e = 0, log = FALSE) {
-	lp <-  lkiener4(x,  m, g, k, e)
-	v  <- dlkiener4(lp, m, g, k, e)
+#' @rdname kiener3
+dkiener3 <- function(x, m = 0, g = 1, k = 3.2, d = 0, log = FALSE) {
+	lp <-  lkiener3(x,  m, g, k, d)
+	v  <- dlkiener3(lp, m, g, k, d)
 	if(log) return(log(v)) else return(v)
-}
+} 
 
 #' @export
-#' @rdname kiener4
-pkiener4 <- function(q, m = 0, g = 1, k = 3.2, e = 0, 
+#' @rdname kiener3
+pkiener3 <- function(q, m = 0, g = 1, k = 3.2, d = 0, 
                      lower.tail = TRUE, log.p = FALSE) {
-	lp <- lkiener4(x = q, m, g, k, e)
+	lp <- lkiener3(x = q, m, g, k, d)
 	if(lower.tail) v <- invlogit(lp) else v <- 1 - invlogit(lp)
 	if(log.p) return(log(v)) else return(v)
-}
+} 
 
 #' @export
-#' @rdname kiener4
-qkiener4 <- function(p, m = 0, g = 1, k = 3.2, e = 0, 
+#' @rdname kiener3
+qkiener3 <- function(p, m = 0, g = 1, k = 3.2, d = 0, 
                      lower.tail = TRUE, log.p = FALSE) {
 	if(log.p) p <- exp(p) else p <- p
 	if(lower.tail) p <- p else p <- 1-p
-	v <- m + 2 * g * k * sinh(logit(p) / k) * exp(e / k * logit(p))
+	v <- m + 2 * g * k * sinh(logit(p) / k) * exp(d * logit(p))
 	return(v)
-}
+} 
 
 #' @export
-#' @rdname kiener4
-rkiener4 <- function(n, m = 0, g = 1, k = 3.2, e = 0) {
+#' @rdname kiener3
+rkiener3 <- function(n, m = 0, g = 1, k = 3.2, d = 0) {
 	p <- runif(n)
-	v <- qkiener4(p, m, g, k, e)
+	v <- qkiener3(p, m, g, k, d)
 	return(v)
-}
+} 
 
 
 #' @export
-#' @rdname kiener4
-dpkiener4 <- function(p, m = 0, g = 1, k = 3.2, e = 0, log = FALSE) {
-	a <- ke2a(k, e)
-	w <- ke2w(k, e)
+#' @rdname kiener3
+dpkiener3 <- function(p, m = 0, g = 1, k = 3.2, d = 0, log = FALSE) {
+	a <- kd2a(k, d)
+	w <- kd2w(k, d)
 	v <- p * (1 - p) / k / g / ( exp(-logit(p)/a)/a + exp(logit(p)/w)/w )
 	if(log) return(log(v)) else return(v)
-}
+} 
 
 #' @export
-#' @rdname kiener4
-dqkiener4 <- function(p, m = 0, g = 1, k = 3.2, e = 0, log = FALSE) {
+#' @rdname kiener3
+dqkiener3 <- function(p, m = 0, g = 1, k = 3.2, d = 0, log = FALSE) {
 # Compute dX/dp
-	a <- ke2a(k, e)
-	w <- ke2w(k, e)
+	a <- kd2a(k, d)
+	w <- kd2w(k, d)
 	v <- k * g / p / (1 - p) * ( exp(-logit(p)/a)/a + exp(logit(p)/w)/w )
 	if(log) return(log(v)) else return(v)
-}
+} 
 
 
 #' @export
-#' @rdname kiener4
-lkiener4 <- function(x, m = 0, g = 1, k = 3.2, e = 0) { 
+#' @rdname kiener3
+lkiener3 <- function(x, m = 0, g = 1, k = 3.2, d = 0) { 
 	lp.ini <- lkiener1(x, m, g, k)
-	f      <- function(lp) sum( ( x - qlkiener4(lp, m, g, k, e) )^2 )
+	f      <- function(lp) sum( ( x - qlkiener3(lp, m, g, k, d) )^2 )
 	lp.fin <- nlm(f, lp.ini)
 	v      <- lp.fin$estimate
 	return(v)
 } 
 
 #' @export
-#' @rdname kiener4
-dlkiener4 <- function(lp, m = 0, g = 1, k = 3.2, e = 0, log = FALSE) {
+#' @rdname kiener3
+dlkiener3 <- function(lp, m = 0, g = 1, k = 3.2, d = 0, log = FALSE) {
 	p <- invlogit(lp)
-	a <- ke2a(k, e)
-	w <- ke2w(k, e)
+	a <- kd2a(k, d)
+	w <- kd2w(k, d)
 	v <- p * (1 - p) / k / g / ( exp(-lp/a)/a + exp(lp/w)/w )
 	if(log) return(log(v)) else return(v)
-} 
+} # OK
 
 #' @export
-#' @rdname kiener4
-qlkiener4 <- function(lp, m = 0, g = 1, k = 3.2, e = 0, lower.tail = TRUE ) {
+#' @rdname kiener3
+qlkiener3 <- function(lp, m = 0, g = 1, k = 3.2, d = 0, lower.tail = TRUE ) {
 	if(lower.tail) lp <- lp else lp <- -lp
-		v <- m + 2 * g * k * sinh(lp / k) * exp(e / k * lp)
+	v  <- m + 2 * g * k * sinh(lp / k) * exp(d * lp)
 	return(v)
 } 
 

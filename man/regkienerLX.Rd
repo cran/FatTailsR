@@ -4,7 +4,7 @@
 \title{A Regression Function for Kiener Distributions}
 \usage{
 regkienerLX(X, model = "k4", dgts = c(3, 3, 1, 1, 1, 3, 2, 4, 4, 2, 2),
-  maxk = 10, mink = 0.7, app = 0)
+  maxk = 10, mink = 0.2, app = 0)
 }
 \arguments{
 \item{X}{vector of quantiles.}
@@ -85,6 +85,29 @@ for \code{dkiener234}) and return satisfactory results with ordinary least
 squares. The median is calculated before the regression and is injected
 as a mandatory value in the regression function.
 
+Kiener distributions use the following parameters, some of them being redundant.
+See \code{\link{aw2k}} and \code{\link{pk2pk}} for the formulas and
+the conversion between parameters:
+\itemize{
+  \item{ \code{m} (mu) is the median of the distribution,. }
+  \item{ \code{g} (gamma) is the scale parameter. }
+  \item{ \code{a} (alpha) is the left tail parameter. }
+  \item{ \code{k} (kappa) is the harmonic mean of \code{a} and \code{w}
+         and describes a global tail parameter. }
+  \item{ \code{w} (omega) is the right tail parameter. }
+  \item{ \code{d} (delta) is the distorsion parameter. }
+  \item{ \code{e} (epsilon) is the eccentricity parameter. }
+}
+Where:
+\itemize{
+  \item{c(m, g, k) of length 3 for distribution "k1".}
+  \item{c(m, g, a, w) of length 4 for distribution "k2".}
+  \item{c(m, g, k, d) of length 4 for distribution "k3".}
+  \item{c(m, g, k, e) of length 4 for distribution "k4".}
+  \item{c(m, g, a, k, w, d, e) of length 7 extracted from object of class
+        \code{clregk} like \code{regkienerLX} (typically \code{"reg$coefk"}).}
+}
+
 Model \code{"k1"} return results with 1+2=3 parameters and describes a
 (assumed) symmetric distribution. Parameters \code{d} and \code{e} are set
 to 0. Models \code{"k2"}, \code{"k3"} and \code{"k4"} describe asymmetric
@@ -113,7 +136,7 @@ that value \eqn{k < 2} describes distribution with no stable variance and
 \eqn{k < 1} describes distribution with no stable mean.
 
 The output is an object in a flat format of class \code{clregk}. It can be
-listed with the function \code{attributes}. First are the data.frames with
+listed with the function \code{\link{attributes}}. First are the data.frames with
 the initial data and the estimated results. Second is the result of
 the regression \code{regk0} given by \code{\link[minpack.lm]{nlsLM}} from
 which a few information have been extracted and listed here.
@@ -129,9 +152,9 @@ Fourth are the distribution parameters tailored to every model "k1", "k2",
 c(0.001, 0.005, 0.01, 0.05, 0.5, 0.95, 0.99, 0.995, 0.999).
 They are intended to subsequent calculations.
 Fifth are the same parameters presented in a more readable format thanks
-to the vector \code{dgts} which control the rounding of the parameters in
-the following order: c("m", "g",
-"a", "k", "w", "d", "e", "vcovk0", "vcovk0m", "mcork0", "quantr").
+to the vector \code{dgts} which controls the rounding of the parameters in
+the following order: \code{dgts = c("m", "g",
+"a", "k", "w", "d", "e", "vcovk0", "vcovk0m", "mcork0", "quantr")}.
 Sixth are the estimated quantiles and probabilities of interest stored
 in a data.frame format.
 }
@@ -140,35 +163,17 @@ require(graphics)
 require(minpack.lm)
 require(timeSeries)
 
-prices2returns <- function(x) { 100*diff(log(x)) }
-
-### Load the various datasets (1-16)
-DS <- list(
-"USDCHF"       = prices2returns(as.numeric(USDCHF)) ,
-"Microsoft"    = prices2returns(as.numeric(MSFT[,4])) ,
-"DAX"          = prices2returns(as.numeric(EuStockMarkets[,1])) ,
-"SMI"          = prices2returns(as.numeric(EuStockMarkets[,2])) ,
-"CAC"          = prices2returns(as.numeric(EuStockMarkets[,3])) ,
-"FTSE"         = prices2returns(as.numeric(EuStockMarkets[,4])) ,
-"SBI"          = as.numeric(LPP2005REC[,1]) ,
-"SPI"          = as.numeric(LPP2005REC[,2]) ,
-"SII"          = as.numeric(LPP2005REC[,3]) ,
-"LMI"          = as.numeric(LPP2005REC[,4]) ,
-"MPI"          = as.numeric(LPP2005REC[,5]) ,
-"ALT"          = as.numeric(LPP2005REC[,6]) ,
-"LPP25"        = as.numeric(LPP2005REC[,7]) ,
-"LPP40"        = as.numeric(LPP2005REC[,8]) ,
-"LPP60"        = as.numeric(LPP2005REC[,9]) ,
-"sunspot.year" = prices2returns(as.numeric(sunspot.year)+1000) )
-
-
-### Select one dataset number (1-16)
+### Load the datasets and select one number (1-16)
+DS     <- getDSdata()
 j      <- 5
+
 
 ### and run this block
 X      <- DS[[j]]
 nameX  <- names(DS)[j]
 reg    <- regkienerLX(X)
+
+## Plotting
 lleg   <- c("logit(0.999) = 6.9", "logit(0.99)   = 4.6",
            "logit(0.95)   = 2.9", "logit(0.50)   = 0",
            "logit(0.05)   = -2.9", "logit(0.01)   = -4.6",
@@ -189,6 +194,9 @@ legend("topleft", legend = pleg, cex = 0.9, inset = 0.02 )
 lines(reg$dfrEP, col = 2, lwd = 2)
 plot(density(X), main = nameX)
 lines(reg$dfrED, col = 2, lwd = 2)
+round(cbind("k" = kmoments(reg$coefk, lengthx = nrow(reg$dfrXL)), "X" = xmoments(X)), 2)
+
+## Attributes
 attributes(reg)
 head(reg$dfrXP)
 head(reg$dfrXL)
@@ -215,11 +223,13 @@ reg$coefr4
 reg$quantr
 reg$dfrQkPk
 reg$dfrQkLk
+reg$fitk
 ### End block
 }
 \seealso{
 \code{\link[minpack.lm]{nlsLM}}, \code{\link{laplacegaussnorm}},
     Kiener distributions of type I, II, III and IV: \code{\link{kiener1}}
     \code{\link{kiener2}}, \code{\link{kiener3}}, \code{\link{kiener4}}.
+    Other functions: \code{\link{fitkienerLX}}, \code{\link{estimkienerX}}.
 }
 
