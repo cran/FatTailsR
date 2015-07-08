@@ -54,15 +54,16 @@
 #' @name getDSdata
 getDSdata <- function() {
 DSenv <- new.env(parent = baseenv())
-data("USDCHF", "MSFT", "LPP2005REC", package = "timeSeries", envir = DSenv)
+utils::data("USDCHF", "MSFT", "LPP2005REC", package = "timeSeries", envir = DSenv)
+utils::data("EuStockMarkets", "sunspot.year", package = "datasets", envir = DSenv)
 prices2returns <- function(x) { 100*diff(log(as.numeric(x))) }
 DS <- list(
 	"USDCHF"	= prices2returns(DSenv$USDCHF),
 	"MSFT"		= prices2returns(DSenv$MSFT[,4]),
-	"DAX"		= prices2returns(EuStockMarkets[,1]),
-	"SMI"		= prices2returns(EuStockMarkets[,2]),
-	"CAC"		= prices2returns(EuStockMarkets[,3]),
-	"FTSE"		= prices2returns(EuStockMarkets[,4]),
+	"DAX"		= prices2returns(DSenv$EuStockMarkets[,1]),
+	"SMI"		= prices2returns(DSenv$EuStockMarkets[,2]),
+	"CAC"		= prices2returns(DSenv$EuStockMarkets[,3]),
+	"FTSE"		= prices2returns(DSenv$EuStockMarkets[,4]),
 	"SBI"		= 100*as.numeric(DSenv$LPP2005REC[,1]),
 	"SPI"		= 100*as.numeric(DSenv$LPP2005REC[,2]),
 	"SII"		= 100*as.numeric(DSenv$LPP2005REC[,3]),
@@ -72,7 +73,7 @@ DS <- list(
 	"LPP25"		= 100*as.numeric(DSenv$LPP2005REC[,7]),
 	"LPP40"		= 100*as.numeric(DSenv$LPP2005REC[,8]),
 	"LPP60"		= 100*as.numeric(DSenv$LPP2005REC[,9]),
-	"sunspot"	= prices2returns(sunspot.year+1000) )
+	"sunspot"	= prices2returns(DSenv$sunspot.year+1000) )
 return(DS)
 }
 
