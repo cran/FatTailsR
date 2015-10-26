@@ -6,94 +6,113 @@
 \alias{FatTailsR-package}
 \title{Package FatTailsR}
 \description{
-Kiener distributions of type I, II, III and IV tailored to
-distributions which exhibit left and right fat tails like those that
-occur in financial markets. These distributions can be used to estimate
-with a high accuracy market risks and value-at-risk. Also include power
-hyperbolas and power hyperbolic functions.
+This package includes Kiener distributions K1, K2, K3 and K4 and two estimation
+algorithms to characterize with a high precision symmetric or asymmetric
+distributions with left and right fat tails that appear in market finance,
+neuroscience and many other disciplines. The estimation of the distribution parameters,
+quantiles, value-at-risk and expected shortfall is usually very accurate.
+Two datasets are provided, as well as power hyperbolas and power hyperbolic
+functions which are simplified versions of symmetric distribution K1.
+
 Download the pdf cited in the references to get an overview of
 the theoretical part and several examples on stocks and indices.
+This version (ocotber 2015) is a major update that breaks compatibility
+with previous versions.
+
+A commercial package, \code{FatTailsRplot}, with advanced plotting functions
+and calculation of matrix of stocks over rolling windows is also developped
+by the author.
 }
 \details{
 With so many functions, this package could look fat. But it's not!
-It's rather agile and easy to use! It addresses two topics:
-Power hyperbolic functions and Kiener distributions with their moments.
-The various functions can be assigned to the following groups:
+It's rather agile and easy to use! The various functions included in this package
+can be assigned to the following groups:
 \enumerate{
-  \item Miscellaneous functions for general purpose and power hyperbolas:
+  \item Several vectors of probabilities:
         \itemize{
-        \item \code{\link{logit}}, invlogit, \code{\link{kashp}}, dkashp_dx, ashp.
+        \item \code{\link{pprobs0}}, pprobs1, pprobs2, ..., pprobs9.
         }
-  \item Power hyperbolas and power hyperbolic functions:
+  \item Two datasets presented in different formats:
+        list, data.frame, timeSeries, xts, zoo:
+        \itemize{
+        \item \code{\link{getDSdata}}.
+        \item \code{\link{extractData}}, dfData, tData, xData, zData.
+        }
+  \item  Miscellaneous functions and functions related to the logistic function:
+        \itemize{
+        \item \code{\link{dimdim}}, dimdim1.
+        \item \code{\link{logit}}, invlogit, ltmlogis, rtmlogis, eslogis.
+        }
+  \item Power hyperbolas, power hyperbolic functions and their inverses:
         \itemize{
         \item \code{\link{exphp}}, coshp, sinhp, tanhp, sechp, cosechp,
               cotanhp.
-        }
-  \item Inverse power hyperbolas and inverse power hyperbolic functions:
-        \itemize{
         \item \code{\link{loghp}}, acoshp, asinhp, atanhp, asechp,
               acosechp, acotanhp.
+        \item \code{\link{kashp}}, dkashp_dx, ashp.
         }
-  \item The logishp function and its variants which combines the logistic
-        function and the power hyperbolas. Also, the kogit and invkogit:
+  \item Logishp function, kogit and invkogit = logistic function + power hyperbolas:
         \itemize{
         \item d, p, q, r, dp, dq, l, dl, ql \code{\link{logishp}}.
-        \item \code{\link{kogit}}, \code{\link{invkogit}} (added in v1.2-0).
+        \item \code{\link{kogit}}, invkogit.
         }
-  \item The Kiener distributions of type I, II, III and IV:
+  \item Conversion functions between parameters of Kiener distributions K1, K2, K3, K4:
         \itemize{
-        \item d, p, q, r, dp, dq, l, dl, ql \code{\link{kiener1}},
-        \item d, p, q, r, dp, dq, l, dl, ql \code{\link{kiener2}},
-        \item d, p, q, r, dp, dq, l, dl, ql \code{\link{kiener3}},
-        \item d, p, q, r, dp, dq, l, dl, ql \code{\link{kiener4}}.
+        \item \code{\link{aw2k}}, aw2d, aw2e, ad2e, ad2k, ad2w, ae2d, ae2k,
+                ae2w, ak2e, ak2w, de2a, de2k, de2w, dk2a, dk2e, dw2a, dw2e,
+                dw2k, ek2a, ak2d, ek2w, aw2a, aw2d, ew2a, aw2d, ew2k, kd2a,
+                kd2e, kd2w, ke2a, ke2d, ke2w, kw2a, kw2d, kw2e.
+        \item \code{\link{pk2pk}}.
         }
-  \item Fat tail corrective function for Kiener distributions:
+  \item Kiener distributions K1, K2, K3, K4:
         \itemize{
-        \item \code{\link{ckiener1}}, \code{\link{ckiener2}},
-              \code{\link{ckiener3}}, \code{\link{ckiener4}}
-              (added in v1.2-0).
+        \item d, p, q, r, dp, dq, l, dl, ql, var, ltm, rtm, dtmq, es \code{\link{kiener1}},
+        \item d, p, q, r, dp, dq, l, dl, ql, var, ltm, rtm, dtmq, es \code{\link{kiener2}},
+        \item d, p, q, r, dp, dq, l, dl, ql, var, ltm, rtm, dtmq, es \code{\link{kiener3}},
+        \item d, p, q, r, dp, dq, l, dl, ql, var, ltm, rtm, dtmq, es \code{\link{kiener4}}.
         }
-  \item Conversion functions between parameters pertaining to Kiener
-        distributions of type II, III and IV:
+  \item Quantile (VaR) corrective function (as a multiplier of the logistic function).
+        Expected shortfall corrective function (as a multiplier of the expected shortfall
+        of the logistic distribution):
         \itemize{
-        \item \code{\link{aw2k}}, aw2d, aw2e, kd2a, kd2w, ke2a, ke2w,
-               ke2d, kd2e, de2k.
-        \item \code{\link{pk2pk}} (added in v1.2-0).
+        \item \code{\link{ckiener1}}, ckiener2, ckiener3, ckiener4.
+        \item \code{\link{hkiener1}}, hkiener2, hkiener3, hkiener4.
         }
-  \item Regression functions to estimate the distribution parameters
-        of a given dataset with Kiener distributions and Laplace-Gauss
-        normal distribution. \code{regkienerLX} and \code{fitkienerLX}
-        use the same regression function. \code{estimkienerX} uses a
-        different algorithm:
+  \item Moments of the distribution estimated from the dataset and from
+        the regression parameters:
+        \itemize{
+        \item \code{\link{xmoments}}.
+        \item \code{\link{kmoments}}, kmoment, kcmoment, kmean,
+              kstandev, kvariance, kskewness, kkurtosis, kekurtosis.
+        }
+  \item Regression and estimation functions to estimate Kiener distribution
+        parameters on a given dataset. \code{*fit*} and \code{*param*}
+        are wrappers of algorithms \code{reg} and \code{estim}.
+        \code{reg} uses an unweighted nonlinear regression function.
+        \code{estim} uses a fast estimation based on quantiles:
         \itemize{
         \item \code{\link{regkienerLX}}, \code{\link{laplacegaussnorm}}.
-        \item \code{\link{fitkienerLX}} (added in v1.2-0).
-        \item \code{\link{estimkienerX}} (added in v1.2-0).
+        \item \code{\link{fitkienerX}}.
+        \item \code{\link{paramkienerX}, paramkienerX5, paramkienerX7}.
         }
-  \item Functions related to \code{estimkienerX} (added in v1.2-0):
+  \item Functions related to \code{paramkienerX}:
         \itemize{
-        \item \code{\link{elevenprobs}}, \code{\link{sevenprobs}}, \code{\link{fiveprobs}}
-        \item \code{\link{estimkiener11}}, \code{\link{estimkiener7}}, \code{\link{estimkiener5}}.
+        \item \code{\link{elevenprobs}}, sevenprobs, fiveprobs.
+        \item \code{\link{estimkiener11}}, estimkiener7, estimkiener5.
+        \item \code{\link{roundcoefk}}.
         }
-  \item Moments of the distribution estimated from the dataset or from
-        the regression parameters (added in v1.2-0):
+  \item Predefined parameter subsets to extract the corresponding parameters
+        from the long vector \code{fitk} obtained after regression/estimation
+        \code{regkienerLX}, \code{fitkienerX} :
         \itemize{
-        \item \code{\link{kmoments}}, xmoments, kmoment, kcmoment,
-              kskewness, kkurtosis, kekurtosis.
-        }
-  \item One function to aggregate external datasets and one dataset
-        in different formats: data.frame, timeSeries, xts, zoo (added in v1.2-0):
-        \itemize{
-        \item \code{\link{getDSdata}}.
-        \item \code{\link{dfData}}, \code{\link{tData}}, \code{\link{xData}}, \code{\link{zData}}.
+        \item \code{\link{exfit0}}, ..., \code{exfit7}.
         }
 }
-For a quick start on Kiener distributions, jump to the functions
-\code{\link{regkienerLX}}, \code{\link{fitkienerLX}},
-\code{\link{estimkienerX}} and run the examples.
-Then, download and read the document in pdf format cited in the references
-which gives a complete overview on all functions.
-Finally, explore the other examples.
+For a quick start, jump to the functions \code{\link{regkienerLX}},
+\code{\link{fitkienerX}} and run the examples.
+Then, download and read the documents in pdf format cited in the references
+to get an overview on the major functions. Finally, explore the other
+examples.
 }
 \examples{
 require(graphics)
@@ -153,7 +172,7 @@ applications in finance with the package FatTailsR, 8th R/Rmetrics Workshop
 and Summer School, Paris, 27 June 2014. Download it from:
 \url{http://www.inmodelia.com/exemples/2014-0627-Rmetrics-Kiener-en.pdf}
 
-P. Kiener, Fat tail analysis and package FatTailsR - Season 2,
+P. Kiener, Fat tail analysis and package FatTailsR,
 9th R/Rmetrics Workshop and Summer School, Zurich, 27 June 2015.
 Download it from:
 \url{http://www.inmodelia.com/exemples/2015-0627-Rmetrics-Kiener-en.pdf}

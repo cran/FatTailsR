@@ -1,29 +1,28 @@
 
 
-#' @include g_kiener3.R
+#' @include h_kiener3.R
 
 
 
-#' @title Asymmetric Kiener Distribution (Type IV)
+#' @title Asymmetric Kiener Distribution K4
 #'
 #' @description
 #' Density, distribution function, quantile function, random generation
-#' and additional formulae for the Kiener distribution of type IV.
+#' and additional formulae for asymmetric Kiener distribution K4.
 #'
-#' @param x	vector of quantiles.
-#' @param q	vector of quantiles.
-#' @param m	numeric. The median.
-#' @param g	numeric. The scale parameter, preferably strictly positive.
-#' @param k	numeric. The tail parameter, preferably strictly positive.
-#' @param e	numeric. The eccentricity parameter between left and right tails.
-#' @param p	vector of probabilities.
-#' @param lp	vector of logit of probabilities.
-#' @param n	number of observations. If length(n) > 1, the length is  
-#'          taken to be the number required.
-#' @param log	logical; if TRUE, densities are given in log scale.
-#' @param log.p	logical; if TRUE, probabilities p are given as log(p).
-#' @param lower.tail	logical; if TRUE (default), probabilities are 
-#'                      P[X < x] otherwise, P[X > x].
+#' @param    x    vector of quantiles.
+#' @param    q    vector of quantiles.
+#' @param    m    numeric. The median.
+#' @param    g    numeric. The scale parameter, preferably strictly positive.
+#' @param    k    numeric. The tail parameter, preferably strictly positive.
+#' @param    e    numeric. The eccentricity parameter between left and right tails.
+#' @param    p    vector of probabilities.
+#' @param    lp   vector of logit of probabilities.
+#' @param    n    number of observations. If length(n) > 1, the length is  
+#'                taken to be the number required.
+#' @param    log           logical. If TRUE, densities are given in log scale.
+#' @param    lower.tail    logical. If TRUE, use p. If FALSE, use 1-p.
+#' @param    log.p         logical. If TRUE, probabilities p are given as log(p).
 #'
 #' @details
 #' Kiener distributions use the following parameters, some of them being redundant. 
@@ -36,22 +35,22 @@
 #'   \item{ \code{k} (kappa) is the harmonic mean of \code{a} and \code{w} 
 #'          and describes a global tail parameter. }
 #'   \item{ \code{w} (omega) is the right tail parameter. } 
-#'   \item{ \code{d} (delta) is the distorsion parameter. }
+#'   \item{ \code{d} (delta) is the distortion parameter. }
 #'   \item{ \code{e} (epsilon) is the eccentricity parameter. }
 #' }
 #' 
-#' Kiener distributions of type IV \code{k4 = c(m, g, k, e)} are distributions 
+#' Kiener distributions \code{K4(m, g, k, e, ...)} are distributions 
 #' with asymmetrical left and right fat tails described by a global tail 
 #' parameter \code{k} and an eccentricity parameter \code{e}. 
 #'  
-#' Distributions of type III (\code{\link{kiener3}}) 
+#' Distributions K3 (\code{\link{kiener3}}) 
 #' with parameters \code{k} (kappa) and \code{d} (delta) and
-#' distributions of type IV (\code{\link{kiener4}})
+#' distributions K4 (\code{\link{kiener4}})
 #' with parameters \code{k} (kappa) and \code{e} (epsilon))
 #' have been created to disantangle the parameters 
-#' \code{a} (alpha) and \code{w} (omega) of distributions of 
-#' type II (\code{\link{kiener2}}). 
-#' The tiny difference between the types III and IV (\eqn{d = e/k}) 
+#' \code{a} (alpha) and \code{w} (omega) of distributions K2
+#' (\code{\link{kiener2}}). 
+#' The tiny difference between distributions K3 and K4 (\eqn{d = e/k}) 
 #' has not yet been fully evaluated. Both should be tested at that moment.
 #' 
 #' \code{k} is the harmonic mean of \code{a} and \code{w} and represents a 
@@ -60,7 +59,7 @@
 #' \code{e} is an eccentricity parameter between the left tail parameter
 #' \code{a} and the right tail parameter \code{w}.
 #' It verifies the inequality: \eqn{-1 < e < 1} 
-#' (whereas \code{d} of type III verifies \eqn{-k < d < k}).
+#' (whereas \code{d} of distribution K3 verifies \eqn{-k < d < k}).
 #' The conversion functions (see \code{\link{aw2k}}) are:
 #'
 #' \deqn{1/k = (1/a + 1/w)/2 }
@@ -96,13 +95,13 @@
 #' dp, dq, l, dl, ql are also provided.
 #'
 #' \code{dpkiener4} is the density function calculated from the probability p. 
-#' The formula is adapted from type II. It is defined for p in (0, 1) by: 
+#' The formula is adapted from distribution K2. It is defined for p in (0, 1) by: 
 #'   \deqn{ dpkiener4(p, m, g, k, e) = 
 #'          p * (1 - p) / k / g / ( exp(-logit(p)/a)/a + exp(logit(p)/w)/w }
 #' with \code{a} and \code{w} defined from \code{k} and \code{e}.
 #'
 #' \code{dqkiener4} is the derivate of the quantile function calculated from 
-#' the probability p. The formula is adapted from type II. 
+#' the probability p. The formula is adapted from distribution K2. 
 #' It is defined for p in (0, 1) by: 
 #'   \deqn{ dqkiener4(p, m, g, k, e) = 
 #'          k * g / p / (1 - p) * ( exp(-logit(p)/a)/a + exp(logit(p)/w)/w ) } 
@@ -119,7 +118,7 @@
 #' Hopefully, these cases seldom happen in finance.
 #'
 #' \code{dlkiener4} is the density function calculated from the logit of the 
-#' probability lp = logit(p). The formula is adapted from type II.
+#' probability lp = logit(p). The formula is adapted from distribution K2.
 #' it is defined for lp in (-Inf, +Inf) by: 
 #'    \deqn{ dlkiener4(lp, m, g, k, e) = 
 #'           p * (1 - p) / k / g / ( exp(-lp/a)/a + exp(lp/w)/w ) }
@@ -129,24 +128,51 @@
 #' probability. It is defined for lp in (-Inf, +Inf) by: 
 #'    \deqn{ qlkiener4(lp, m, g, k, e) = 
 #'           m + 2 * g * k * sinh(lp / k) * exp(e / k * lp) }
+#' 
+#' \code{varkiener4} designates the Value a-risk and turns negative numbers 
+#' into positive numbers with the following rule:
+#'    \deqn{ varkiener4 <- if(p <= 0.5) { - qkiener4 } else { qkiener4 } }
+#' Usual values in finance are \code{p = 0.01}, \code{p = 0.05}, \code{p = 0.95} and 
+#' \code{p = 0.99}. \code{lower.tail = FALSE} uses \code{1-p} rather than {p}.
+#' 
+#' \code{ltmkiener4}, \code{rtmkiener4} and \code{eskiener4} are respectively the 
+#' left tail mean, the right tail mean and the expected shortfall of the distribution 
+#' (sometimes called average VaR, conditional VaR or tail VaR). 
+#' Left tail mean is the integrale from \code{-Inf} to \code{p} of the quantile function 
+#' \code{qkiener4} divided by \code{p}.
+#' Right tail mean is the integrale from \code{p} to \code{+Inf} of the quantile function 
+#' \code{qkiener4} divided by 1-p.
+#' Expected shortfall turns negative numbers into positive numbers with the following rule:
+#'    \deqn{ eskiener4 <- if(p <= 0.5) { - ltmkiener4 } else { rtmkiener4 } }
+#' Usual values in finance are \code{p = 0.01}, \code{p = 0.025}, \code{p = 0.975} and 
+#' \code{p = 0.99}. \code{lower.tail = FALSE} uses \code{1-p} rather than {p}.
 #'
+#' \code{dtmqkiener4} is the difference between the left tail mean and the quantile 
+#' when (p <= 0.5) and the difference between the right tail mean and the quantile 
+#' when (p > 0.5). It is in quantile unit and is an indirect measure of the tail curvature.
+#' 
 #' @references
 #' P. Kiener, Explicit models for bilateral fat-tailed distributions and 
 #' applications in finance with the package FatTailsR, 8th R/Rmetrics Workshop 
 #' and Summer School, Paris, 27 June 2014. Download it from:  
 #' \url{http://www.inmodelia.com/exemples/2014-0627-Rmetrics-Kiener-en.pdf}
 #'
-#' P. Kiener, Fat tail analysis and package FatTailsR - Season 2, 
+#' P. Kiener, Fat tail analysis and package FatTailsR, 
 #' 9th R/Rmetrics Workshop and Summer School, Zurich, 27 June 2015. 
 #' Download it from: 
 #' \url{http://www.inmodelia.com/exemples/2015-0627-Rmetrics-Kiener-en.pdf}
-#
+#' 
+#' C. Acerbi, D. Tasche, Expected shortfall: a natural coherent alternative to 
+#' Value at Risk, 9 May 2001. Download it from: 
+#' \url{http://www.bis.org/bcbs/ca/acertasc.pdf}
+#' 
 #' @seealso 
-#' The symmetric Kiener distribution of type I \code{\link{kiener1}}, 
-#' the asymmetric Kiener distributions of type II and III 
+#' Symmetric Kiener distribution K1 \code{\link{kiener1}}, 
+#' asymmetric Kiener distributions K2 and K3 
 #' \code{\link{kiener2}}, \code{\link{kiener3}}, 
-#' the conversion functions \code{\link{aw2k}}, 
-#  the regression function \code{\link{regkienerLX}}.
+#' conversion functions \code{\link{aw2k}}, 
+#' estimation function \code{\link{fitkienerX}},
+#  regression function \code{\link{regkienerLX}}.
 #'
 #' @examples
 #' 
@@ -269,6 +295,30 @@
 #' ### End example 4
 #' 
 #' 
+### Example 5 (q and VaR, ltm, rtm, and ES)
+#' pp <- c(0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 
+#'         0.10, 0.20, 0.35, 0.5, 0.65, 0.80, 0.90,
+#'         0.95, 0.975, 0.99, 0.995, 0.9975, 0.999)
+#' m <- -5 ; g <- 1 ; k <- 4 ; e = -0.20
+#' a <- ek2a(e, k) ; w <- ek2w(e, k) ; d <- ek2d(e, k) 
+#' round(c(m = m, g = g, a = a, k = k, w = w, d = d, e = e), 2) 
+#' plot(qkiener4(pp, m, g, k, e), pp, type = "b")
+#' round(cbind(p = pp, "1-p" = 1-pp,
+#' 	q   =   qkiener4(pp, m, g, k, e),
+#' 	ltm = ltmkiener4(pp, m, g, k, e),
+#' 	rtm = rtmkiener4(pp, m, g, k, e),
+#' 	ES  =  eskiener4(pp, m, g, k, e),
+#' 	VaR = varkiener4(pp, m, g, k, e)), 4)
+#' round(kmean(c(m, g, k, e), model = "K4"), 4) # limit value for ltm and rtm
+#' round(cbind(p = pp, "1-p" = 1-pp, 
+#' 	q   =   qkiener4(pp, m, g, k, e, lower.tail = FALSE), 
+#' 	ltm = ltmkiener4(pp, m, g, k, e, lower.tail = FALSE), 
+#' 	rtm = rtmkiener4(pp, m, g, k, e, lower.tail = FALSE), 
+#' 	ES  =  eskiener4(pp, m, g, k, e, lower.tail = FALSE), 
+#' 	VaR = varkiener4(pp, m, g, k, e, lower.tail = FALSE)), 4)
+#' ### End example 5
+#' 
+#' 
 #' @name kiener4
 NULL
 
@@ -307,7 +357,6 @@ rkiener4 <- function(n, m = 0, g = 1, k = 3.2, e = 0) {
 	return(v)
 }
 
-
 #' @export
 #' @rdname kiener4
 dpkiener4 <- function(p, m = 0, g = 1, k = 3.2, e = 0, log = FALSE) {
@@ -326,7 +375,6 @@ dqkiener4 <- function(p, m = 0, g = 1, k = 3.2, e = 0, log = FALSE) {
 	v <- k * g / p / (1 - p) * ( exp(-logit(p)/a)/a + exp(logit(p)/w)/w )
 	if(log) return(log(v)) else return(v)
 }
-
 
 #' @export
 #' @rdname kiener4
@@ -355,4 +403,75 @@ qlkiener4 <- function(lp, m = 0, g = 1, k = 3.2, e = 0, lower.tail = TRUE ) {
 		v <- m + 2 * g * k * sinh(lp / k) * exp(e / k * lp)
 	return(v)
 } 
+
+#' @export
+#' @rdname kiener4
+varkiener4 <- function(p, m = 0, g = 1, k = 3.2, e = 0, 
+                      lower.tail = TRUE, log.p = FALSE) {
+	p   <- if(log.p) {exp(p)} else {p}
+	p   <- if(lower.tail) {p} else {1-p}
+	va  <- p
+	for (i in seq_along(p)) {
+		va[i] <- ifelse(p[i] <= 0.5, 
+					- qkiener4(p[i], m, g, k, e),
+					  qkiener4(p[i], m, g, k, e))
+	}
+return(va)
+}
+
+
+#' @export
+#' @rdname kiener4
+ltmkiener4 <- function(p, m = 0, g = 1, k = 3.2, e = 0, 
+                     lower.tail = TRUE, log.p = FALSE) {
+	p <- if(log.p) {exp(p)} else {p}
+	p <- if(lower.tail) {p} else {1-p}
+	ltm <- m + g * k / p * (
+	          -pbeta(p, 1-(1-e)/k, 1+(1-e)/k) * beta(1-(1-e)/k, 1+(1-e)/k) 
+	          +pbeta(p, 1+(1+e)/k, 1-(1+e)/k) * beta(1+(1+e)/k, 1-(1+e)/k))
+return(ltm)
+}
+
+#' @export
+#' @rdname kiener4
+rtmkiener4 <- function(p, m = 0, g = 1, k = 3.2, e = 0, 
+                       lower.tail = TRUE, log.p = FALSE) {
+	p   <- if(log.p) {exp(p)} else {p}
+	p   <- if(lower.tail) {p} else {1-p}  
+	# rtm : 1-p et 1-pbeta()
+	rtm <- m + g * k / (1-p) * ( 
+	        (-1 +pbeta(p, 1-(1-e)/k, 1+(1-e)/k)) * beta(1-(1-e)/k, 1+(1-e)/k) 
+	       +( 1 -pbeta(p, 1+(1+e)/k, 1-(1+e)/k)) * beta(1+(1+e)/k, 1-(1+e)/k))
+return(rtm)
+}
+
+#' @export
+#' @rdname kiener4
+dtmqkiener4 <- function(p, m = 0, g = 1, k = 3.2, e = 0, 
+                      lower.tail = TRUE, log.p = FALSE) {
+	p   <- if(log.p) {exp(p)} else {p}
+	p   <- if(lower.tail) {p} else {1-p}
+	dtmq  <- p
+	for (i in seq_along(p)) {
+		dtmq[i] <- ifelse(p[i] <= 0.5, 
+					  ltmkiener4(p[i], m, g, k, e) - qkiener4(p[i], m, g, k, e),
+					  rtmkiener4(p[i], m, g, k, e) - qkiener4(p[i], m, g, k, e))
+	}
+return(dtmq)
+}
+
+#' @export
+#' @rdname kiener4
+eskiener4 <- function(p, m = 0, g = 1, k = 3.2, e = 0, 
+                      lower.tail = TRUE, log.p = FALSE) {
+	p   <- if(log.p) {exp(p)} else {p}
+	p   <- if(lower.tail) {p} else {1-p}
+	es  <- p
+	for (i in seq_along(p)) {
+		es[i] <- ifelse(p[i] <= 0.5, 
+					- ltmkiener4(p[i], m, g, k, e),
+					  rtmkiener4(p[i], m, g, k, e))
+	}
+return(es)
+}
 

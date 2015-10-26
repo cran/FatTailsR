@@ -1,30 +1,29 @@
 
 
-#' @include d_conversion.R
+#' @include e_conversion.R
 
 
 
-#' @title Symmetric Kiener Distribution (Type I)
+#' @title Symmetric Kiener Distribution K1
 #'
 #' @description
 #' Density, distribution function, quantile function, random generation
-#' and additional formulae for the Kiener distribution of type I. 
+#' and additional formulae for symmetric Kiener distribution K1. 
 #' This distribution is similar to the power hyperbola logistic distribution 
 #' but with additional parameters for location (\code{m}) and scale (\code{g}).
 #'
-#' @param x	vector of quantiles.
-#' @param q	vector of quantiles.
-#' @param m	numeric. The median.
-#' @param g	numeric. The scale parameter, preferably strictly positive.
-#' @param k	numeric. The tail parameter, preferably strictly positive.
-#' @param p	vector of probabilities.
-#' @param lp	vector of logit of probabilities.
-#' @param n	number of observations. If length(n) > 1, the length is  
-#'                                  taken to be the number required.
-#' @param log	logical; if TRUE, densities are given in log scale.
-#' @param log.p	logical; if TRUE, probabilities p are given as log(p).
-#' @param lower.tail	logical; if TRUE (default), probabilities are 
-#'                      P[X = x] otherwise, P[X > x].
+#' @param    x    vector of quantiles.
+#' @param    q	  vector of quantiles.
+#' @param    m	  numeric. The median.
+#' @param    g	  numeric. The scale parameter, preferably strictly positive.
+#' @param    k	  numeric. The tail parameter, preferably strictly positive.
+#' @param    p	  vector of probabilities.
+#' @param    lp	  vector of logit of probabilities.
+#' @param    n	  number of observations. If length(n) > 1, the length is  
+#'                taken to be the number required.
+#' @param    log           logical. If TRUE, densities are given in log scale.
+#' @param    lower.tail    logical. If TRUE, use p. If FALSE, use 1-p.
+#' @param    log.p         logical. If TRUE, probabilities p are given as log(p).
 #'
 #' @details
 #' Kiener distributions use the following parameters, some of them being redundant. 
@@ -37,12 +36,12 @@
 #'   \item{ \code{k} (kappa) is the harmonic mean of \code{a} and \code{w} 
 #'          and describes a global tail parameter. }
 #'   \item{ \code{w} (omega) is the right tail parameter. } 
-#'   \item{ \code{d} (delta) is the distorsion parameter. }
+#'   \item{ \code{d} (delta) is the distortion parameter. }
 #'   \item{ \code{e} (epsilon) is the eccentricity parameter. }
 #' }
 #' 
-#' Kiener distributions of type I \code{k1 = c(m, g, k)} describe distributions  
-#' with symmetrical left and right fat tails with tail parameter \code{k}. 
+#' Kiener distributions \code{K1(m, g, k, ...)} describe distributions  
+#' with symmetric left and right fat tails with tail parameter \code{k}. 
 #' This parameter is the power exponent mentionned in Pareto formula and 
 #' Karamata theorems.
 #' 
@@ -90,23 +89,49 @@
 #' \code{qlkiener1} is the quantile function calculated from the logit of the 
 #' probability lp = logit(p). It is defined for lp in (-Inf, +Inf) by: 
 #'    \deqn{ qlkiener1(lp, m, g, k) = m + g * k * 2 * sinh( lp/k ) }
+#' 
+#' \code{varkiener1} designates the Value a-risk and turns negative numbers 
+#' into positive numbers with the following rule:
+#'    \deqn{ varkiener1 <- if(p <= 0.5) (- qkiener1) else (qkiener1) }
+#' Usual values in finance are \code{p = 0.01}, \code{p = 0.05}, \code{p = 0.95} and 
+#' \code{p = 0.99}. \code{lower.tail = FALSE} uses \code{1-p} rather than {p}.
 #'
+#' \code{ltmkiener1}, \code{rtmkiener1} and \code{eskiener1} are respectively the 
+#' left tail mean, the right tail mean and the expected shortfall of the distribution 
+#' (sometimes called average VaR, conditional VaR or tail VaR). 
+#' Left tail mean is the integrale from \code{-Inf} to \code{p} of the quantile function 
+#' \code{qkiener1} divided by \code{p}.
+#' Right tail mean is the integrale from \code{p} to \code{+Inf} of the quantile function 
+#' \code{qkiener1} divided by 1-p.
+#' Expected shortfall turns negative numbers into positive numbers with the following rule:
+#'    \deqn{ eskiener1 <- if(p <= 0.5) (- ltmkiener1) else (rtmkiener1) }
+#' Usual values in finance are \code{p = 0.01}, \code{p = 0.025}, \code{p = 0.975} and 
+#' \code{p = 0.99}. \code{lower.tail = FALSE} uses \code{1-p} rather than {p}.
+#'
+#' \code{dtmqkiener1} is the difference between the left tail mean and the quantile 
+#' when (p <= 0.5) and the difference between the right tail mean and the quantile 
+#' when (p > 0.5). It is in quantile unit and is an indirect measure of the tail curvature.
+#' 
 #' @references
 #' P. Kiener, Explicit models for bilateral fat-tailed distributions and 
 #' applications in finance with the package FatTailsR, 8th R/Rmetrics Workshop 
 #' and Summer School, Paris, 27 June 2014.  Download it from: 
 #' \url{http://www.inmodelia.com/exemples/2014-0627-Rmetrics-Kiener-en.pdf}
 #'
-#' P. Kiener, Fat tail analysis and package FatTailsR - Season 2, 
+#' P. Kiener, Fat tail analysis and package FatTailsR, 
 #' 9th R/Rmetrics Workshop and Summer School, Zurich, 27 June 2015. 
 #' Download it from: 
 #' \url{http://www.inmodelia.com/exemples/2015-0627-Rmetrics-Kiener-en.pdf}
-#'
+#' 
+#' C. Acerbi, D. Tasche, Expected shortfall: a natural coherent alternative to 
+#' Value at Risk, 9 May 2001. Download it from: 
+#' \url{http://www.bis.org/bcbs/ca/acertasc.pdf}
+#' 
 #' @seealso 
-#' The power hyperbola logistic distribution \code{\link{logishp}}, 
-#' the asymmetric Kiener distributions of type II, III and IV 
+#' Power hyperbola logistic distribution \code{\link{logishp}}, 
+#' asymmetric Kiener distributions K2, K3 and K4  
 #' \code{\link{kiener2}}, \code{\link{kiener3}}, \code{\link{kiener4}}, 
-#' the regression function \code{\link{regkienerLX}}.
+#' regression function \code{\link{regkienerLX}}.
 #'
 #' @examples
 #' 
@@ -117,8 +142,8 @@
 #' qkiener1(p = pp, k = 4)
 #' 
 #' 
-#' ### Example 2
-#' k       <- 4.8
+#' ### Example 2: Try various value of k = 1.5, 3, 5, 10
+#' k       <- 5  # 1.5, 3, 5, 10
 #' set.seed(2014)
 #' mainTC  <- paste("qkiener1(p, m = 0, g = 1, k = ", k, ")")
 #' mainsum <- paste("cumulated qkiener1(p, m = 0, g = 1, k = ", k, ")")
@@ -212,6 +237,29 @@
 #' ### End example 4
 #' 
 #' 
+#' ### Example 5 (q and VaR, ltm, rtm, and ES)
+#' pp <- c(0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 
+#'         0.10, 0.20, 0.35, 0.5, 0.65, 0.80, 0.90,
+#'         0.95, 0.975, 0.99, 0.995, 0.9975, 0.999)
+#' m <- -10 ; g <- 1 ; k <- 4
+#' round(c(m = m, g = g, a = k, k = k, w = k, d = 0, e = 0), 2) 
+#' plot(qkiener1(pp, m, g, k), pp, type = "b")
+#' round(cbind(p = pp, "1-p" = 1-pp, 
+#' 	q   =   qkiener1(pp, m, g, k), 
+#' 	ltm = ltmkiener1(pp, m, g, k), 
+#' 	rtm = rtmkiener1(pp, m, g, k), 
+#' 	es  =  eskiener1(pp, m, g, k), 
+#' 	VaR = varkiener1(pp, m, g, k)), 4)
+#' round(kmean(c(m, g, k), model = "K1"), 4) # limit value of ltm, rtm
+#' round(cbind(p = pp, "1-p" = 1-pp, 
+#' 	q   =   qkiener1(pp, m, g, k, lower.tail = FALSE), 
+#' 	ltm = ltmkiener1(pp, m, g, k, lower.tail = FALSE), 
+#' 	rtm = rtmkiener1(pp, m, g, k, lower.tail = FALSE), 
+#' 	es  =  eskiener1(pp, m, g, k, lower.tail = FALSE), 
+#' 	VaR = varkiener1(pp, m, g, k, lower.tail = FALSE)), 4)
+#' ### End example 5
+#' 
+#' 
 #' @name kiener1
 NULL
 
@@ -283,6 +331,73 @@ qlkiener1 <- function(lp, m = 0, g = 1, k = 3.2, lower.tail = TRUE ) {
 	v <- m + g * k * 2 * sinh( lp/k )
 	return(v)
 }
+
+#' @export
+#' @rdname kiener1
+varkiener1 <- function(p, m = 0, g = 1, k = 3.2, 
+                      lower.tail = TRUE, log.p = FALSE) {
+	p   <- if(log.p) {exp(p)} else {p}
+	p   <- if(lower.tail) {p} else {1-p}
+	va  <- p
+	for (i in seq_along(p)) {
+		va[i] <- ifelse(p[i] <= 0.5, 
+					- qkiener1(p[i], m, g, k),
+					  qkiener1(p[i], m, g, k))
+	}
+return(va)
+}
+
+#' @export
+#' @rdname kiener1
+ltmkiener1 <- function(p, m = 0, g = 1, k = 3.2, lower.tail = TRUE, log.p = FALSE) {
+	p   <- if(log.p) {exp(p)} else {p}
+	p   <- if(lower.tail) {p} else {1-p}
+	ltm <- m + g * k / p * beta(1-1/k, 1+1/k) * (
+	          -pbeta(p, 1-1/k, 1+1/k) +pbeta(p, 1+1/k, 1-1/k))
+return(ltm)
+}
+
+#' @export
+#' @rdname kiener1
+rtmkiener1 <- function(p, m = 0, g = 1, k = 3.2, lower.tail = TRUE, log.p = FALSE) {
+	p   <- if(log.p) {exp(p)} else {p}
+	p   <- if(lower.tail) {p} else {1-p} 
+	# rtm : 1-p et 1-pbeta()
+	rtm <- m + g * k / (1-p) * beta(1+1/k, 1-1/k) * ( 
+	        (+pbeta(p, 1-1/k, 1+1/k) -pbeta(p, 1+1/k, 1-1/k)) )
+return(rtm)
+}
+
+#' @export
+#' @rdname kiener1
+dtmqkiener1 <- function(p, m = 0, g = 1, k = 3.2, 
+                        lower.tail = TRUE, log.p = FALSE) {
+	p   <- if(log.p) {exp(p)} else {p}
+	p   <- if(lower.tail) {p} else {1-p}
+	dtmq  <- p
+	for (i in seq_along(p)) {
+		dtmq[i] <- ifelse(p[i] <= 0.5, 
+					  ltmkiener1(p[i], m, g, k) - qkiener1(p[i], m, g, k),
+					  rtmkiener1(p[i], m, g, k) - qkiener1(p[i], m, g, k))
+	}
+return(dtmq)
+}
+
+#' @export
+#' @rdname kiener1
+eskiener1 <- function(p, m = 0, g = 1, k = 3.2, 
+                      lower.tail = TRUE, log.p = FALSE) {
+	p   <- if(log.p) {exp(p)} else {p}
+	p   <- if(lower.tail) {p} else {1-p}
+	es  <- p
+	for (i in seq_along(p)) {
+		es[i] <- ifelse(p[i] <= 0.5, 
+					- ltmkiener1(p[i], m, g, k),
+					  rtmkiener1(p[i], m, g, k))
+	}
+return(es)
+}
+
 
 
 

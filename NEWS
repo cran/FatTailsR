@@ -1,24 +1,69 @@
 === FatTailsR: Kiener Distributions and Fat Tails in Finance ===
 
 
-VERSION 1.2-2 (8 July 2015)
-===========================
 
-- Current version.
-- Compliant with R-devel (next R 3.3-0)
+Suggestions for next versions
+=============================
+- Parallelization of {fitkienerX} and {paramkienerX}
+- weighted nonlinear regression to control outliers
 
-VERSION 1.2-0 (18 June 2015)
-============================
 
-- Title changed to: Kiener Distributions and Fat Tails in Finance
+
+FatTailsR 1.4-1 - 25 October 2015 - current version on CRAN
+===========================================================
+- Codename: Rugby World cup
+- A major update !!
+- 3 months of intensive work for better performance and higher flexibility
+- Compatible with commercial package FatTailsRplot (several advanced plots)
+-- Plots can be seen in 2014 and 2015 presentations at R/Rmetrics Conference
+-- Contact me for a demo
+
+NEW FUNCTIONS
+- Functions {fitkienerX} and {paramkienerX}:
+-- accomodate vectors, matrix, data.frame, arrays and lists
+-- replace {fitkienerLX} and {estimkienerX} (1.2-0) which are suppressed
+   (we apologize to early users who will have to rewrite their code)
+   The new code is much better. 
+-- same output than {regkienerLX}$fitk
+-- some parameters renamed ("g.01" changed to "dg.01")
+-- smallest dataset must have more than 15 valid quantiles.
+-- return a huge vector {fitk} with quantiles, moments, VaR, ES, etc...
+- Predefined {exfit0},..,{exfit7} to subset this vector {fitk}
+- {pprobs0},..,{pprobs9} as preset values of probabilities to be combined with
+- {getnamesk} to generate parameter names
+- p1 replaces 1-p1 in elevenprobs (14 august 2015)
+- {dimdim}, {dimdim1}: alternate version to {dim} (03 August 2015)
+- {roundcoefk} to simplify parameter rounding (+ preset values) (1 August 2015, 1.2-6)
+- {ltmkiener1234}, {rtmkiener1234} {eskiener1234}
+  Left tail mean and Right tail mean as signed (+/-) Expected Shortfall 
+  for left and right tails (18 September 2015)
+- {hkiener1234} generate parameter h.01,..,h.99 (ES/ES_logis) (18 October 2015)
+- {ExtractData} as a wrapper of tData, xData, zData, dfData
+- Colnames with upper cases in datasets df,t,x,zData (14 August 2015)
+- {kmoments}, {xmoments} examples rewritten
+
+
+FatTailsR 1.2-3 - 8 July 2015 - in CRAN archives 
+================================================
+- Code 1.2-0 made compliant with R-devel (next R 3.3-0).
+
+
+FatTailsR 1.2-0 - 18 June 2015 - in CRAN archives
+=================================================
+- Codename: Appel du 18 juin
+- Title changed to: Kiener Distributions and Fat Tails in Finance.
 - Raw and central moments.
 - regkienerLX has now a @exportClass(clregk).
-- fitkienerLX, same algorithm than regkienerLX but display a flat table.
-- estimkienerX, new algorithm based on 5, 7, 9 or 11 quantiles.
+- fitkienerLX: same algorithm than regkienerLX but displays a flat table.
+- estimkienerX: new algorithm based on 5, 7, 9 or 11 quantiles.
+- {checkquantiles}
+- {pk2pk} conversion function
+- {ckiener1234} and parameter {c.01},..,{c.99}
 
-VERSION 1.0-3 (14 July 2014)
-============================
 
+FatTailsR 1.0-3 - 14 July 2014 - in CRAN archives
+=================================================
+- Codename : Liberte, Egalite, Fraternite
 - Initial release.
-- Title: Power Hyperbolic Functions and Kiener Distributions
+- Title: Power Hyperbolic Functions and Kiener Distributions.
 

@@ -1,31 +1,35 @@
 
 
-#' @include l_regression.R
+#' @include n_estimation2.R
 
 
 
-#' @title A Regression Function for Kiener Distributions
+#' @title Regression Function for Kiener Distributions
 #'
 #' @description
-#' A function to estimate the distribution parameters of a given dataset with 
-#' Kiener distributions of type I, II, III and IV. It performs a nonlinear 
+#' One function to estimate the parameters of Kiener distributions K1, K2,  
+#' K3 and K4 and display the results in a list with many data.frame 
+#' ready to use for plotting. This function performs an unweighted nonlinear
 #' regression of the logit of the empirical probabilities logit(p) on 
-#' quantiles X. 
+#' the quantiles X.
+#' 
 #' 
 #' @param    X       vector of quantiles. 
-#' @param    model   the model used for the regression: "k1", "k2", "k3", "k4". 
-#' @param    dgts    vector of length 11. Control the rounding of output parameters.
+#' @param    model   the model used for the regression: "K1", "K2", "K3", "K4". 
+#' @param    pdgts   vector of length 11. Control the rounding of output parameters.
 #' @param    maxk    numeric. The maximum value of tail parameter \code{k}. 
 #' @param    mink    numeric. The minimum value of tail parameter \code{k}. 
-#' @param    app     numeric. The parameter "\code{a}" in the function 
-#'                            \code{ppoints}.
+#' @param    app     numeric. The parameter "\code{a}" in the function \code{ppoints}.
+#' @param    probak  vector of probabilities used in output regk$fitk.
+#' @param    dgts    rounding parameter applied globally to output regk$fitk.
+#' @param    exfitk  character. A vector of parameter names to subset regk$fitk.
 #' 
 #' @details      
 #' This function is designed to estimate the parameters of Kiener distributions
 #' for a given dataset. It encapsulates the four distributions described in
 #' this package. 
-#' "k1" uses model \code{lqkiener1}, "k2" uses model \code{lqkiener2}, 
-#' "k3" uses model \code{lqkiener3} and "k4" uses model \code{lqkiener4}. 
+#' "K1" uses model \code{lqkiener1}, "K2" uses model \code{lqkiener2}, 
+#' "K3" uses model \code{lqkiener3} and "K4" uses model \code{lqkiener4}. 
 #' 
 #' A typical input is a numeric vector that describes the returns of a stock. 
 #' Conversion from a (possible) time series format to a sorted numeric vector 
@@ -51,41 +55,42 @@
 #' See \code{\link{aw2k}} and \code{\link{pk2pk}} for the formulas and 
 #' the conversion between parameters:
 #' \itemize{
-#'   \item{ \code{m} (mu) is the median of the distribution,. }
+#'   \item{ \code{m} (mu) is the median of the distribution. }
 #'   \item{ \code{g} (gamma) is the scale parameter. }
 #'   \item{ \code{a} (alpha) is the left tail parameter. } 
 #'   \item{ \code{k} (kappa) is the harmonic mean of \code{a} and \code{w} 
 #'          and describes a global tail parameter. }
 #'   \item{ \code{w} (omega) is the right tail parameter. } 
-#'   \item{ \code{d} (delta) is the distorsion parameter. }
+#'   \item{ \code{d} (delta) is the distortion parameter. }
 #'   \item{ \code{e} (epsilon) is the eccentricity parameter. }
 #' }
 #' Where:
 #' \itemize{
-#'   \item{c(m, g, k) of length 3 for distribution "k1".}
-#'   \item{c(m, g, a, w) of length 4 for distribution "k2".}
-#'   \item{c(m, g, k, d) of length 4 for distribution "k3".}
-#'   \item{c(m, g, k, e) of length 4 for distribution "k4".}
+#'   \item{c(m, g, k) of length 3 for distribution "K1".}
+#'   \item{c(m, g, a, w) of length 4 for distribution "K2".}
+#'   \item{c(m, g, k, d) of length 4 for distribution "K3".}
+#'   \item{c(m, g, k, e) of length 4 for distribution "K4".}
 #'   \item{c(m, g, a, k, w, d, e) of length 7 extracted from object of class 
 #'         \code{clregk} like \code{regkienerLX} (typically \code{"reg$coefk"}).}
 #' }
 #' 
-#' Model \code{"k1"} return results with 1+2=3 parameters and describes a 
+#' Model \code{"K1"} return results with 1+2=3 parameters and describes a 
 #' (assumed) symmetric distribution. Parameters \code{d} and \code{e} are set 
-#' to 0. Models \code{"k2"}, \code{"k3"} and \code{"k4"} describe asymmetric 
+#' to 0. Models \code{"K2"}, \code{"K3"} and \code{"K4"} describe asymmetric 
 #' distributions. They return results with 1+3=4 parameters.
-#' Model "k2" has a very clear parameter definition but unfortunately 
+#' Model "K2" has a very clear parameter definition but unfortunately 
 #' parameters \code{a} and \code{w} are highly correlated. 
-#' Model \code{"k3"} has the least correlated parameters but the meaning of 
-#' the distorsion parameter \code{d}, usually of order 1e-3, is not simple. 
-#' Multiplying it by 1000 might be a good choice but has not been done here.
+#' Model \code{"K3"} has the least correlated parameters but the meaning of 
+#' the distortion parameter \code{d}, usually of order 1e-3, is not simple. 
 #' 
-#' Model \code{"k4"} exhibits a reasonable correlation between each parameter
-#' and should be the preferred intermediate model between "k1" and "k2" models.
+#' Model \code{"K4"} exhibits a reasonable correlation between each parameter
+#' and should be the preferred intermediate model between "K1" and "K2" models.
 #' The eccentricity parameter \code{e} is well defined and easy to understand:
-#' \eqn{e=(a-w)/(a+w)}, \eqn{a=k/(1-e)} and \eqn{w=k/(1+e)}. It is a relative 
-#' measure that could be expressed (and understood) as a percentage. Here, the 
-#' order 1e-2 has been preserved. 
+#' \eqn{e=(a-w)/(a+w)}, \eqn{a=k/(1-e)} and \eqn{w=k/(1+e)}. It varies between
+#' \code{-1} and \code{+1} and can be understood as a percentage (if times 100)
+#' of eccentricty. \code{e = -1} corresponds to \code{w = infinity},  
+#' \code{e = +1} corresponds to \code{a = infinity} and the model becomes a single
+#' log-logistic funtion with a stopping point and a left / right tail.
 #'
 #' Tail parameter lower and upper values are controlled by \code{maxk} and 
 #' \code{mink}. An upper value \eqn{maxk = 10} is appropriate for datasets
@@ -98,28 +103,37 @@
 #' \eqn{k < 1} describes distribution with no stable mean.
 #' 
 #' The output is an object in a flat format of class \code{clregk}. It can be 
-#' listed with the function \code{\link{attributes}}. First are the data.frames with
-#' the initial data and the estimated results. Second is the result of 
-#' the regression \code{regk0} given by \code{\link[minpack.lm]{nlsLM}} from 
-#' which a few information have been extracted and listed here. 
-#' Third are the regression parameters (without the median) in plain format  
+#' listed with the function \code{\link{attributes}}. 
+#' 
+#' \itemize{
+#'   \item{ First are the data.frames with the initial data and the estimated results. }
+#'   \item{ Second is the result of the regression \code{regk0} given by 
+#' \code{\link[minpack.lm]{nlsLM}} from which a few information 
+#' have been extracted and listed here. }
+#'   \item{ Third are the regression parameters (without the median) in plain format  
 #' (no rounding), the variance-covariance matrix, the variance-covariance 
 #' matrix times 1e+6 and the correlation matrix in a rounded format.
 #' Note that \code{regk0}, \code{coefk0}, \code{coefk0tt}, \code{vcovk0}, 
 #' \code{mcork0} have a polymorphic format and changing parameters that 
-#' depend from the selected model: "k1", "k2", "k3", "k4". They should be  
-#' used with care in subsequent calculations. 
-#' Fourth are the distribution parameters tailored to every model "k1", "k2", 
-#' "k3", "k4" plus estimated quantiles at levels: 
+#' depend from the selected model: "K1", "K2", "K3", "K4". They should be  
+#' used with care in subsequent calculations. } 
+#'   \item{ Fourth are the distribution parameters tailored to every model "K1", "K2", 
+#' "K3", "K4" plus estimated quantiles at levels: 
 #' c(0.001, 0.005, 0.01, 0.05, 0.5, 0.95, 0.99, 0.995, 0.999). 
-#' They are intended to subsequent calculations. 
+#' They are intended to subsequent calculations. }
+#'   \item{ 
 #' Fifth are the same parameters presented in a more readable format thanks 
-#' to the vector \code{dgts} which controls the rounding of the parameters in
-#' the following order: \code{dgts = c("m", "g", 
-#' "a", "k", "w", "d", "e", "vcovk0", "vcovk0m", "mcork0", "quantr")}.
-#' Sixth are the estimated quantiles and probabilities of interest stored 
-#' in a data.frame format.
-#' 
+#' to the vector \code{pdgts} which controls the rounding of the parameters in
+#' the following order: }
+#'   \item{ \code{pdgts = c("m","g","a","k","w","d","e","vcovk0","vcovk0m","mcork0","quantr")}. }
+#'   \item{ Sixth are the estimated quantiles and probabilities of interest 
+#' stored in a data.frame format. }
+#'   \item{ Last is \code{fitk} which returns all parameters in the same format 
+#' than \code{\link{fitkienerX}}, eventually subsetted by \code{exfitk}. 
+#' IMPORTANT : if you need to subset \code{fitk}, always subset it by parameter names 
+#' and never subset it by rank number as new items may be added in the future. 
+#' Use for instance \code{exfitk =} \code{\link{exfit0}}, ..., \code{\link{exfit7}}.}
+#' }
 #' 
 #' @return  
 #' \item{dfrXP}{data.frame. X = initial quantiles. P = empirical probabilities.}
@@ -137,26 +151,32 @@
 #' \item{vcovk0m}{rounded 1e+6 times variance-covariance matrix.} 
 #' \item{mcork0}{rounded correlation matrix.} 
 #' \item{coefk }{all parameters in plain format.} 
-#' \item{coefk1}{parameters for model "k1".} 
-#' \item{coefk2}{parameters for model "k2".} 
-#' \item{coefk3}{parameters for model "k3".} 
-#' \item{coefk4}{parameters for model "k4".} 
+#' \item{coefk1}{parameters for model "K1".} 
+#' \item{coefk2}{parameters for model "K2".} 
+#' \item{coefk3}{parameters for model "K3".} 
+#' \item{coefk4}{parameters for model "K4".} 
 #' \item{quantk}{quantiles of interest.} 
 #' \item{coefr }{all parameters in a rounded format.} 
-#' \item{coefr1}{rounded parameters for model "k1".} 
-#' \item{coefr2}{rounded parameters for model "k2".} 
-#' \item{coefr3}{rounded parameters for model "k3".} 
-#' \item{coefr4}{rounded parameters for model "k4".} 
+#' \item{coefr1}{rounded parameters for model "K1".} 
+#' \item{coefr2}{rounded parameters for model "K2".} 
+#' \item{coefr3}{rounded parameters for model "K3".} 
+#' \item{coefr4}{rounded parameters for model "K4".} 
 #' \item{quantr}{quantiles of interest in a rounded format.} 
 #' \item{dfrQkPk}{data.frame. Qk = Estimated quantiles of interest. 
 #'                Pk = probabilities.} 
 #' \item{dfrQkLk}{data.frame. Qk = Estimated quantiles of interest. 
 #'                Lk = Logit of probabilities.} 
+#' \item{fitk }{Parameters, quantiles, moments, VaR, ES and other parameters (not rounded). 
+#' Length of \code{fitk} depends on the choice applied to probak. 
+#' IMPORTANT : if you need to subset \code{fitk}, always subset it by parameter names 
+#' and never subset it by rank number as new items may be added in the future. 
+#' Use for instance \code{\link{exfit0}}, ..., \code{\link{exfit7}}. } 
 #' 
 #' @seealso    \code{\link[minpack.lm]{nlsLM}}, \code{\link{laplacegaussnorm}}, 
-#'     Kiener distributions of type I, II, III and IV: \code{\link{kiener1}}
+#'     Kiener distributions K1, K2, K3 and K4: \code{\link{kiener1}}
 #'     \code{\link{kiener2}}, \code{\link{kiener3}}, \code{\link{kiener4}}.
-#'     Other functions: \code{\link{fitkienerLX}}, \code{\link{estimkienerX}}.
+#'     Other estimation function: \code{\link{fitkienerX}} and its derivatives.
+#'     \code{fitk} subsetting: \code{\link{exfit0}}.
 #'     
 #' 
 #' 
@@ -227,13 +247,19 @@
 #' reg$dfrQkPk
 #' reg$dfrQkLk
 #' reg$fitk
+#' 
+#' ## subset fitk
+#' names(reg$fitk)
+#' reg$fitk[exfit6]
+#' reg$fitk[c(exfit1, exfit4)]
 #' ### End block
 #' 
 #' @export
 #' @name regkienerLX
-regkienerLX <- function(X, model = "k4", 
-                        dgts = c(3, 3, 1, 1, 1, 3, 2, 4, 4, 2, 2),
-                        maxk = 10, mink = 0.2, app = 0 ) {
+regkienerLX <- function(X, model = "K4", 
+                        pdgts = c(3, 3, 1, 1, 1, 3, 2, 4, 4, 2, 2),
+                        maxk = 10, mink = 0.2, app = 0,
+						probak = pprobs2, dgts = NULL, exfitk = NULL) {
 
 if (app < 0 || app > 0.5) { 
 	stop("app (the a of ppoints) must be between 0 and 0.5. 
@@ -246,14 +272,15 @@ if (mink < 0.2 || mink > 2) {
 if (maxk < 5 || maxk > 20) { 
 	stop("maxk must be between 5 and 20. Can be increased with the sample size.")
 	}
-if (FALSE %in% (dgts %in% 0:6)) { 
-	stop("each item of dgts must be in c(0, 1, 2, 3, 4, 5, 6)")
+if (FALSE %in% (pdgts %in% 0:6)) { 
+	stop("each item of pdgts must be in c(0, 1, 2, 3, 4, 5, 6)")
 	}
-if (length(dgts) != 11) { 
-	stop("dgts must be of length 11")
+if (length(pdgts) != 11) { 
+	stop("pdgts must be of length 11")
 	}
-if ( ! model %in% list("k1", "k2", "k3", "k4") ) {
-	stop("model must be either k1, k2, k3, k4. Default is k4 (m, g, k, e).")
+model <- toupper(model)
+if ( !is.element(model, c("K1", "K2", "K3", "K4")) ) {
+	stop("model must be either K1, K2, K3, K4. Default is K4 (m, g, k, e).")
 	}
 
 X        <- sort(as.numeric(X[!is.na(X)])) 
@@ -266,14 +293,14 @@ dfrXP    <- data.frame(X, P)
 dfrXL    <- data.frame(X, L)
 Xmed     <- median(X)
 Xmean    <- mean(X)
-Xsd      <- sd(X)
-parini   <- estimkienerX5(X, parnames = FALSE)
+Xs       <- sd(X)
+parini   <- .hparamkienerX5(X, parnames = FALSE)
 if (anyNA(parini)) { 
+	gini   <- 0.25*Xs
 	qqq    <- quantile(X, c(0.10, 0.50, 0.90), type = 6)
-	gini   <- 0.27*Xsd
-	dini   <- log(abs(qqq[3]-qqq[2])/abs(qqq[1]-qqq[2])) /4.394
+	dini   <- if (anyNA(qqq)) {0} else {log(abs(qqq[3]-qqq[2])/abs(qqq[2]-qqq[1]))/4.394}
 	kini   <- 4
-	eini   <- dini*kini
+	eini   <- min(max(-0.95, dini*kini), 1)
 	aini   <- kini/(1-eini)
 	wini   <- kini/(1+eini)
 	} else {
@@ -299,7 +326,7 @@ wmax   <- maxk
 dmax   <- 1 / mink
 emax   <- (maxk - mink) / (maxk + mink)
 
-if (model == "k1") {
+if (model == "K1") {
 regk0  <- nlsLM( X ~ qlkiener1(L, Xmed, g, k), 
                  data = dfrXL, 
                  start = list(g = gini, k = kini), 
@@ -317,7 +344,7 @@ coefk     <- c(m = Xmed,
 names(coefk)   <- c("m", "g", "a", "k", "w", "d", "e")
 }
 
-if (model == "k2") {
+if (model == "K2") {
 regk0  <- nlsLM( X ~ qlkiener2(L, Xmed, g, a, w), 
                  data = dfrXL, 
                  start = list(g = gini, a = aini, w = wini), 
@@ -335,7 +362,7 @@ coefk     <- c(m = Xmed,
 names(coefk) <- c("m", "g", "a", "k", "w", "d", "e")
 }
 
-if (model == "k3") {
+if (model == "K3") {
 regk0  <- nlsLM( X ~ qlkiener3(L, Xmed, g, k, d), 
                  data = dfrXL, 
                  start = list(g = gini, k = kini, d = dini), 
@@ -353,7 +380,7 @@ coefk     <- c(m = Xmed,
 names(coefk) <- c("m", "g", "a", "k", "w", "d", "e") 
 }
 
-if (model == "k4") {
+if (model == "K4") {
 regk0  <- nlsLM( X ~ qlkiener4(L, Xmed, g, k, e), 
                  data = dfrXL, 
                  start = list(g = gini, k = kini, e = eini), 
@@ -372,74 +399,49 @@ names(coefk) <- c("m", "g", "a", "k", "w", "d", "e")
 }
 
 # Coefficients in plain format
-coefk0    <- coef(regk0)
 coefk1    <- c(coefk[1], coefk[2], coefk[4]) 
 coefk2    <- c(coefk[1], coefk[2], coefk[3], coefk[5])
 coefk3    <- c(coefk[1], coefk[2], coefk[4], coefk[6])
 coefk4    <- c(coefk[1], coefk[2], coefk[4], coefk[7])
-vcovk0    <- round(vcov(regk0),          dgts[8])
-vcovk0m   <- round(vcov(regk0)*1e+6,     dgts[9])
-mcork0    <- round(cov2cor(vcov(regk0)), dgts[10])
+coefk0    <- coef(regk0)
+vcovk0    <- round(vcov(regk0),          pdgts[8])
+vcovk0m   <- round(vcov(regk0)*1e+6,     pdgts[9])
+mcork0    <- round(cov2cor(vcov(regk0)), pdgts[10])
 resik0    <- resid(regk0)
 D         <- dlkiener2(lp = L, m = coefk2[1], g = coefk2[2], 
                        a = coefk2[3], w = coefk2[4], log = FALSE )
-probak    <- c(0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05, 0.5,
-               0.95, 0.99, 0.995, 0.999, 0.9995, 0.9999)
-quantk    <- qkiener2(p = probak, m = coefk2[1], g = coefk2[2], 
-                                  a = coefk2[3], w = coefk2[4] )
-names(quantk)  <- c("q.0001", "q.0005", "q.001", "q.005", "q.01", "q.05", 
-            "q.50", "q.95", "q.99", "q.995", "q.999", "q.9995", "q.9999")
+# This part of the code uses probak1 (= pprobs6) because plots XP, XL 
+# use absolute reference and have not been yet updated with pprobs2
+# probak1   <- pprobs6
+probak1   <- c(0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05, 0.50, 
+               0.95, 0.99, 0.995, 0.999, 0.9995, 0.9999) 
+quantk1   <- qkiener2(p = probak1, m = coefk2[1], g = coefk2[2], 
+                                   a = coefk2[3], w = coefk2[4] )
+names(quantk1)  <- getnamesk(probak1)$nquantk
+# c("q.0001", "q.0005", "q.001", "q.005", "q.01", "q.05", "q.50", 
+#   "q.95", "q.99", "q.995", "q.999", "q.9995", "q.9999")
 
 # data.frame
 dfrXR     <- data.frame(X, R = resik0)
 dfrEP     <- data.frame(E = fitted(regk0), P)
 dfrEL     <- data.frame(E = fitted(regk0), L)
 dfrED     <- data.frame(E = fitted(regk0), D = D)
-dfrQkPk   <- data.frame(Qk = quantk, Pk = probak)
-dfrQkLk   <- data.frame(Qk = quantk, Lk = logit(probak))
+dfrQkPk   <- data.frame(Qk = quantk1, Pk = probak1)
+dfrQkLk   <- data.frame(Qk = quantk1, Lk = logit(probak1))
 
 # Coefficients in rounded format
-coefr     <- round(coefk, dgts[1:7])
+coefr     <- round(coefk, pdgts[1:7])
 coefr1    <- c(coefr[1], coefr[2], coefr[4]) 
 coefr2    <- c(coefr[1], coefr[2], coefr[3], coefr[5])
 coefr3    <- c(coefr[1], coefr[2], coefr[4], coefr[6])
 coefr4    <- c(coefr[1], coefr[2], coefr[4], coefr[7])
-quantr    <- round(quantk, dgts[11])
+quantr    <- round(quantk1, pdgts[11])
 
-# Moments
-momk		 <- kmoments(coefk, lengthx = length(X))[c("m1", "sd", "sk", "ke")]
-momx		 <- xmoments(X)[c("m1", "sd", "sk", "ke", "lh")]
-names(momx)  <- c("m1x", "sdx", "skx", "kex", "lh")
-
-# Proba and quantiles
-probak2      <- c(0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05, 0.10, 0.5,
-                  0.90, 0.95, 0.99, 0.995, 0.999, 0.9995, 0.9999)
-quantk2      <- qkiener2(p = probak2, m = coefk[1], g = coefk[2], 
-                                      a = coefk[3], w = coefk[5] )
-logisk         <- qlogis(p = probak2, location = coefk[1], scale = 2*coefk[2])
-dlogisk        <- quantk2 - logisk
-VaR		       <- Xmean - 2.326*Xsd
-gaussk	       <- c( VaR, quantk2[5] -VaR )  # quantk2[5] = quantk2["q.01"]
-names(quantk2) <- c("q.0001", "q.0005", "q.001", "q.005", "q.01", "q.05", "q.10",
-            "q.50", "q.90", "q.95", "q.99", "q.995", "q.999", "q.9995", "q.9999")
-names(logisk)  <- c("l.0001", "l.0005", "l.001", "l.005", "l.01", "l.05", "l.10",
-            "l.50", "l.90", "l.95", "l.99", "l.995", "l.999", "l.9995", "l.9999")
-names(dlogisk) <- c("d.0001", "d.0005", "d.001", "d.005", "d.01", "d.05", "d.10",
-            "d.50", "d.90", "d.95", "d.99", "d.995", "d.999", "d.9995", "d.9999")
-names(gaussk)  <- c("VaR", "dg.01")
-
-## CQE - FTC - Tail-korrection
-tailk          <- ckiener4(p = probak2, k = coefk[4], e = coefk[7])
-names(tailk)   <- c("c.0001", "c.0005", "c.001", "c.005", "c.01", "c.05", "c.10",
-            "c.50", "c.90", "c.95", "c.99", "c.995", "c.999", "c.9995", "c.9999")
-
-## Rendement
-ret            <- sum(X, na.rm = TRUE)
-names(ret)     <- "ret"
-
-## Final object fitk
-fitk   <- c(ret, coefk, momk, momx, quantk2, logisk, dlogisk, gaussk, tailk)
-
+## fitk
+## This part of the code uses probak defined in the header (usually pprobs2)
+fitk      <- if (is.null(exfitk)) {
+                   .hfitkX(X, coefk=coefk, probak=probak, dgts=dgts)} 
+             else {.hfitkX(X, coefk=coefk, probak=probak, dgts=dgts)[exfitk]}
 
 # Final objet regk
 regk      <- list()
@@ -459,7 +461,7 @@ regk$coefk1    <- coefk1
 regk$coefk2    <- coefk2
 regk$coefk3    <- coefk3
 regk$coefk4    <- coefk4
-regk$quantk    <- quantk
+regk$quantk    <- quantk1
 regk$coefr     <- coefr
 regk$coefr1    <- coefr1
 regk$coefr2    <- coefr2

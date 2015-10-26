@@ -1,6 +1,6 @@
 
 
-
+#' @include b_data.R
 
 
 
@@ -40,11 +40,9 @@
 #' require(graphics)
 #' 
 #' ### Example 1
-#' x    <- (-2:3)*3 ; names(x) <- x
-#' mat  <- matrix(x, ncol=2)
+#' x    <- (-3:3)*3 ; names(x) <- x
 #' kashp(x, k=2)
-#' kashp(mat, k=2) 
-#' k    <- c(-2, 0, 1, 2, 4, 10) ; names(k) <- k
+#' k    <- c(-2, 0, 1, 2, 3, 5, 10) ; names(k) <- k
 #' outer(x, k, kashp)
 #' outer(x, k, exphp)
 #'
@@ -87,7 +85,6 @@
                 z[which(z == "NaN")] <- 0
                 return(z)
                } 
-
 #' @export
 #' @rdname kashp
  dkashp_dx <- function(x, k = 1) {
@@ -95,7 +92,6 @@
                 z[which(z == "NaN")] <- 0
                 return(z)
                } 
-
 #' @export
 #' @rdname kashp
     ashp <- function(x, k = 1) { 
@@ -152,20 +148,13 @@
 #' @examples
 #'
 #' ### Example 1
-#' x  <- (-2:3)*3 
+#' x  <- (-3:3)*3 
 #' exphp(x, k = 4)
 #' coshp(x, k = 4)
 #' sinhp(x, k = 4) 
 #' tanhp(x, k = 4)
 #'
-#' ### Example 2
-#' mat  <- matrix(x , ncol = 2)
-#' exphp(mat, k = 4)
-#' coshp(mat, k = 4)
-#' sinhp(mat, k = 4) 
-#' tanhp(mat, k = 4)
-#'
-#' ### Example 3 outer + plot(exphp, coshp, sinhp, tanhp)
+#' ### Example 2 outer + plot(exphp, coshp, sinhp, tanhp)
 #' xmin  <- -10
 #' xd    <- 0.5
 #' x     <- seq(xmin, -xmin, xd) ; names(x) <- x
@@ -215,27 +204,21 @@
 #' @export
 #' @name exphp
            exphp <- function(x, k = 1) {  exp( kashp(x, k) ) }
-
 #' @export
 #' @rdname exphp
            coshp <- function(x, k = 1) { cosh( kashp(x, k) ) }
-
 #' @export
 #' @rdname exphp
            sinhp <- function(x, k = 1) { sinh( kashp(x, k) ) }
-
 #' @export
 #' @rdname exphp
            tanhp <- function(x, k = 1) { tanh( kashp(x, k) ) }
-
 #' @export
 #' @rdname exphp
            sechp <- function(x, k = 1) { 1 / coshp(x, k) }
-
 #' @export
 #' @rdname exphp
          cosechp <- function(x, k = 1) { 1 / sinhp(x, k) }
-
 #' @export
 #' @rdname exphp
          cotanhp <- function(x, k = 1) { 1 / tanhp(x, k) }
@@ -287,7 +270,7 @@
 #' acosechp( -5:5, k = 2)
 #' acotanhp( c( -1/ppoints(10), 1/rev(ppoints(10))), k = 2)
 #'
-#' x  <- (-2:3)*3 
+#' x  <- (-3:3)*3 
 #'  loghp(exphp(x, k = 4), k = 4)
 #' acoshp(coshp(x, k = 4), k = 4)
 #' asinhp(sinhp(x, k = 4), k = 4)
@@ -347,27 +330,21 @@
 #' @export
 #' @name loghp
    loghp <- function(x, k = 1) { 2 * k * sinh( log(x) / k) }
-
 #' @export
 #' @rdname loghp
   acoshp <- function(x, k = 1) { 2 * k * sinh( acosh(x) / k) }
-
 #' @export
 #' @rdname loghp
   asinhp <- function(x, k = 1) { 2 * k * sinh( asinh(x) / k) }
-
 #' @export
 #' @rdname loghp
   atanhp <- function(x, k = 1) { 2 * k * sinh( atanh(x) / k) }
-
 #' @export
 #' @rdname loghp
   asechp <- function(x, k = 1) { 2 * k * sinh( acosh(1/x) / k) }
-
 #' @export
 #' @rdname loghp
 acosechp <- function(x, k = 1) { 2 * k * sinh( asinh(1/x) / k) }
-
 #' @export
 #' @rdname loghp
 acotanhp <- function(x, k = 1) { 2 * k * sinh( atanh(1/x) / k) }

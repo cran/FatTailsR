@@ -1,41 +1,74 @@
 
 
-#' @include b_trigohp.R
+#' @include c_trigohp.R
 
 
 
-#' @title Logit Function
-#'
-#' @description
-#' The logit function, widely used in this package, is a wrapper of 
-#' \code{\link{qlogis}}.
+#' @title Logit and Invlogit Functions
 #' 
-#' @param        p a numeric value or vector.
+#' @description
+#' The logit and invlogit functions, widely used in this package, are wrappers  
+#' of \code{\link{qlogis}} and \code{\link{plogis}} functions. 
+#' 
+#' Functions \code{eslogis} is the expected shortfall of the logistic function 
+#' (times a factor 2). 
+#' When \code{p<=0.5}, it is equivalent (times -1) to the left tail mean \code{ltmlogis}. 
+#' When \code{p>0.5}, it is equivalent to the right tail mean \code{rtmlogis}. 
+#' \code{ltmlogis} and \code{rtmlogis} are used to calculate the \code{h} parameter 
+#' in \code{\link{hkiener1}}, \code{hkiener2}, \code{hkiener3}, \code{hkiener4}.
+#' 
+#' @param    p    numeric. one value or a vector between 0 and 1.
+#' @param    x    numeric. one value or a vector of numerics.
+#' @param    m    numeric. a central parameter (also used in model K1, K2, K3 and K4).
+#' @param    g    numeric. a scale parameter (also used in model K1, K2, K3 and K4).
+#' @param    lower.tail    logical. If TRUE, use p. If FALSE, use 1-p.
+#' @param    log.p         logical. If TRUE, probabilities p are given as log(p).
+#' 
 #' @details      \code{logit} function is defined for p in (0, 1) by: 
 #'               \deqn{ logit(p) = log( p/(1-p) ) }
-#' @examples     logit( c(ppoints(11, a = 1), NA, NaN) )
-#' @seealso      The equivalent function \code{\link{qlogis}}.
-#' @export
-#' @name logit
-         logit <- function(p) { qlogis(p) } 
-
-
-
-#' @title InvLogit Function
-#'
-#' @description
-#' The invlogit function is the inverse of the logit function and a 
-#' wrapper of \code{\link{plogis}}.
 #' 
-#' @param        x a numeric value or vector.
-#' @details      \code{invlogit} function is defined for x in (-Inf, +Inf) by: 
+#'               \code{invlogit} function is defined for x in (-Inf, +Inf) by: 
 #'               \deqn{ invlogit(x) = exp(x)/(1+exp(x)) = plogis(x) }
-#' @examples     invlogit( c(-Inf, -10:10, +Inf, NA, NaN) )
-#' @seealso      The equivalent function \code{\link{plogis}}.
+#' 
+#' @examples     
+#' logit( c(ppoints(11, a = 1), NA, NaN) )
+#' invlogit( c(-Inf, -10:10, +Inf, NA, NaN) )
+#' 
 #' @export
 #' @name logit
+         logit    <- function(p) { qlogis(p) } 
+#' @export
+#' @rdname logit
          invlogit <- function(x) { plogis(x) } 
-
+#' @export
+#' @rdname logit
+ltmlogis <- function(p, m = 0, g = 1, lower.tail = TRUE, log.p = FALSE) {
+	p    <- if(log.p) {exp(p)} else {p}
+	p    <- if(lower.tail) {p} else {1-p}
+	ltm  <- m + 2*g/p *( (1-p)*log(1-p) + p*log(p) )
+return(ltm)
+}
+#' @export
+#' @rdname logit
+rtmlogis <- function(p, m = 0, g = 1, lower.tail = TRUE, log.p = FALSE) {
+	p    <- if(log.p) {exp(p)} else {p}
+	p    <- if(lower.tail) {p} else {1-p}
+	rtm  <- m - 2*g/(1-p) *( (1-p)*log(1-p) + p*log(p) )
+return(rtm)
+}
+#' @export
+#' @rdname logit
+eslogis <- function(p, m = 0, g = 1, lower.tail = TRUE, log.p = FALSE) {
+	p   <- if(log.p) {exp(p)} else {p}
+	p   <- if(lower.tail) {p} else {1-p}
+	es  <- p
+	for (i in seq_along(p)) {
+		es[i] <- ifelse(p[i] <= 0.5, 
+					- ltmlogis(p[i], m, g),
+					  rtmlogis(p[i], m, g))
+	}
+return(es)
+}
 
 
 #' @title The Power Hyperbola Logistic Distribution
@@ -82,7 +115,7 @@
 #' If k is a vector, then the use of the function \code{\link[base]{outer}} 
 #' is recommanded.
 #'
-#' @seealso The Kiener distribution of type I \code{\link{kiener1}} which has 
+#' @seealso Kiener distribution K1 \code{\link{kiener1}} which has 
 #' location (\code{m}) and scale (\code{g}) parameters. 
 #'
 #' @examples
