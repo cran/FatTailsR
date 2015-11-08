@@ -120,11 +120,12 @@ return(p5)
 #' 
 #' ## Evaluate
 #' for (i in seq_along(lst)) { 
-#'   cat( i, checkquantiles(lst[[i]], proba = FALSE), 
-#'           checkquantiles(lst[[i]], proba = TRUE), 
-#'           checkquantiles(lst[[i]], proba = FALSE, acceptNA = TRUE), 
-#'           checkquantiles(lst[[i]], proba = TRUE,  acceptNA = TRUE), 
-#' 	         "\n") 
+#'   cat(i, lst[[i]], " : ",
+#'       checkquantiles(lst[[i]], proba = FALSE), 
+#'       checkquantiles(lst[[i]], proba = TRUE), 
+#'       checkquantiles(lst[[i]], proba = FALSE, acceptNA = TRUE), 
+#'       checkquantiles(lst[[i]], proba = TRUE,  acceptNA = TRUE), 
+#' 	     "\n") 
 #' }
 #' 
 #' ## Not run: 
@@ -134,7 +135,7 @@ return(p5)
 #' @export
 #' @name checkquantiles
 checkquantiles <- function(x, proba = FALSE, acceptNA = FALSE) {
-	if(dimdim(x)[1] != 1) warning("X is not of dimension 1")
+	if(dimdim1(x) != 1) warning("X is not of dimension 1")
 	z3  <- ifelse(anyNA(x), NA, TRUE)
 	x   <- x[!is.na(x)]
 	n   <- length(x)
@@ -150,7 +151,7 @@ return(z)
 
 
 .checkquantiles2 <- function(x, proba = FALSE, acceptNA = FALSE) {
-	if(dimdim(x)[1] != 1) warning("X is not of dimension 1")
+	if(dimdim1(x) != 1) warning("X is not of dimension 1")
 	z3  <- ifelse(anyNA(x), NA, TRUE)
 	x   <- x[!is.na(x)]
 	if (length(x) == 0) { 

@@ -180,6 +180,7 @@
 #' ### End block
 #' 
 #' 
+#' @importFrom  parallel detectCores makeCluster stopCluster parApply mclapply
 #' @import  timeSeries
 #' @import  minpack.lm
 #' @import  stats

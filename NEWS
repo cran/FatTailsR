@@ -4,13 +4,20 @@
 
 Suggestions for next versions
 =============================
-- Parallelization of {fitkienerX} and {paramkienerX}
-- weighted nonlinear regression to control outliers
+- weighted nonlinear regression to better control outliers
 
 
-
-FatTailsR 1.4-1 - 25 October 2015 - current version on CRAN
+FatTailsR 1.5-0 - 8 November 2015 - current version on CRAN
 ===========================================================
+- Codename: Rugby World cup - All Blacks win
+- Parallelization of arrays in {fitkienerX} and {paramkienerX57}
+- Bugs fixed: 
+-- {fitkienerX} returned NA in columns {xmoments} ("m1x","sdx","skx","kex") 
+-- {dimdim} returned wrong values with data.frame 
+
+
+FatTailsR 1.4-1 - 25 October 2015 - in CRAN archives
+====================================================
 - Codename: Rugby World cup
 - A major update !!
 - 3 months of intensive work for better performance and higher flexibility

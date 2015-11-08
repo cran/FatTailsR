@@ -141,7 +141,7 @@ if (dimdim(lengthx)[1] == 1 && dimdim(lengthx)[2] != 1) {
 		stop("lengthx is not equal to nrow(coefk)")}
 	lengthx1 <- NA
 }
-z <- switch(.hdimdim1(coefk), 
+z <- switch(dimdimc(coefk), 
 	 "1" = .hkmoments(coefk, model=model, lengthx=lengthx1, dgts=dgts),
 	 "2" = t(apply(coefk, 1, .hkmoments, model=model, lengthx=lengthx1, dgts=dgts)),
 	 "3" = aperm(apply(coefk, c(1,2), .hkmoments, model=model, lengthx=lengthx1, dgts=dgts), c(2,1,3)),
@@ -212,7 +212,7 @@ return(z)
 #' @export
 #' @rdname kmoments
 xmoments <- function(x, dgts = NULL, dimnames = FALSE) { 
-z <- switch(.hdimdim1(x), 
+z <- switch(dimdimc(x), 
 	 "1" = .hxmoments(x, dgts=dgts),
 	 "2" = t(apply(x, 2, .hxmoments, dgts=dgts)), 
 	 "3" = aperm(apply(x, c(1,2), .hxmoments, dgts=dgts), c(2,1,3)), 

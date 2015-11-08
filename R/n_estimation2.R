@@ -284,23 +284,35 @@ if (!is.element(strtrim(algo, 1)[1], c("r", "e"))) {
 	stop("algo must be r, reg, e, estim.") } 
 if (!checkquantiles(probak)) { stop("probak is not ordered.") }	
 
-z <- switch(.hdimdim1(X), 
+mc       <- .hdetectCores()
+# mc.cores <- if(tolower(.Platform$OS.type) == "windows") {1} else {mc} 
+ddcX     <- dimdimc(X)
+if (ddcX == "3") {cl <- parallel::makeCluster(mc, methods = FALSE)} # parallel
+z <- switch(ddcX,  
 	"1"  = .hfitkienerX(X, algo=algo, ord=ord, type=6, 
-		          maxk=maxk, mink=mink, maxe=maxe, app=0, 
-				  probak=probak, dgts=dgts, exfitk=exfitk),
+				maxk=maxk, mink=mink, maxe=maxe, app=0, 
+				probak=probak, dgts=dgts, exfitk=exfitk),
 	"2"  = t(apply(X, 2, .hfitkienerX, algo=algo, ord=ord, type=6, 
-		          maxk=maxk, mink=mink, maxe=maxe, app=0, 
-				  probak=probak, dgts=dgts, exfitk=exfitk)),
-	"3"  = aperm(apply(X, c(1,2), .hfitkienerX, algo=algo, ord=ord, type=6, 
-			     maxk=maxk, mink=mink, maxe=maxe, app=0, 
-				 probak=probak, dgts=dgts, exfitk=exfitk), c(2,1,3)),
-	"-1" = t(sapply(X, .hfitkienerX, algo=algo, ord=ord, type=6, 
-	             maxk=maxk, mink=mink, maxe=maxe, app=0, 
-				 probak=probak, dgts=dgts, exfitk=exfitk)),
+				maxk=maxk, mink=mink, maxe=maxe, app=0, 
+				probak=probak, dgts=dgts, exfitk=exfitk)),
+	# "3"  = aperm(apply(X, c(1,2), .hfitkienerX, 
+	"3"  = aperm(parallel::parApply(cl, X, c(1,2), .hfitkienerX,	# parallel
+				algo=algo, ord=ord, type=6, 
+				maxk=maxk, mink=mink, maxe=maxe, app=0, 
+				probak=probak, dgts=dgts, exfitk=exfitk), c(2,1,3)),
+	"-1" = t(sapply(X, .hfitkienerX, 
+				algo=algo, ord=ord, type=6, 
+				maxk=maxk, mink=mink, maxe=maxe, app=0, 
+				probak=probak, dgts=dgts, exfitk=exfitk)),
+	# "-1" = t(simplify2array(parallel::mclapply(X, .hfitkienerX, 
+				# algo=algo, ord=ord, type=6, 
+				# maxk=maxk, mink=mink, maxe=maxe, app=0, 
+				# probak=probak, dgts=dgts, exfitk=exfitk, mc.cores=mc.cores))),
 	stop("fitkienerX cannot handle this format")
 	# "numeric" "matrix" "array" "list" "error"
 	# "array" params x dates x stocks # aperm dates x params x stocks
 	)
+if (ddcX == "3") {parallel::stopCluster(cl)}	 				# parallel
 if (dimnames) {
 	if (dimdim1(z) == 2) {
 		dimnames(z) <- list("STOCKS" = dimnames(z)[[1]],
@@ -355,8 +367,9 @@ names(ret)     <- "ret"
 namesk         <- getnamesk(probak)
 ## Moments
 momk		   <- kmoments(coefk, lengthx = length(X))[c("m1", "sd", "sk", "ke")]
-momx		   <- xmoments(X)[c("m1", "sd", "sk", "ke", "lh")]
-names(momx)    <-             c("m1x","sdx","skx","kex","lh")
+momx		   <- xmoments(X)[c("m1x","sdx","skx","kex","lh")]
+# momx		   <- xmoments(X)[c("m1", "sd", "sk", "ke", "lh")]
+# names(momx)    <-             c("m1x","sdx","skx","kex","lh")
 ## quantiles
 quantk         <- qkiener2(p = probak, m = coefk[1], g = coefk[2], 
                                        a = coefk[3], w = coefk[5] )
@@ -432,23 +445,35 @@ if (ord < 1 || ord > 12) {
 if (!is.element(strtrim(algo, 1)[1], c("r", "e"))) { 
 	stop("algo must be r, reg, e, estim.") }
 
-z <- switch(.hdimdim1(X), 
+mc       <- .hdetectCores()
+# mc.cores <- if(tolower(.Platform$OS.type) == "windows") {1} else {mc} 
+ddcX     <- dimdimc(X)
+if (ddcX == "3") {cl <- parallel::makeCluster(mc, methods = FALSE)} # parallel
+z <- switch(ddcX,  
 	"1" = .hparamkienerX(X, algo=algo, ord=ord, type=6, 
 					maxk=maxk, mink=mink, maxe=maxe, app=0, dgts=dgts, 
 					parnames=parnames),
 	"2"  = t(apply(X, 2, .hparamkienerX, algo=algo, ord=ord, type=6, 
 					maxk=maxk, mink=mink, maxe=maxe, app=0, dgts=dgts, 
 					parnames=parnames)),
-	"3"   = aperm(apply(X, c(1,2), .hparamkienerX, algo=algo, ord=ord, type=6, 
+	# "3"   = aperm(apply(X, c(1,2), .hparamkienerX, 
+	"3"  = aperm(parallel::parApply(cl, X, c(1,2), .hparamkienerX,	# parallel
+					algo=algo, ord=ord, type=6, 
 					maxk=maxk, mink=mink, maxe=maxe, app=0, dgts=dgts, 
-					parnames=parnames), c(2,1,3)) ,
-	"-1"    = t(sapply(X, .hparamkienerX, algo=algo, ord=ord, type=6, 
+					parnames=parnames), c(2,1,3)),
+	"-1"    = t(sapply(X, .hparamkienerX, 
+					algo=algo, ord=ord, type=6, 
 					maxk=maxk, mink=mink, maxe=maxe, app=0, dgts=dgts, 
 					parnames=parnames)),
+	# "-1" = t(simplify2array(parallel::mclapply(X, .hparamkienerX, 
+	                # algo=algo, ord=ord, type=6, 
+					# maxk=maxk, mink=mink, maxe=maxe, app=0, dgts=dgts, 
+					# parnames=parnames, mc.cores=mc.cores))),
 	stop("paramkienerX cannot handle this format")
 	# "numeric" "matrix" "array" "list" "error"
 	# "array" params x dates x stocks # aperm dates x params x stocks
 	)
+if (ddcX == "3") {parallel::stopCluster(cl)}	 				# parallel
 if (dimnames) {
 	if (dimdim1(z) == 2) {
 		dimnames(z) <- list("STOCKS" = dimnames(z)[[1]],
@@ -466,7 +491,8 @@ return(z)
 
 .hparamkienerX <- function(X, algo = c("r", "reg", "e", "estim"), ord = 7, type = 6, 
            maxk = 10, mink = 1.53, maxe = 0.5, app = 0, dgts = NULL, parnames = TRUE) {
-
+		   
+# library("minpack.lm") # ajoute pour parallelisation
 X    <- sort(as.numeric(X[is.finite(X)]))
 
 if (strtrim(algo, 1)[1] == "e") { 
@@ -502,7 +528,8 @@ if (strtrim(algo, 1)[1] == "e") {
 				eini   <- min(max(-maxe, parini[7]), maxe)
 			}
 		## Regression K4
-		regk0  <- minpack.lm::nlsLM( X ~ qlkiener4(L, mini, g, k, e), 
+		regk0  <- minpack.lm::nlsLM( X ~ FatTailsR::qlkiener4(L, mini, g, k, e), 
+		# regk0  <- nlsLM( X ~ qlkiener4(L, mini, g, k, e), 
 						 data = dfrXL, 
 						 start = list(g = gini, k = kini, e = eini), 
 						 lower = c(gmin = 0,   kmin = mink, emin =-maxe), 
@@ -535,7 +562,6 @@ if (strtrim(algo, 1)[1] == "e") {
 		coefk  <- rep(NA, 7)		
 	}
 }
-
 z  <- roundcoefk(coefk, dgts, parnames)
 return(z)
 }
@@ -544,15 +570,24 @@ return(z)
 #' @export
 #' @rdname fitkienerX
 paramkienerX7 <- function(X, dgts = 3, parnames = TRUE, dimnames = FALSE) { 
-z <- switch(.hdimdim1(X), 
+mc       <- .hdetectCores()
+# mc.cores <- if(tolower(.Platform$OS.type) == "windows") {1} else {mc} 
+ddcX     <- dimdimc(X)
+if (ddcX == "3") {cl <- parallel::makeCluster(mc, methods = FALSE)} # parallel
+z <- switch(ddcX,  
 	 "1" = .hparamkienerX7(X, dgts, parnames),
 	 "2" = t(apply(X, 2, .hparamkienerX7, dgts, parnames)),
-	 "3" = aperm(apply(X, c(1,2), .hparamkienerX7, dgts, parnames), c(2,1,3)),
+	 # "3" = aperm(apply(X, c(1,2), .hparamkienerX7, dgts, parnames), c(2,1,3)),
+	 "3" = aperm(parallel::parApply(cl, X, c(1,2), 
+	            .hparamkienerX7, dgts, parnames), c(2,1,3)),		# parallel
 	"-1" = t(sapply(X, .hparamkienerX7, dgts, parnames)),
+	# "-1" = t(simplify2array(parallel::mclapply(X, .hparamkienerX7, 
+				# dgts, parnames, mc.cores=mc.cores))),
 	stop("paramkienerX7 cannot handle this format")
 	# "numeric" "matrix" "array" "list" "error"
 	# "array" params x dates x stocks # aperm dates x params x stocks
 	)
+if (ddcX == "3") {parallel::stopCluster(cl)}	 				# parallel
 if (dimnames) {
 	if (dimdim1(z) == 2) {
 		dimnames(z) <- list("STOCKS" = dimnames(z)[[1]],
@@ -585,15 +620,24 @@ return(z)
 #' @export
 #' @rdname fitkienerX
 paramkienerX5 <- function(X, dgts = 3, parnames = TRUE, dimnames = FALSE) { 
-z <- switch(.hdimdim1(X), 
+mc       <- .hdetectCores()
+# mc.cores <- if(tolower(.Platform$OS.type) == "windows") {1} else {mc}
+ddcX     <- dimdimc(X) 
+if (ddcX == "3") {cl <- parallel::makeCluster(mc, methods = FALSE)} # parallel
+z <- switch(ddcX,  
 	 "1" = .hparamkienerX5(X, dgts, parnames),
 	 "2" = t(apply(X, 2, .hparamkienerX5, dgts, parnames)),
-	 "3" = aperm(apply(X, c(1,2), .hparamkienerX5, dgts, parnames), c(2,1,3)),
+	 # "3" = aperm(apply(X, c(1,2), .hparamkienerX5, dgts, parnames), c(2,1,3)),
+	 "3" = aperm(parallel::parApply(cl, X, c(1,2), 
+	            .hparamkienerX5, dgts, parnames), c(2,1,3)),		# parallel
 	"-1" = t(sapply(X, .hparamkienerX5, dgts, parnames)),
+	# "-1" = t(simplify2array(parallel::mclapply(X, .hparamkienerX5, 
+				# dgts, parnames, mc.cores=mc.cores))),
 	stop("paramkienerX5 cannot handle this format")
 	# "numeric" "matrix" "array" "list" "error"
 	# "array" params x dates x stocks # aperm dates x params x stocks
 	)
+if (ddcX == "3") {parallel::stopCluster(cl)}	 				# parallel
 if (dimnames) {
 	if (dimdim1(z) == 2) {
 		dimnames(z) <- list("STOCKS" = dimnames(z)[[1]],
@@ -622,4 +666,10 @@ z  <- roundcoefk(coefk, dgts, parnames)
 return(z)
 }
 
+
+.hdetectCores <- function() {
+	z <- as.numeric(parallel::detectCores())
+	z <- ifelse(is.na(z), 1, z)
+return(z)
+}
 

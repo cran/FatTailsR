@@ -3,24 +3,32 @@
 \name{dimdim}
 \alias{dimdim}
 \alias{dimdim1}
+\alias{dimdimc}
 \title{Length and Dimensions of Vector, Matrix, Array, Data.Frame, List}
 \usage{
 dimdim(x)
 
 dimdim1(x)
+
+dimdimc(x)
 }
 \arguments{
 \item{x}{vector, matrix, array, data.frame, list.}
 }
 \description{
 Length and dimensions of vector, matrix, array, data.frame and list.
-A friendly version of \code{dim} that always returns the expected value
+A friendly version of \code{dim} that returns the true dimension
 rather than the sometimes unexpected \code{NULL} value.
 The number of dimensions appears first, then the length in each dimension.
 A special case is list: the list length (number of items) is turned into a
 negative integer and the length/dimension of each item is either positive
 if the item is a vector, matrix, array or data.frame or negative if the item
 is itself a list. Only the first level of the list is explored.
+\code{dimdim1} and \code{dimdimc} return the first item of \code{dimdim},
+thus the true dimension, either as an integer or as a character
+(in this latest case, always \code{"-1"} for lists).
+Note: Some problems may occur with S4 objects like
+\code{dimdim(qualityTools::fracDesign(k = 3, gen = "C = AB"))}.
 }
 \examples{
 require(timeSeries)
@@ -30,15 +38,16 @@ dimdim(Inf) ; dimdim(TRUE) ; dimdim(FALSE)
 dimdim(11:39)
 dimdim(LETTERS[1:8])
 dimdim(matrix(1:60, ncol=5))
+dimdim(extractData())
+dimdim(as.data.frame(extractData()))
+dimdim(data.frame(X=1:2, Y=1:4, Z=LETTERS[1:8]))
 dimdim(array(1:240, c(8,6,5)))
 dimdim(array(1:240, c(4,2,6,5)))
-dimdim(data.frame(X=1:2, Y=1:4, Z=LETTERS[1:8]))
 dimdim(getDSdata())
-dimdim(tData)
-dimdim(xData)
 dimdim(zData)
-dimdim(extractData())
-dimdim1(getDSdata())
-dimdim1(zData)
+dimdim(xData)
+dimdim(tData)
+dimdim1(tData)
+dimdimc(tData)
 }
 

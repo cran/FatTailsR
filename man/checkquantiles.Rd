@@ -36,11 +36,12 @@ lst <- list(
 
 ## Evaluate
 for (i in seq_along(lst)) {
-  cat( i, checkquantiles(lst[[i]], proba = FALSE),
-          checkquantiles(lst[[i]], proba = TRUE),
-          checkquantiles(lst[[i]], proba = FALSE, acceptNA = TRUE),
-          checkquantiles(lst[[i]], proba = TRUE,  acceptNA = TRUE),
-	         "\\n")
+  cat(i, lst[[i]], " : ",
+      checkquantiles(lst[[i]], proba = FALSE),
+      checkquantiles(lst[[i]], proba = TRUE),
+      checkquantiles(lst[[i]], proba = FALSE, acceptNA = TRUE),
+      checkquantiles(lst[[i]], proba = TRUE,  acceptNA = TRUE),
+	     "\\n")
 }
 
 ## Not run:
