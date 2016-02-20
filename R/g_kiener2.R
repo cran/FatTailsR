@@ -389,7 +389,7 @@ varkiener2 <- function(p, m = 0, g = 1, a = 3.2, w = 3.2,
 		va[i] <- ifelse(p[i] <= 0.5, 
 					- qkiener2(p[i], m, g, a, w),
 					  qkiener2(p[i], m, g, a, w))
-	}
+	}	
 return(va)
 }
 
@@ -397,11 +397,17 @@ return(va)
 #' @rdname kiener2
 ltmkiener2 <- function(p, m = 0, g = 1, a = 3.2, w = 3.2, 
                        lower.tail = TRUE, log.p = FALSE) {
-	p  <- if(log.p) {exp(p)} else {p}
-	p  <- if(lower.tail) {p} else {1-p}
+	p  <- if (log.p) {exp(p)} else {p}
 	k  <- aw2k(a, w)
-	ltm <- m + g * k / p * (-pbeta(p, 1-1/a, 1+1/a) * beta(1-1/a, 1+1/a) 
-	                        +pbeta(p, 1+1/w, 1-1/w) * beta(1+1/w, 1-1/w))
+	ltm <- if (lower.tail) {
+		m+g*k/p*(
+			-pbeta(p, 1-1/a, 1+1/a)*beta(1-1/a, 1+1/a)
+			+pbeta(p, 1+1/w, 1-1/w)*beta(1+1/w, 1-1/w))	
+	} else {
+		m+g*k/p*(
+			-pbeta(p, 1+1/a, 1-1/a)*beta(1+1/a, 1-1/a)
+			+pbeta(p, 1-1/w, 1+1/w)*beta(1-1/w, 1+1/w))
+	}
 return(ltm)
 }
 
@@ -409,13 +415,17 @@ return(ltm)
 #' @rdname kiener2
 rtmkiener2 <- function(p, m = 0, g = 1, a = 3.2, w = 3.2, 
                        lower.tail = TRUE, log.p = FALSE) {
-	p   <- if(log.p) {exp(p)} else {p}
-	p   <- if(lower.tail) {p} else {1-p}  
-	k   <- aw2k(a, w) 
-	# rtm : 1-p et 1-pbeta()
-	rtm <- m + g * k / (1-p) * ( 
-	        (-1+pbeta(p, 1-1/a, 1+1/a)) * beta(1-1/a, 1+1/a) 
-	       +( 1-pbeta(p, 1+1/w, 1-1/w)) * beta(1+1/w, 1-1/w))
+	p  <- if (log.p) {exp(p)} else {p}
+	k  <- aw2k(a, w)
+	rtm <- if (!lower.tail) {
+		m+g*k/(1-p)*(
+			-pbeta(1-p, 1-1/a, 1+1/a)*beta(1-1/a, 1+1/a)
+			+pbeta(1-p, 1+1/w, 1-1/w)*beta(1+1/w, 1-1/w))	
+	} else {
+		m+g*k/(1-p)*(
+			-pbeta(1-p, 1+1/a, 1-1/a)*beta(1+1/a, 1-1/a)
+			+pbeta(1-p, 1-1/w, 1+1/w)*beta(1-1/w, 1+1/w))
+	}
 return(rtm)
 }
 
@@ -423,13 +433,13 @@ return(rtm)
 #' @rdname kiener2
 dtmqkiener2 <- function(p, m = 0, g = 1, a = 3.2, w = 3.2, 
                       lower.tail = TRUE, log.p = FALSE) {
-	p   <- if(log.p) {exp(p)} else {p}
-	p   <- if(lower.tail) {p} else {1-p}
-	dtmq  <- p
+	dtmq <- p
 	for (i in seq_along(p)) {
 		dtmq[i] <- ifelse(p[i] <= 0.5, 
-					ltmkiener2(p[i], m, g, a, w) - qkiener2(p[i], m, g, a, w),
-					rtmkiener2(p[i], m, g, a, w) - qkiener2(p[i], m, g, a, w))
+			ltmkiener2(p[i], m, g, a, w, lower.tail, log.p) 
+			- qkiener2(p[i], m, g, a, w, lower.tail, log.p),
+			rtmkiener2(p[i], m, g, a, w, lower.tail, log.p) 
+			- qkiener2(p[i], m, g, a, w, lower.tail, log.p))	
 	}
 return(dtmq)
 }
@@ -438,7 +448,7 @@ return(dtmq)
 #' @rdname kiener2
 eskiener2 <- function(p, m = 0, g = 1, a = 3.2, w = 3.2, 
                       lower.tail = TRUE, log.p = FALSE) {
-	p   <- if(log.p) {exp(p)} else {p}
+	p   <- if (log.p) {exp(p)} else {p}
 	p   <- if(lower.tail) {p} else {1-p}
 	es  <- p
 	for (i in seq_along(p)) {

@@ -20,9 +20,11 @@
 #' @param    maxk    numeric. The maximum value of tail parameter \code{k}. 
 #' @param    mink    numeric. The minimum value of tail parameter \code{k}. 
 #' @param    app     numeric. The parameter "\code{a}" in the function \code{ppoints}.
-#' @param    probak  vector of probabilities used in output regk$fitk.
+#' @param    probak  vector of probabilities used in output regk$fitk.  
+#'                   For instance \code{\link{pprobs0}}.
 #' @param    dgts    rounding parameter applied globally to output regk$fitk.
-#' @param    exfitk  character. A vector of parameter names to subset regk$fitk.
+#' @param    exfitk  character. A vector of parameter names to subset regk$fitk. 
+#'                   For instance \code{\link{exfit0}}.
 #' 
 #' @details      
 #' This function is designed to estimate the parameters of Kiener distributions
@@ -90,7 +92,7 @@
 #' \code{-1} and \code{+1} and can be understood as a percentage (if times 100)
 #' of eccentricty. \code{e = -1} corresponds to \code{w = infinity},  
 #' \code{e = +1} corresponds to \code{a = infinity} and the model becomes a single
-#' log-logistic funtion with a stopping point and a left / right tail.
+#' log-logistic funtion with a right / left stopping point and a left / right tail.
 #'
 #' Tail parameter lower and upper values are controlled by \code{maxk} and 
 #' \code{mink}. An upper value \eqn{maxk = 10} is appropriate for datasets
@@ -126,8 +128,8 @@
 #' to the vector \code{pdgts} which controls the rounding of the parameters in
 #' the following order: }
 #'   \item{ \code{pdgts = c("m","g","a","k","w","d","e","vcovk0","vcovk0m","mcork0","quantr")}. }
-#'   \item{ Sixth are the estimated quantiles and probabilities of interest 
-#' stored in a data.frame format. }
+#'   \item{ Sixth are some probabilities and the corresponding estimated quantiles 
+#' and estimated Expected Shortfall stored in a data.frame format. }
 #'   \item{ Last is \code{fitk} which returns all parameters in the same format 
 #' than \code{\link{fitkienerX}}, eventually subsetted by \code{exfitk}. 
 #' IMPORTANT : if you need to subset \code{fitk}, always subset it by parameter names 
@@ -165,6 +167,10 @@
 #' \item{dfrQkPk}{data.frame. Qk = Estimated quantiles of interest. 
 #'                Pk = probabilities.} 
 #' \item{dfrQkLk}{data.frame. Qk = Estimated quantiles of interest. 
+#'                Lk = Logit of probabilities.} 
+#' \item{dfrESkPk}{data.frame. ESk = Estimated Expected Shortfall. 
+#'                Pk = probabilities.} 
+#' \item{dfrESkLk}{data.frame. ESk = Estimated Expected Shortfall. 
 #'                Lk = Logit of probabilities.} 
 #' \item{fitk }{Parameters, quantiles, moments, VaR, ES and other parameters (not rounded). 
 #' Length of \code{fitk} depends on the choice applied to probak. 
@@ -246,6 +252,8 @@
 #' reg$quantr
 #' reg$dfrQkPk
 #' reg$dfrQkLk
+#' reg$dfrESkPk
+#' reg$dfrESkLk
 #' reg$fitk
 #' 
 #' ## subset fitk
@@ -404,15 +412,25 @@ coefk2    <- c(coefk[1], coefk[2], coefk[3], coefk[5])
 coefk3    <- c(coefk[1], coefk[2], coefk[4], coefk[6])
 coefk4    <- c(coefk[1], coefk[2], coefk[4], coefk[7])
 coefk0    <- coef(regk0)
+
+# Coefficients in rounded format
+coefr     <- round(coefk, pdgts[1:7])
+coefr1    <- c(coefr[1], coefr[2], coefr[4]) 
+coefr2    <- c(coefr[1], coefr[2], coefr[3], coefr[5])
+coefr3    <- c(coefr[1], coefr[2], coefr[4], coefr[6])
+coefr4    <- c(coefr[1], coefr[2], coefr[4], coefr[7])
+
+# Covariance, correlation, Density
 vcovk0    <- round(vcov(regk0),          pdgts[8])
 vcovk0m   <- round(vcov(regk0)*1e+6,     pdgts[9])
 mcork0    <- round(cov2cor(vcov(regk0)), pdgts[10])
 resik0    <- resid(regk0)
 D         <- dlkiener2(lp = L, m = coefk2[1], g = coefk2[2], 
                        a = coefk2[3], w = coefk2[4], log = FALSE )
+
 # This part of the code uses probak1 (= pprobs6) because plots XP, XL 
 # use absolute reference and have not been yet updated with pprobs2
-# probak1   <- pprobs6
+# probak1   <- pprobs6 car probak utilise plus bas
 probak1   <- c(0.0001, 0.0005, 0.001, 0.005, 0.01, 0.05, 0.50, 
                0.95, 0.99, 0.995, 0.999, 0.9995, 0.9999) 
 quantk1   <- qkiener2(p = probak1, m = coefk2[1], g = coefk2[2], 
@@ -420,6 +438,17 @@ quantk1   <- qkiener2(p = probak1, m = coefk2[1], g = coefk2[2],
 names(quantk1)  <- getnamesk(probak1)$nquantk
 # c("q.0001", "q.0005", "q.001", "q.005", "q.01", "q.05", "q.50", 
 #   "q.95", "q.99", "q.995", "q.999", "q.9995", "q.9999")
+# Quantiles in rounded format
+quantr    <- round(quantk1, pdgts[11])
+
+# probaes
+probaes   <- c(0.00025, 0.0025, 0.025, 0.975, 0.9975, 0.99975) 
+quantes   <- c(ltmkiener2(p = probaes[1:3], m = coefk2[1], g = coefk2[2], 
+                                            a = coefk2[3], w = coefk2[4]),
+               rtmkiener2(p = probaes[4:6], m = coefk2[1], g = coefk2[2], 
+                                            a = coefk2[3], w = coefk2[4]))
+names(quantes)  <- tolower(getnamesk(probaes)$nesk)
+quantesr  <- round(quantes, pdgts[11])
 
 # data.frame
 dfrXR     <- data.frame(X, R = resik0)
@@ -428,14 +457,8 @@ dfrEL     <- data.frame(E = fitted(regk0), L)
 dfrED     <- data.frame(E = fitted(regk0), D = D)
 dfrQkPk   <- data.frame(Qk = quantk1, Pk = probak1)
 dfrQkLk   <- data.frame(Qk = quantk1, Lk = logit(probak1))
-
-# Coefficients in rounded format
-coefr     <- round(coefk, pdgts[1:7])
-coefr1    <- c(coefr[1], coefr[2], coefr[4]) 
-coefr2    <- c(coefr[1], coefr[2], coefr[3], coefr[5])
-coefr3    <- c(coefr[1], coefr[2], coefr[4], coefr[6])
-coefr4    <- c(coefr[1], coefr[2], coefr[4], coefr[7])
-quantr    <- round(quantk1, pdgts[11])
+dfrESkPk  <- data.frame(ESk = quantes, Pk = probaes)
+dfrESkLk  <- data.frame(ESk = quantes, Lk = logit(probaes))
 
 ## fitk
 ## This part of the code uses probak defined in the header (usually pprobs2)
@@ -462,14 +485,18 @@ regk$coefk2    <- coefk2
 regk$coefk3    <- coefk3
 regk$coefk4    <- coefk4
 regk$quantk    <- quantk1
+regk$quantes   <- quantes
 regk$coefr     <- coefr
 regk$coefr1    <- coefr1
 regk$coefr2    <- coefr2
 regk$coefr3    <- coefr3
 regk$coefr4    <- coefr4
 regk$quantr    <- quantr
+regk$quantesr  <- quantesr
 regk$dfrQkPk   <- dfrQkPk
 regk$dfrQkLk   <- dfrQkLk
+regk$dfrESkPk  <- dfrESkPk
+regk$dfrESkLk  <- dfrESkLk
 regk$fitk      <- fitk
 class(regk)    <- "clregk"
 

@@ -59,8 +59,6 @@ elevenprobs <- function(X, parnames = FALSE) {
 	names(p11) <- if (parnames) { np11 } else { NULL }
 return(p11)
 }
-#' 
-#' 
 #' @export
 #' @rdname elevenprobs
 sevenprobs <- function(X, parnames = FALSE) { 
@@ -74,8 +72,6 @@ sevenprobs <- function(X, parnames = FALSE) {
 	names(p7) <- if (parnames) { np7 } else { NULL }
 return(p7)
 }
-#' 
-#' 
 #' @export
 #' @rdname elevenprobs
 fiveprobs <- function(X, parnames = FALSE) { 
@@ -277,8 +273,6 @@ estimkiener11 <- function(x11, p11, ord = 7, maxk = 10) {
 	names(z) <- c("m", "g", "a", "k", "w", "d", "e")
 return(z)
 }
-#' 
-#' 
 #' @export
 #' @rdname estimkiener11
 estimkiener7 <- function(x7, p7, maxk = 10) {
@@ -304,8 +298,6 @@ estimkiener7 <- function(x7, p7, maxk = 10) {
 	names(z) <- c("m", "g", "a", "k", "w", "d", "e")
 return(z)
 }
-#' 
-#' 
 #' @export
 #' @rdname estimkiener11
 estimkiener5 <- function(x5, p5, maxk = 10) {

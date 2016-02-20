@@ -12,11 +12,10 @@
 #' quantiles, value-at-risk and expected shortfall is usually very accurate. 
 #' Two datasets are provided, as well as power hyperbolas and power hyperbolic 
 #' functions which are simplified versions of symmetric distribution K1.
+#' Some functions introduced in v1.2-0 were discarded or renamed.
 #' 
 #' Download the pdf cited in the references to get an overview of  
 #' the theoretical part and several examples on stocks and indices. 
-#' This version (ocotber 2015) is a major update that breaks compatibility 
-#' with previous versions.
 #' 
 #' A commercial package, \code{FatTailsRplot}, with advanced plotting functions 
 #' and calculation of matrix of stocks over rolling windows is also developped 

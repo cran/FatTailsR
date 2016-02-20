@@ -4,11 +4,32 @@
 
 Suggestions for next versions
 =============================
-- weighted nonlinear regression to better control outliers
+- Robust regression to reduce influence of outliers
 
 
-FatTailsR 1.5-0 - 8 November 2015 - current version on CRAN
-===========================================================
+
+FatTailsR 1.6-0 - 2016-02-20 - current version on CRAN
+======================================================
+- Codename: Caucus in Nevada
+- Bug when lower.tail was FALSE. New version is such that:
+  ltmkiener?(p, ..., lower.tail=FALSE) == rtmkiener?(p, ..., lower.tail=TRUE) 
+  rtmkiener?(p, ..., lower.tail=FALSE) == ltmkiener?(p, ..., lower.tail=TRUE) 
+  eskiener?() =ltmkiener? for left tail, =rtmkiener? for right tail and always positive 
+  
+FatTailsR 1.5-8 - 2016-02-04
+- fitkienerX, paramkienerX, paramkienerX5, paramkienerX7 
+  Recursive approach: accept list of vectors, matrix, timeSeries, xts, zoo...
+  
+FatTailsR 1.5-6 - 2015-12-25
+- R updated from R-3.1.0 to R-3.2.3
+- Expected Shortfall added to regkienerLX (dfrESkPk and dfrESkLk)
+
+FatTailsR 1.5-3 - 2015-11-13
+- Improved parallelization of arrays in {fitkienerX} and {paramkienerX57}
+
+
+FatTailsR 1.5-0 - 2015-11-08 - in CRAN archives
+===============================================
 - Codename: Rugby World cup - All Blacks win
 - Parallelization of arrays in {fitkienerX} and {paramkienerX57}
 - Bugs fixed: 
@@ -16,8 +37,8 @@ FatTailsR 1.5-0 - 8 November 2015 - current version on CRAN
 -- {dimdim} returned wrong values with data.frame 
 
 
-FatTailsR 1.4-1 - 25 October 2015 - in CRAN archives
-====================================================
+FatTailsR 1.4-1 - 2015-10-25 - in CRAN archives
+===============================================
 - Codename: Rugby World cup
 - A major update !!
 - 3 months of intensive work for better performance and higher flexibility
@@ -50,13 +71,13 @@ NEW FUNCTIONS
 - {kmoments}, {xmoments} examples rewritten
 
 
-FatTailsR 1.2-3 - 8 July 2015 - in CRAN archives 
-================================================
+FatTailsR 1.2-3 - 2015-07-08 - in CRAN archives 
+===============================================
 - Code 1.2-0 made compliant with R-devel (next R 3.3-0).
 
 
-FatTailsR 1.2-0 - 18 June 2015 - in CRAN archives
-=================================================
+FatTailsR 1.2-0 - 2015-06-18 - in CRAN archives
+===============================================
 - Codename: Appel du 18 juin
 - Title changed to: Kiener Distributions and Fat Tails in Finance.
 - Raw and central moments.
@@ -68,9 +89,9 @@ FatTailsR 1.2-0 - 18 June 2015 - in CRAN archives
 - {ckiener1234} and parameter {c.01},..,{c.99}
 
 
-FatTailsR 1.0-3 - 14 July 2014 - in CRAN archives
-=================================================
+FatTailsR 1.0-3 - 2014-07-14 - in CRAN archives
+===============================================
 - Codename : Liberte, Egalite, Fraternite
 - Initial release.
 - Title: Power Hyperbolic Functions and Kiener Distributions.
-
+- Developped with R version R-3.1.0

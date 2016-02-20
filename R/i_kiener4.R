@@ -376,6 +376,7 @@ dqkiener4 <- function(p, m = 0, g = 1, k = 3.2, e = 0, log = FALSE) {
 	if(log) return(log(v)) else return(v)
 }
 
+## voir fonction NLSstClosestX
 #' @export
 #' @rdname kiener4
 lkiener4 <- function(x, m = 0, g = 1, k = 3.2, e = 0) { 
@@ -419,16 +420,20 @@ varkiener4 <- function(p, m = 0, g = 1, k = 3.2, e = 0,
 return(va)
 }
 
-
 #' @export
 #' @rdname kiener4
 ltmkiener4 <- function(p, m = 0, g = 1, k = 3.2, e = 0, 
                      lower.tail = TRUE, log.p = FALSE) {
 	p <- if(log.p) {exp(p)} else {p}
-	p <- if(lower.tail) {p} else {1-p}
-	ltm <- m + g * k / p * (
-	          -pbeta(p, 1-(1-e)/k, 1+(1-e)/k) * beta(1-(1-e)/k, 1+(1-e)/k) 
-	          +pbeta(p, 1+(1+e)/k, 1-(1+e)/k) * beta(1+(1+e)/k, 1-(1+e)/k))
+	ltm <- if (lower.tail) {
+		m+g*k/p*(
+	        -pbeta(p, 1-(1-e)/k, 1+(1-e)/k) * beta(1-(1-e)/k, 1+(1-e)/k) 
+	        +pbeta(p, 1+(1+e)/k, 1-(1+e)/k) * beta(1+(1+e)/k, 1-(1+e)/k))
+	} else {
+		m+g*k/p*(
+			-pbeta(p, 1+(1-e)/k, 1-(1-e)/k)*beta(1+(1-e)/k, 1-(1-e)/k)
+			+pbeta(p, 1-(1+e)/k, 1+(1+e)/k)*beta(1-(1+e)/k, 1+(1+e)/k))
+	}
 return(ltm)
 }
 
@@ -437,11 +442,15 @@ return(ltm)
 rtmkiener4 <- function(p, m = 0, g = 1, k = 3.2, e = 0, 
                        lower.tail = TRUE, log.p = FALSE) {
 	p   <- if(log.p) {exp(p)} else {p}
-	p   <- if(lower.tail) {p} else {1-p}  
-	# rtm : 1-p et 1-pbeta()
-	rtm <- m + g * k / (1-p) * ( 
-	        (-1 +pbeta(p, 1-(1-e)/k, 1+(1-e)/k)) * beta(1-(1-e)/k, 1+(1-e)/k) 
-	       +( 1 -pbeta(p, 1+(1+e)/k, 1-(1+e)/k)) * beta(1+(1+e)/k, 1-(1+e)/k))
+	rtm <- if (!lower.tail) {
+		m+g*k/(1-p)*(
+			-pbeta(1-p, 1-(1-e)/k, 1+(1-e)/k)*beta(1-(1-e)/k, 1+(1-e)/k)
+			+pbeta(1-p, 1+(1+e)/k, 1-(1+e)/k)*beta(1+(1+e)/k, 1-(1+e)/k))	
+	} else {
+		m+g*k/(1-p)*(
+			-pbeta(1-p, 1+(1-e)/k, 1-(1-e)/k)*beta(1+(1-e)/k, 1-(1-e)/k)
+			+pbeta(1-p, 1-(1+e)/k, 1+(1+e)/k)*beta(1-(1+e)/k, 1+(1+e)/k))
+	}
 return(rtm)
 }
 
@@ -449,13 +458,13 @@ return(rtm)
 #' @rdname kiener4
 dtmqkiener4 <- function(p, m = 0, g = 1, k = 3.2, e = 0, 
                       lower.tail = TRUE, log.p = FALSE) {
-	p   <- if(log.p) {exp(p)} else {p}
-	p   <- if(lower.tail) {p} else {1-p}
-	dtmq  <- p
+	dtmq <- p
 	for (i in seq_along(p)) {
 		dtmq[i] <- ifelse(p[i] <= 0.5, 
-					  ltmkiener4(p[i], m, g, k, e) - qkiener4(p[i], m, g, k, e),
-					  rtmkiener4(p[i], m, g, k, e) - qkiener4(p[i], m, g, k, e))
+			ltmkiener4(p[i], m, g, k, e, lower.tail, log.p) 
+			- qkiener4(p[i], m, g, k, e, lower.tail, log.p),
+			rtmkiener4(p[i], m, g, k, e, lower.tail, log.p) 
+			- qkiener4(p[i], m, g, k, e, lower.tail, log.p)) 
 	}
 return(dtmq)
 }
