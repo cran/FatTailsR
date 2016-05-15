@@ -45,7 +45,8 @@ rtmkiener1(p, m = 0, g = 1, k = 3.2, lower.tail = TRUE, log.p = FALSE)
 dtmqkiener1(p, m = 0, g = 1, k = 3.2, lower.tail = TRUE,
   log.p = FALSE)
 
-eskiener1(p, m = 0, g = 1, k = 3.2, lower.tail = TRUE, log.p = FALSE)
+eskiener1(p, m = 0, g = 1, k = 3.2, lower.tail = TRUE, log.p = FALSE,
+  signedES = FALSE)
 }
 \arguments{
 \item{x}{vector of quantiles.}
@@ -70,9 +71,15 @@ eskiener1(p, m = 0, g = 1, k = 3.2, lower.tail = TRUE, log.p = FALSE)
 taken to be the number required.}
 
 \item{lp}{vector of logit of probabilities.}
+
+\item{signedES}{logical. FALSE (default) returns positive numbers for 
+left and right tails. TRUE returns negative number 
+(= \code{ltmkiener1}) for left tail and positive number 
+(= \code{rtmkiener1}) for right tail.}
 }
 \description{
-Density, distribution function, quantile function, random generation
+Density, distribution function, quantile function, random generation, 
+value-at-risk, expected shortfall (+ signed left/right tail mean) 
 and additional formulae for symmetric Kiener distribution K1. 
 This distribution is similar to the power hyperbola logistic distribution 
 but with additional parameters for location (\code{m}) and scale (\code{g}).
@@ -309,8 +316,9 @@ Value at Risk, 9 May 2001. Download it from:
 }
 \seealso{
 Power hyperbola logistic distribution \code{\link{logishp}}, 
-asymmetric Kiener distributions K2, K3 and K4  
+asymmetric Kiener distributions K2, K3, K4 and K7  
 \code{\link{kiener2}}, \code{\link{kiener3}}, \code{\link{kiener4}}, 
+\code{\link{kiener7}},  
 regression function \code{\link{regkienerLX}}.
 }
 

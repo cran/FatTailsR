@@ -7,7 +7,8 @@
 #' @title Symmetric Kiener Distribution K1
 #'
 #' @description
-#' Density, distribution function, quantile function, random generation
+#' Density, distribution function, quantile function, random generation, 
+#' value-at-risk, expected shortfall (+ signed left/right tail mean) 
 #' and additional formulae for symmetric Kiener distribution K1. 
 #' This distribution is similar to the power hyperbola logistic distribution 
 #' but with additional parameters for location (\code{m}) and scale (\code{g}).
@@ -24,6 +25,10 @@
 #' @param    log           logical. If TRUE, densities are given in log scale.
 #' @param    lower.tail    logical. If TRUE, use p. If FALSE, use 1-p.
 #' @param    log.p         logical. If TRUE, probabilities p are given as log(p).
+#' @param    signedES      logical. FALSE (default) returns positive numbers for 
+#'                         left and right tails. TRUE returns negative number 
+#'                         (= \code{ltmkiener1}) for left tail and positive number 
+#'                         (= \code{rtmkiener1}) for right tail.
 #'
 #' @details
 #' Kiener distributions use the following parameters, some of them being redundant. 
@@ -129,8 +134,9 @@
 #' 
 #' @seealso 
 #' Power hyperbola logistic distribution \code{\link{logishp}}, 
-#' asymmetric Kiener distributions K2, K3 and K4  
+#' asymmetric Kiener distributions K2, K3, K4 and K7  
 #' \code{\link{kiener2}}, \code{\link{kiener3}}, \code{\link{kiener4}}, 
+#' \code{\link{kiener7}},  
 #' regression function \code{\link{regkienerLX}}.
 #'
 #' @examples
@@ -399,14 +405,20 @@ return(dtmq)
 #' @export
 #' @rdname kiener1
 eskiener1 <- function(p, m = 0, g = 1, k = 3.2, 
-                      lower.tail = TRUE, log.p = FALSE) {
+                      lower.tail = TRUE, log.p = FALSE, signedES = FALSE) {
 	p   <- if (log.p) {exp(p)} else {p}
 	p   <- if(lower.tail) {p} else {1-p}
 	es  <- p
 	for (i in seq_along(p)) {
-		es[i] <- ifelse(p[i] <= 0.5, 
-					- ltmkiener1(p[i], m, g, k),
+		if (signedES) {
+			es[i] <- ifelse(p[i] <= 0.5, 
+					  ltmkiener1(p[i], m, g, k),
 					  rtmkiener1(p[i], m, g, k))
+		} else {
+			es[i] <- ifelse(p[i] <= 0.5, 
+				      abs(ltmkiener1(p[i], m, g, k)),
+					  abs(rtmkiener1(p[i], m, g, k)))		
+		}
 	}
 return(es)
 }

@@ -1,6 +1,6 @@
 
 
-#' @include k_tailskiener.R
+#' @include m_laplaceroll.R
 
 
 
@@ -94,8 +94,11 @@ return(p5)
 #' If \code{proba = TRUE}, check that values are in range (0, 1). 
 #' 
 #' @param    x	        vector of quantiles.
-#' @param    proba	    boolean. if TRUE, check range (0,1).
-#' @param    acceptNA   boolean.
+#' @param    proba	    boolean. If TRUE, check range (0,1).
+#' @param    acceptNA   boolean. If FALSE, NA value are not accepted.
+#' @param    STOP       boolean. If an error is encountered, TRUE stops
+#'                      the function and returns an error message. 
+#'                      FALSE just returns FALSE.
 #' 
 #' @examples     
 #' 
@@ -117,54 +120,45 @@ return(p5)
 #' ## Evaluate
 #' for (i in seq_along(lst)) { 
 #'   cat(i, lst[[i]], " : ",
-#'       checkquantiles(lst[[i]], proba = FALSE), 
-#'       checkquantiles(lst[[i]], proba = TRUE), 
-#'       checkquantiles(lst[[i]], proba = FALSE, acceptNA = TRUE), 
-#'       checkquantiles(lst[[i]], proba = TRUE,  acceptNA = TRUE), 
+#'       checkquantiles(lst[[i]], proba = FALSE, STOP = FALSE), 
+#'       checkquantiles(lst[[i]], proba = TRUE, STOP = FALSE), 
+#'       checkquantiles(lst[[i]], proba = FALSE, acceptNA = TRUE, STOP = FALSE), 
+#'       checkquantiles(lst[[i]], proba = TRUE,  acceptNA = TRUE, STOP = FALSE), 
 #' 	     "\n") 
 #' }
 #' 
+#' sapply(lst, checkquantiles, proba = TRUE, acceptNA = TRUE, STOP = FALSE)
+#' 
 #' ## Not run: 
-#' checkquantiles(matrix((1:12)/16, ncol=3), proba = TRUE)
+#' checkquantiles(matrix((1:12)/16, ncol=3), proba = TRUE, STOP = FALSE)
 #' ## End(Not run)
 #' 
 #' @export
 #' @name checkquantiles
-checkquantiles <- function(x, proba = FALSE, acceptNA = FALSE) {
-	if(dimdim1(x) != 1) warning("X is not of dimension 1")
-	z3  <- ifelse(anyNA(x), NA, TRUE)
-	x   <- x[!is.na(x)]
+checkquantiles <- function(x, proba = FALSE, acceptNA = FALSE, STOP = TRUE) {
+	if (acceptNA) { x  <- x[!is.na(x)] } 
 	n   <- length(x)
-	if (n == 0) { 
-			z1 <- z2 <- z3 
-		} else {
-			z1 <- ifelse(n == 1, is.finite(x), (sum(x[2:n] <= x[1:(n-1)]) == 0))
-			z2 <- ifelse(proba, !((x <= 0) || (x>=1)), TRUE)
+	nt1 <- (n == 0)
+	nt2 <- anyNA(x)
+	nt3 <- (dimdim1(x) != 1)
+	nt4 <- (!is(x, "numeric"))
+	nt5 <- (proba && any(x < 0))
+	nt6 <- (proba && any(x > 1))
+	nt7 <- any(nt1, nt2, nt3, nt4, nt5, nt6)
+	nt1;nt2;nt3;nt4;nt5;nt6;nt7
+	z   <- if (nt7) {
+			FALSE
+		 } else {
+			if (n == 1) { 
+				TRUE 
+			} else {
+				(sum(x[2:n] <= x[1:(n-1)]) == 0) 
+			}
+		 }
+	if (STOP && !z) { 
+		stop("Error in checkquantiles(): x is not correct (dim, NA, proba, etc...) 
+		      or not sorted. Please check.") 
 	}
-z   <- ifelse(acceptNA, z1 && z2, !xor(z1 && z2, z3) )
-return(z)
-}
-
-
-.checkquantiles2 <- function(x, proba = FALSE, acceptNA = FALSE) {
-	if(dimdim1(x) != 1) warning("X is not of dimension 1")
-	z3  <- ifelse(anyNA(x), NA, TRUE)
-	x   <- x[!is.na(x)]
-	if (length(x) == 0) { 
-			z1 <- z2 <- z3 
-		} else {
-			mat <- outer(x, x, ">=")
-			z1  <- (sum(mat[upper.tri(mat)]) == 0)
-			z2  <- ifelse(proba, !((x <= 0) || (x>=1)), TRUE)
-		}
-z   <- ifelse(acceptNA, z1 && z2, !xor(z1 && z2, z3) )
-return(z)
-}
-
- 
-.checkquantiles3 <- function(x) {
-	mat <- outer(x, x, ">=")
-	z   <- (sum(mat[upper.tri(mat)]) == 0)
 return(z)
 }
 
@@ -257,7 +251,7 @@ estimkiener11 <- function(x11, p11, ord = 7, maxk = 10) {
 	if (length(p11) != 11) {stop("length(p11) is of wrong size. Must be 11.")}
 	if (!is.element(ord, 1:12)) {stop("ord must be in 1:12")}
 	names(x11) <- NULL
-	if (checkquantiles(x11)) {
+	if (checkquantiles(x11, STOP = FALSE)) {
 		m  <- x11[6]
 		k  <- .hestimkappa11(x11, p11, ord, maxk)
 		d  <- .hestimdelta11(x11, p11, ord)
@@ -279,7 +273,7 @@ estimkiener7 <- function(x7, p7, maxk = 10) {
 	if (length(x7) != 7) {stop("length(x7) is of wrong size. Must be 7.")}
 	if (length(p7) != 7) {stop("length(p7) is of wrong size. Must be 7.")}
 	names(x7) <- NULL
-	if (checkquantiles(x7)) {
+	if (checkquantiles(x7, STOP = FALSE)) {
 		dx 	<- abs(x7 - x7[4])
 		lp7	<- logit(p7)
 		m   <- x7[4]
@@ -304,7 +298,7 @@ estimkiener5 <- function(x5, p5, maxk = 10) {
 	if (length(x5) != 5) {stop("length(x5) is of wrong size. Must be 5.")}
 	if (length(p5) != 5) {stop("length(p5) is of wrong size. Must be 5.")}
 	names(x5) <- NULL
-	if (checkquantiles(x5)) {
+	if (checkquantiles(x5, STOP = FALSE)) {
 		dx  <- abs(x5 - x5[3])
 		lp5 <- logit(p5)
 		m   <- x5[3]

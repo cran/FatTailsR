@@ -5,14 +5,13 @@
 #' @title Package FatTailsR 
 #' 
 #' @description
-#' This package includes Kiener distributions K1, K2, K3 and K4 and two estimation 
+#' This package includes Kiener distributions K1, K2, K3, K4 and K7 and two estimation 
 #' algorithms to characterize with a high precision symmetric or asymmetric 
 #' distributions with left and right fat tails that appear in market finance, 
 #' neuroscience and many other disciplines. The estimation of the distribution parameters, 
 #' quantiles, value-at-risk and expected shortfall is usually very accurate. 
 #' Two datasets are provided, as well as power hyperbolas and power hyperbolic 
 #' functions which are simplified versions of symmetric distribution K1.
-#' Some functions introduced in v1.2-0 were discarded or renamed.
 #' 
 #' Download the pdf cited in the references to get an overview of  
 #' the theoretical part and several examples on stocks and indices. 
@@ -26,22 +25,34 @@
 #' It's rather agile and easy to use! The various functions included in this package 
 #' can be assigned to the following groups:
 #' \enumerate{
-#'   \item Several vectors of probabilities: 
-#'         \itemize{
-#'         \item \code{\link{pprobs0}}, pprobs1, pprobs2, ..., pprobs9.
-#'         }
 #'   \item Two datasets presented in different formats:   
 #'         list, data.frame, timeSeries, xts, zoo:
 #'         \itemize{
 #'         \item \code{\link{getDSdata}}.
 #'         \item \code{\link{extractData}}, dfData, tData, xData, zData.
 #'         }
-#'   \item  Miscellaneous functions and functions related to the logistic function:
+#'   \item Functions to check the dimensions of vector, matrix, array, list:
 #'         \itemize{
-#'         \item \code{\link{dimdim}}, dimdim1.
+#'         \item \code{\link{dimdim}}, dimdim1, dimdimc.
+#'         }
+#'   \item Functions to calculate (positive, negative) prices to returns 
+#'         on vector, matrix, array, list, data.frame, timeSeries, xts, zoo:
+#'         \itemize{
+#'         \item \code{\link{elevate}}.
+#'         \item \code{\link{fatreturns}}, logreturns.
+#'         }
+#'   \item Several predefined vectors of probability. One function to check them.
+#'         A conversion function from probabilities to characters 
+#'         \itemize{
+#'         \item \code{\link{pprobs0}}, pprobs1, pprobs2, ..., pprobs9.
+#'         \item \code{\link{checkquantiles}}.
+#'         \item \code{\link{getnamesk}}.
+#'         }
+#'   \item Miscellaneous functions related to the logistic function:
+#'         \itemize{
 #'         \item \code{\link{logit}}, invlogit, ltmlogis, rtmlogis, eslogis.
 #'         }
-#'   \item Power hyperbolas, power hyperbolic functions and their inverses: 
+#'   \item Power hyperbolas, power hyperbolic functions and their reciprocal functions: 
 #'         \itemize{
 #'         \item \code{\link{exphp}}, coshp, sinhp, tanhp, sechp, cosechp, 
 #'               cotanhp.
@@ -54,7 +65,7 @@
 #'         \item d, p, q, r, dp, dq, l, dl, ql \code{\link{logishp}}.
 #'         \item \code{\link{kogit}}, invkogit.
 #'         }
-#'   \item Conversion functions between parameters of Kiener distributions K1, K2, K3, K4:
+#'   \item Conversion functions between parameters related to Kiener distributions K1, K2, K3, K4:
 #'         \itemize{
 #'         \item \code{\link{aw2k}}, aw2d, aw2e, ad2e, ad2k, ad2w, ae2d, ae2k, 
 #'                 ae2w, ak2e, ak2w, de2a, de2k, de2w, dk2a, dk2e, dw2a, dw2e, 
@@ -62,19 +73,20 @@
 #'                 kd2e, kd2w, ke2a, ke2d, ke2w, kw2a, kw2d, kw2e.
 #'         \item \code{\link{pk2pk}}.
 #'         }
-#'   \item Kiener distributions K1, K2, K3, K4:
+#'   \item Kiener distributions K1, K2, K3, K4 and the new K7 (introduced in v1.7-0):
 #'         \itemize{
 #'         \item d, p, q, r, dp, dq, l, dl, ql, var, ltm, rtm, dtmq, es \code{\link{kiener1}},
 #'         \item d, p, q, r, dp, dq, l, dl, ql, var, ltm, rtm, dtmq, es \code{\link{kiener2}},
 #'         \item d, p, q, r, dp, dq, l, dl, ql, var, ltm, rtm, dtmq, es \code{\link{kiener3}},
-#'         \item d, p, q, r, dp, dq, l, dl, ql, var, ltm, rtm, dtmq, es \code{\link{kiener4}}.
+#'         \item d, p, q, r, dp, dq, l, dl, ql, var, ltm, rtm, dtmq, es \code{\link{kiener4}},
+#'         \item d, p, q, r, dp, dq, l, dl, ql, var, ltm, rtm, dtmq, es \code{\link{kiener7}}.
 #'         }
 #'   \item Quantile (VaR) corrective function (as a multiplier of the logistic function). 
 #'         Expected shortfall corrective function (as a multiplier of the expected shortfall 
 #'         of the logistic distribution):
 #'         \itemize{
-#'         \item \code{\link{ckiener1}}, ckiener2, ckiener3, ckiener4.
-#'         \item \code{\link{hkiener1}}, hkiener2, hkiener3, hkiener4.
+#'         \item \code{\link{ckiener1}}, ckiener2, ckiener3, ckiener4, ckiener7.
+#'         \item \code{\link{hkiener1}}, hkiener2, hkiener3, hkiener4, hkiener7.
 #'         }
 #'   \item Moments of the distribution estimated from the dataset and from 
 #'         the regression parameters:
@@ -98,8 +110,9 @@
 #'         \item \code{\link{elevenprobs}}, sevenprobs, fiveprobs.
 #'         \item \code{\link{estimkiener11}}, estimkiener7, estimkiener5.
 #'         \item \code{\link{roundcoefk}}.
+#'         \item \code{\link{checkcoefk}}.
 #'         }
-#'   \item Predefined parameter subsets to extract the corresponding parameters 
+#'   \item Predefined subsets of parameters to extract them 
 #'         from the long vector \code{fitk} obtained after regression/estimation 
 #'         \code{regkienerLX}, \code{fitkienerX} :
 #'         \itemize{
@@ -179,9 +192,10 @@
 #' ### End block
 #' 
 #' 
-#' @importFrom  parallel detectCores makeCluster stopCluster parApply mclapply
-#' @import  timeSeries
 #' @import  minpack.lm
+#' @import  timeSeries
+#' @import  parallel 
+#' @import  methods
 #' @import  stats
 #' @rdname  FatTailsR
 #' @aliases FatTailsR

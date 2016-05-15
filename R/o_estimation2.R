@@ -1,6 +1,6 @@
 
 
-#' @include m_laplaceroll.R
+#' @include n_estimation.R
 
 
 
@@ -283,9 +283,11 @@
 #' 
 #' ### Array (new example introduced in v1.5-1)
 #' ### Increase the number of cores and crash R.
+#' ## Not run:
 #' arr <- array(rkiener1(3000), c(4,3,250))
 #' paramkienerX7(arr, ncores = 2)
 #' ## paramkienerX7(arr, ncores = 2) - paramkienerX(arr, ncores = 2)
+#' ## End(Not run)
 #'
 #' ### End
 #' 
@@ -304,12 +306,13 @@ if (ord < 1 || ord > 12) {
 	stop("ord must be between 1 and 12.") }
 if (!is.element(strtrim(algo, 1)[1], c("r", "e"))) { 
 	stop("algo must be r, reg, e, estim.") } 
-if (!checkquantiles(probak)) { stop("probak is not ordered.") }	
+# if (!checkquantiles(probak)) { stop("probak is not ordered.") }	
+checkquantiles(probak, proba = TRUE) # since version 1.6-2
 
 cubefitkienerX <- function(X, algo, ord, maxk, mink, maxe, probak, 
                            dgts, exfitk, ncores) {
 	mc <- .hnbcores(ncores)
-	cl <- parallel::makeCluster(mc, methods = FALSE)
+	cl <- parallel::makeCluster(mc, methods = TRUE)
 	z  <- aperm(parallel::parApply(cl, X, c(1,2), .hfitkienerX,
 				algo=algo, ord=ord, type=6, 
 				maxk=maxk, mink=mink, maxe=maxe, app=0, probak=probak, 
@@ -488,7 +491,7 @@ if (!is.element(strtrim(algo, 1)[1], c("r", "e"))) {
 cubekienerX <- function(X, algo, ord, maxk, mink, maxe, dgts, 
                         parnames, ncores) {
 	mc <- .hnbcores(ncores)
-	cl <- parallel::makeCluster(mc, methods = FALSE)
+	cl <- parallel::makeCluster(mc, methods = TRUE)
 	z  <- aperm(parallel::parApply(cl, X, c(1,2), .hparamkienerX,
 					algo=algo, ord=ord, type=6, 
 					maxk=maxk, mink=mink, maxe=maxe, app=0, 
@@ -633,9 +636,8 @@ return(z)
 paramkienerX7 <- function(X, dgts = 3, parnames = TRUE, dimnames = FALSE, ncores = 1) { 
 cubekienerX7 <- function(X, dgts, parnames, ncores) {
 	mc <- .hnbcores(ncores)
-	cl <- parallel::makeCluster(mc, methods = FALSE)
-	z  <- aperm(parallel::parApply(cl, X, c(1,2), 
-	            .hparamkienerX7, dgts, parnames), c(2,1,3))
+	cl <- parallel::makeCluster(mc, methods = TRUE)
+	z  <- aperm(parallel::parApply(cl, X, c(1,2), 	            .hparamkienerX7, dgts, parnames), c(2,1,3))
 	parallel::stopCluster(cl)
 return(z)
 }
@@ -693,7 +695,7 @@ return(z)
 paramkienerX5 <- function(X, dgts = 3, parnames = TRUE, dimnames = FALSE, ncores = 1) { 
 cubekienerX5 <- function(X, dgts, parnames, ncores) {
 	mc <- .hnbcores(ncores)
-	cl <- parallel::makeCluster(mc, methods = FALSE)
+	cl <- parallel::makeCluster(mc, methods = TRUE)
 	z  <- aperm(parallel::parApply(cl, X, c(1,2), 
 	            .hparamkienerX5, dgts, parnames), c(2,1,3))
 	parallel::stopCluster(cl)

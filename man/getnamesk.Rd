@@ -2,12 +2,17 @@
 % Please edit documentation in R/e_conversion.R
 \name{getnamesk}
 \alias{getnamesk}
+\alias{getnprobak}
 \title{Generate a list of vectors of characters from a vector of probabilities}
 \usage{
-getnamesk(probak = pprobs2)
+getnamesk(probak = pprobs2, check = TRUE)
+
+getnprobak(probak = pprobs2, check = TRUE)
 }
 \arguments{
 \item{probak}{a vector of ordered probabilities with 0 and 1 excluded.}
+
+\item{check}{boolean. Apply \code{\link{checkquantiles}} function.}
 }
 \description{
 Generate vector of characters from a vector of probabilities, replacing 

@@ -1,6 +1,6 @@
 
 
-#' @include n_estimation2.R
+#' @include o_estimation2.R
 
 
 

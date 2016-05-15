@@ -16,26 +16,31 @@ dimdimc(x)
 \item{x}{vector, matrix, array, data.frame, list.}
 }
 \description{
-Length and dimensions of vector, matrix, array, data.frame and list. 
+Dimensions and length of vector, matrix, array, data.frame and list. 
 A friendly version of \code{dim} that returns the true dimension 
 rather than the sometimes unexpected \code{NULL} value. 
 The number of dimensions appears first, then the length in each dimension. 
-A special case is list: the list length (number of items) is turned into a 
-negative integer and the length/dimension of each item is either positive 
+A special case is list: the list's length (number of items) is turned into a 
+negative integer and the dimension/length of each item is either positive 
 if the item is a vector, matrix, array or data.frame or negative if the item 
 is itself a list. Only the first level of the list is explored. 
+
 \code{dimdim1} and \code{dimdimc} return the first item of \code{dimdim}, 
 thus the true dimension, either as an integer or as a character 
-(in this latest case, always \code{"-1"} for lists). 
-Note: Some problems may occur with S4 objects like 
+and, in this latest case, always \code{"-1"} for lists. 
+
+Notes: From version 1.6.2 (April 2016), \code{dimdim(NULL) = c(0, 0)}.  
+(before \code{c(1, 0)}). Hence, \code{dimdim1(NULL) = 0} and 
+\code{dimdimc(NULL) = "0"}. 
+Some problems may occur with S4 objects like 
 \code{dimdim(qualityTools::fracDesign(k = 3, gen = "C = AB"))}.
 }
 \examples{
 
 require(timeSeries)
 
-dimdim(NULL) ; dimdim(NA) ; dimdim(NaN)
-dimdim(Inf) ; dimdim(TRUE) ; dimdim(FALSE)
+dimdim(NULL) 
+dimdim(NA); dimdim(NaN); dimdim(Inf); dimdim(TRUE); dimdim(FALSE)
 dimdim(11:39)
 dimdim(LETTERS[1:8])
 dimdim(matrix(1:60, ncol=5))
@@ -48,6 +53,9 @@ dimdim(getDSdata())
 dimdim(zData)
 dimdim(xData)
 dimdim(tData)
+
+dimdim1(matrix(1:60, ncol=5))
+dimdimc(matrix(1:60, ncol=5))
 dimdim1(tData)
 dimdimc(tData)
 

@@ -1,6 +1,6 @@
 
 
-#' @include l_estimation.R
+#' @include l_moments.R
 
 
 

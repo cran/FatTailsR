@@ -51,7 +51,7 @@ dtmqkiener4(p, m = 0, g = 1, k = 3.2, e = 0, lower.tail = TRUE,
   log.p = FALSE)
 
 eskiener4(p, m = 0, g = 1, k = 3.2, e = 0, lower.tail = TRUE,
-  log.p = FALSE)
+  log.p = FALSE, signedES = FALSE)
 }
 \arguments{
 \item{x}{vector of quantiles.}
@@ -78,9 +78,15 @@ eskiener4(p, m = 0, g = 1, k = 3.2, e = 0, lower.tail = TRUE,
 taken to be the number required.}
 
 \item{lp}{vector of logit of probabilities.}
+
+\item{signedES}{logical. FALSE (default) returns positive numbers for 
+left and right tails. TRUE returns negative number 
+(= \code{ltmkiener4}) for left tail and positive number 
+(= \code{rtmkiener4}) for right tail.}
 }
 \description{
-Density, distribution function, quantile function, random generation
+Density, distribution function, quantile function, random generation,
+value-at-risk, expected shortfall (+ signed left/right tail mean) 
 and additional formulae for asymmetric Kiener distribution K4.
 }
 \details{
@@ -372,8 +378,8 @@ Value at Risk, 9 May 2001. Download it from:
 }
 \seealso{
 Symmetric Kiener distribution K1 \code{\link{kiener1}}, 
-asymmetric Kiener distributions K2 and K3 
-\code{\link{kiener2}}, \code{\link{kiener3}}, 
+asymmetric Kiener distributions K2, K3 and K7
+\code{\link{kiener2}}, \code{\link{kiener3}}, \code{\link{kiener7}}, 
 conversion functions \code{\link{aw2k}}, 
 estimation function \code{\link{fitkienerX}},
 }

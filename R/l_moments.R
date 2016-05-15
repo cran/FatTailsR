@@ -1,6 +1,6 @@
 
 
-#' @include i_kiener4.R
+#' @include k_kienerES.R
 
 
 

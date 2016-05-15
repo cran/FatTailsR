@@ -7,7 +7,8 @@
 #' @title Asymmetric Kiener Distribution K2
 #'
 #' @description
-#' Density, distribution function, quantile function, random generation
+#' Density, distribution function, quantile function, random generation,
+#' value-at-risk, expected shortfall (+ signed left/right tail mean) 
 #' and additional formulae for asymmetric Kiener distribution K2.
 #'
 #' @param    x    vector of quantiles.
@@ -23,6 +24,10 @@
 #' @param    log           logical. If TRUE, densities are given in log scale.
 #' @param    lower.tail    logical. If TRUE, use p. If FALSE, use 1-p.
 #' @param    log.p         logical. If TRUE, probabilities p are given as log(p).
+#' @param    signedES      logical. FALSE (default) returns positive numbers for 
+#'                         left and right tails. TRUE returns negative number 
+#'                         (= \code{ltmkiener4}) for left tail and positive number 
+#'                         (= \code{rtmkiener4}) for right tail.
 #'
 #' @details
 #' Kiener distributions use the following parameters, some of them being redundant. 
@@ -141,8 +146,8 @@
 #' 
 #' @seealso 
 #' Symmetric Kiener distribution K1 \code{\link{kiener1}}, 
-#' asymmetric Kiener distributions K3 and K4 
-#' \code{\link{kiener3}}, \code{\link{kiener4}}, 
+#' asymmetric Kiener distributions K3, K4 and K7
+#' \code{\link{kiener3}}, \code{\link{kiener4}}, \code{\link{kiener7}}, 
 #' conversion functions \code{\link{aw2k}}, 
 #' estimation function \code{\link{fitkienerX}}, 
 #' regression function \code{\link{regkienerLX}}.
@@ -447,14 +452,20 @@ return(dtmq)
 #' @export
 #' @rdname kiener2
 eskiener2 <- function(p, m = 0, g = 1, a = 3.2, w = 3.2, 
-                      lower.tail = TRUE, log.p = FALSE) {
+                      lower.tail = TRUE, log.p = FALSE, signedES = FALSE) {
 	p   <- if (log.p) {exp(p)} else {p}
 	p   <- if(lower.tail) {p} else {1-p}
 	es  <- p
 	for (i in seq_along(p)) {
-		es[i] <- ifelse(p[i] <= 0.5, 
-					- ltmkiener2(p[i], m, g, a, w),
+		if (signedES) {
+			es[i] <- ifelse(p[i] <= 0.5, 
+					  ltmkiener2(p[i], m, g, a, w),
 					  rtmkiener2(p[i], m, g, a, w))
+		} else {
+			es[i] <- ifelse(p[i] <= 0.5, 
+				      abs(ltmkiener2(p[i], m, g, a, w)),
+					  abs(rtmkiener2(p[i], m, g, a, w)))		
+		}
 	}
 return(es)
 }

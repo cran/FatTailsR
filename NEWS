@@ -8,8 +8,42 @@ Suggestions for next versions
 
 
 
-FatTailsR 1.6-0 - 2016-02-20 - current version on CRAN
+FatTailsR 1.7-0 - 2016-05-15 - current version on CRAN
 ======================================================
+- Codename: Dimanche de Pentecote
+- MAIN NOVELTIES vs 1.6-0:
+-- (dpqr)kiener7() vectorized for vector and matrix
+-- checkcoefk(), replaceNA()
+-- fatreturns(), logret() and elevate()
+- See details below
+
+FatTailsR 1.6-6 - 2016-05-15
+- Version for AB and documentation synchronised with FatTailsRplot.
+- checkquantiles(..., STOP = FALSE) in estimkiener5/7/11().
+
+FatTailsR 1.6-4 - 2016-04-30
+- extractData(pr="r") uses fatreturns rather than 100*diff(log()). Much better...
+
+FatTailsR 1.6-3 - 2016-04-15
+- New page *kiener7.R and new functions *kiener7() with
+  (x,q,p) integer or vector and (coefk) vector or matrix.
+- New parameter signedES in eskiener12347.R(..., signedES = FALSE) 
+  FALSE = (abs(ltm), abs(rtm)). TRUE = (ltm, rtm).
+- Change the page names and collate order
+
+FatTailsR 1.6-2 - 2016-04-11
+- new functions: checkcoefk(), replaceNA()
+- new function: ckiener7() deals with p vector and coefk matrix (recycling)
+- dimdim(NULL) returns now c(0,0) (before c(1,0))
+- checkquantiles() rewritten with a stop by default except if STOP = FALSE
+- parallel::makeCluster() now requires package {methods}
+  
+FatTailsR 1.6-1 - 2016-04-03
+- fatreturns, logret and elevate transferred from FatTailsRplot to FatTailsR
+
+
+FatTailsR 1.6-0 - 2016-02-20 - in CRAN archives
+===============================================
 - Codename: Caucus in Nevada
 - Bug when lower.tail was FALSE. New version is such that:
   ltmkiener?(p, ..., lower.tail=FALSE) == rtmkiener?(p, ..., lower.tail=TRUE) 
@@ -22,7 +56,7 @@ FatTailsR 1.5-8 - 2016-02-04
   
 FatTailsR 1.5-6 - 2015-12-25
 - R updated from R-3.1.0 to R-3.2.3
-- Expected Shortfall added to regkienerLX (dfrESkPk and dfrESkLk)
+- Expected Shortfall added to {regkienerLX} (dfrESkPk and dfrESkLk)
 
 FatTailsR 1.5-3 - 2015-11-13
 - Improved parallelization of arrays in {fitkienerX} and {paramkienerX57}

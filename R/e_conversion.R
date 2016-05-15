@@ -8,18 +8,23 @@
 #' @title Length and Dimensions of Vector, Matrix, Array, Data.Frame, List
 #'
 #' @description
-#' Length and dimensions of vector, matrix, array, data.frame and list. 
+#' Dimensions and length of vector, matrix, array, data.frame and list. 
 #' A friendly version of \code{dim} that returns the true dimension 
 #' rather than the sometimes unexpected \code{NULL} value. 
 #' The number of dimensions appears first, then the length in each dimension. 
-#' A special case is list: the list length (number of items) is turned into a 
-#' negative integer and the length/dimension of each item is either positive 
+#' A special case is list: the list's length (number of items) is turned into a 
+#' negative integer and the dimension/length of each item is either positive 
 #' if the item is a vector, matrix, array or data.frame or negative if the item 
 #' is itself a list. Only the first level of the list is explored. 
+#' 
 #' \code{dimdim1} and \code{dimdimc} return the first item of \code{dimdim}, 
 #' thus the true dimension, either as an integer or as a character 
-#' (in this latest case, always \code{"-1"} for lists). 
-#' Note: Some problems may occur with S4 objects like 
+#' and, in this latest case, always \code{"-1"} for lists. 
+#' 
+#' Notes: From version 1.6.2 (April 2016), \code{dimdim(NULL) = c(0, 0)}.  
+#' (before \code{c(1, 0)}). Hence, \code{dimdim1(NULL) = 0} and 
+#' \code{dimdimc(NULL) = "0"}. 
+#' Some problems may occur with S4 objects like 
 #' \code{dimdim(qualityTools::fracDesign(k = 3, gen = "C = AB"))}.
 #' 
 #' @param        x    vector, matrix, array, data.frame, list.
@@ -28,8 +33,8 @@
 #' 
 #' require(timeSeries)
 #' 
-#' dimdim(NULL) ; dimdim(NA) ; dimdim(NaN)
-#' dimdim(Inf) ; dimdim(TRUE) ; dimdim(FALSE)
+#' dimdim(NULL) 
+#' dimdim(NA); dimdim(NaN); dimdim(Inf); dimdim(TRUE); dimdim(FALSE)
 #' dimdim(11:39)
 #' dimdim(LETTERS[1:8])
 #' dimdim(matrix(1:60, ncol=5))
@@ -42,27 +47,31 @@
 #' dimdim(zData)
 #' dimdim(xData)
 #' dimdim(tData)
+#' 
+#' dimdim1(matrix(1:60, ncol=5))
+#' dimdimc(matrix(1:60, ncol=5))
 #' dimdim1(tData)
 #' dimdimc(tData)
 #' 
 #' @export
 #' @name dimdim
 dimdim    <- function(x) { 
-z  <- 	if (is.list(x) & !is.data.frame(x)) { 
+	z  <- 	if (is.list(x) & !is.data.frame(x)) { 
 				c(-length(x), sapply(x, dimdim1))
+	} else { 
+		if (!is.null(dim(x))) { 
+			c(length(dim(x)), dim(x)) 
 		} else { 
-			if (!is.null(dim(x))) { 
-				c(length(dim(x)), dim(x)) 
+			if (max(NCOL(x), ncol(x), na.rm=TRUE) == 1) { 
+				c(NCOL(x), NROW(x)) 
 			} else { 
-				if (max(NCOL(x), ncol(x), na.rm=TRUE) == 1) { 
-					c(NCOL(x), NROW(x)) 
-				} else { 
-                    c(2, max(NROW(x), nrow(x), na.rm=TRUE), 
-					     max(NCOL(x), ncol(x), na.rm=TRUE)) 
-				}
+				c(2, max(NROW(x), nrow(x), na.rm=TRUE), 
+					 max(NCOL(x), ncol(x), na.rm=TRUE)) 
 			}
 		}
-names(z) <- NULL
+	}
+	if (is.null(x)) {z <- c(0, 0)} # new v1.6.2 April 2016
+	names(z) <- NULL
 return(z)
 }
 #' @export
@@ -375,6 +384,38 @@ return(zcoefk)
 }
 
 
+#' @title Check Coefk
+#'
+#' @description
+#' Check that coefk is either a vector of length 7 or a matrix with 7 columns
+#' or an array with length of last dimension equal to 7. 
+#' 
+#' @param    coefk      numeric, matrix or data.frame representing
+#'                      parameters \code{c(m,g,a,k,w,d,e)}.
+#' @param    dim        numeric. Accepted dimension(s) for coefk: 1 for vector, 
+#'                      2 for matrix, 3 for array. List is not accepted.  
+#'                      Default is c(1, 2).
+#' @param    STOP       boolean. If an error is encountered, TRUE stops
+#'                      the function and returns an error message. 
+#'                      FALSE just returns FALSE.
+#' 
+#' @examples     
+#' 
+#' (coefk <- paramkienerX(getDSdata()))
+#' checkcoefk(coefk)
+#' checkcoefk(t(coefk), STOP = FALSE)
+#' 
+#' @export
+#' @name checkcoefk
+checkcoefk <- function(coefk, dim = c(1, 2), STOP = TRUE) {
+	dcoefk <- dimdim(coefk)
+	test   <- (dcoefk[1] %in% dim) && (dcoefk[length(dcoefk)] == 7)
+	if (STOP && !test) {
+		stop("Something is wrong with coefk: 
+		      either dimension (1,2,3) or size (length/ncol must be 7).")
+	}
+return(test)
+}
 
 
 #' @title Round Coefk
@@ -495,6 +536,7 @@ return(z)
 #' The result is a list of vectors.
 #' 
 #' @param    probak    a vector of ordered probabilities with 0 and 1 excluded.
+#' @param    check     boolean. Apply \code{\link{checkquantiles}} function.
 #'
 #' @seealso 
 #' Probabilities: \code{\link{pprobs0}}
@@ -505,15 +547,15 @@ return(z)
 #' 
 #' @export
 #' @name getnamesk
-getnamesk <- function(probak = pprobs2) {
-
-if ((sum(probak <= 0) + sum(probak >= 1)) > 0) { stop("probak is not within (0, 1).") }
-if (!checkquantiles(probak)) { stop("probak is not ordered.") }
-nprobak  <- character(length(probak))
-for (i in 1:length(probak)) { 
-	nprobak[i] <- sub("0.", "p.", format(probak[i], nsmall=2, scientific=FALSE)) 
-	} 
-namesk <- list(
+getnamesk <- function(probak = pprobs2, check = TRUE) {
+# if ((sum(probak <= 0) + sum(probak >= 1)) > 0) { stop("probak is not within (0, 1).") }
+# if (!checkquantiles(probak)) { stop("probak is not ordered.") }
+# nprobak  <- character(length(probak))
+# for (i in 1:length(probak)) { 
+	# nprobak[i] <- sub("0.", "p.", format(probak[i], nsmall=2, scientific=FALSE)) 
+	# } 
+nprobak <- getnprobak(probak, check)   # since version 1.6-2
+namesk  <- list(
 	  probak = probak,
 	 nprobak = nprobak,
 	 nquantk = sub("p.", "q.",   nprobak),
@@ -528,7 +570,21 @@ namesk <- list(
 	 nlogisk = sub("p.", "l.",   nprobak),
 	ndlogisk = sub("p.", "dl.",  nprobak),
 	 ngaussk = sub("p.", "g.",   nprobak),
-	ndgaussk = sub("p.", "dg.",  nprobak)
+	ndgaussk = sub("p.", "dg.",  nprobak),
+      ndensk = sub("p.", "dp.",  nprobak),
+	ndquantk = sub("p.", "dq.",  nprobak)
 	)
 return(namesk)
 }
+#' @export
+#' @rdname getnamesk
+getnprobak <- function(probak = pprobs2, check = TRUE) {
+	if ((sum(probak <= 0) + sum(probak >= 1)) > 0) { stop("probak is not within (0, 1).") }
+	if (check) { checkquantiles(probak, proba = TRUE) }   # since version 1.6-2
+	nprobak  <- character(length(probak))
+	for (i in 1:length(probak)) { 
+		nprobak[i] <- sub("0.", "p.", format(probak[i], nsmall=2, scientific=FALSE)) 
+		} 
+return(nprobak)
+}
+

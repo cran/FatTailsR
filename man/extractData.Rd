@@ -44,7 +44,9 @@ and display one column only per stock.
   \item{ "SP500" from 1957-01-02 to 2013-12-31, dim 14350x1 (df, t, x, z). }
   \item{ "CHF" from 1995-01-02 to 2013-09-13, dim 4880x1 (t, x, z), 4880x8 (df). 
             Interst rates in Switzerland. Include negative prices at the end 
-            of the dataset. Care is required to calculate the returns! }
+            of the dataset. Care is required to calculate the returns! 
+            (Use \code{\link{fatreturns}} and \code{\link{elevate}}). 
+            See the examples if you decide or need to remove it from the list.}
 }
 
 Function \code{extractData} extracts 8 financiel series (DEXIA and CHF are not converted) 
@@ -63,9 +65,9 @@ The \code{start} date must be posterior to "2007-01-01" (default) and the
 \examples{
    
 
-require(zoo) 
-require(xts) 
-require(timeSeries) 
+library(zoo) 
+library(xts) 
+library(timeSeries) 
 
 ### dfData, tData, xData, zData : prices only
 attributes(dfData); attributes(tData); attributes(xData); attributes(zData) 
@@ -85,6 +87,12 @@ head(pbD <- extractData("p", "bfr"))
 head(rbD <- extractData("r", "bfr")) 
 head(pmD <- extractData("p", "mat")) 
 head(rmD <- extractData("r", "mat")) 
+
+### Remove item CHF (negative prices) from dfData, tData, xData, zData
+Z <- dfData[names(dfData)[1:9]]; attributes(Z)
+Z <- tData[names(tData)[1:9]]; attributes(Z)
+Z <- xData[names(xData)[1:9]]; attributes(Z)
+Z <- zData[names(zData)[1:9]]; attributes(Z)
 
 }
 \references{

@@ -51,7 +51,7 @@ dtmqkiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE,
   log.p = FALSE)
 
 eskiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE,
-  log.p = FALSE)
+  log.p = FALSE, signedES = FALSE)
 }
 \arguments{
 \item{x}{vector of quantiles.}
@@ -78,9 +78,15 @@ eskiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE,
 taken to be the number required.}
 
 \item{lp}{vector of logit of probabilities.}
+
+\item{signedES}{logical. FALSE (default) returns positive numbers for 
+left and right tails. TRUE returns negative number 
+(= \code{ltmkiener4}) for left tail and positive number 
+(= \code{rtmkiener4}) for right tail.}
 }
 \description{
-Density, distribution function, quantile function, random generation
+Density, distribution function, quantile function, random generation,
+value-at-risk, expected shortfall (+ signed left/right tail mean) 
 and additional formulae for asymmetric Kiener distribution K2.
 }
 \details{
@@ -346,8 +352,8 @@ Value at Risk, 9 May 2001. Download it from:
 }
 \seealso{
 Symmetric Kiener distribution K1 \code{\link{kiener1}}, 
-asymmetric Kiener distributions K3 and K4 
-\code{\link{kiener3}}, \code{\link{kiener4}}, 
+asymmetric Kiener distributions K3, K4 and K7
+\code{\link{kiener3}}, \code{\link{kiener4}}, \code{\link{kiener7}}, 
 conversion functions \code{\link{aw2k}}, 
 estimation function \code{\link{fitkienerX}}, 
 regression function \code{\link{regkienerLX}}.
