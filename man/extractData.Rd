@@ -2,7 +2,7 @@
 % Please edit documentation in R/b_data.R
 \name{extractData}
 \alias{extractData}
-\title{Datasets dfData, tData, xData, zData, extractData : extractData}
+\title{Datasets dfData, mData, tData, xData, zData, extractData : extractData}
 \usage{
 extractData(pr = "p", ft = "tss", start = "2007-01-01",
   end = "2013-12-31")
@@ -17,31 +17,30 @@ extractData(pr = "p", ft = "tss", start = "2007-01-01",
 \item{end}{character. End date.}
 }
 \description{
-dfData, tData, xData, zData are datasets made of lists of data.frame, timeSeries, 
-xts and zoo components. They describe dates and prices of 10 financial series
+dfData, mData, tData, xData, zData are datasets made of lists of data.frame, matrix, 
+timeSeries, xts and zoo components. They describe prices and returns of 10 financial series
 used in the documents and demos presented at 8th and 9th R/Rmetrics conferences  
 (2014, 2015). See the references. 
 The last serie (CHF, interest rates in Switzerland) exhibits negative prices. 
-The (log)returns must be calculated. All distributions of returns exhibit fat tails.
-Function \code{extractData} converts subsets of tData, xData, zData from a list 
-format to a 2 dimensions format.
+All distributions of logreturns exhibit fat tails.
+Function \code{extractData} converts subsets of mData, tData, xData, zData.
 }
 \details{
 10 financial series presented in four different formats for convenient use: 
 dfData is the complete dataset in data.frame format with dates as row.names 
 and one or several columns. 
-tData, xData and zData are respectively of timeSeries, xts and zoo formats  
-and display one column only per stock. 
+tData, xData and zData are lists of timeSeries, xts and zoo formats 
+and display only one column per stock. 
 \enumerate{
-  \item{ "GOLD" from 1999-01-04 to 2013-12-31, dim 3694x1 (df, t, x, z). }
+  \item{ "GOLD" from 1999-01-04 to 2013-12-31, dim 3694x1 (df, m, t, x, z). }
   \item{ "DEXIA" from 2008-10-27 to 20009-10-26, dim 255x1 (t, x, z), 255x5 (df). }
-  \item{ "SOCGEN" from 1992-07-20 to 2013-12-31, dim 5445x1 (t, x, z), 5445x5 (df). }
-  \item{ "VIVENDI" from 1992-07-20 to 2013-12-31, dim 5444x1 (t, x, z) 5444x5 (df). }
-  \item{ "EURUSD" from 1999-01-03 to 2013-12-31, dim 3843x1 (t, x, z), 3843x4 (df). }
-  \item{ "VIX" from 2004-01-02 to 2013-12-31, dim 2517x1 (t, x, z), 2517x4 (df). }
-  \item{ "CAC40" from 1988-01-04 to 2013-12-31, dim 6574x1 (t, x, z), 6574x4 (df). }
-  \item{ "DJIA" from 1896-05-26 to 2013-12-31, dim 32064x1 (df, t, x, z). }
-  \item{ "SP500" from 1957-01-02 to 2013-12-31, dim 14350x1 (df, t, x, z). }
+  \item{ "SOCGEN" from 1992-07-20 to 2013-12-31, dim 5445x1 (m, t, x, z), 5445x5 (df). }
+  \item{ "VIVENDI" from 1992-07-20 to 2013-12-31, dim 5444x1 (m, t, x, z) 5444x5 (df). }
+  \item{ "EURUSD" from 1999-01-03 to 2013-12-31, dim 3843x1 (m, t, x, z), 3843x4 (df). }
+  \item{ "VIX" from 2004-01-02 to 2013-12-31, dim 2517x1 (m, t, x, z), 2517x4 (df). }
+  \item{ "CAC40" from 1988-01-04 to 2013-12-31, dim 6574x1 (m, t, x, z), 6574x4 (df). }
+  \item{ "DJIA" from 1896-05-26 to 2013-12-31, dim 32064x1 (m, df, t, x, z). }
+  \item{ "SP500" from 1957-01-02 to 2013-12-31, dim 14350x1 (m, df, t, x, z). }
   \item{ "CHF" from 1995-01-02 to 2013-09-13, dim 4880x1 (t, x, z), 4880x8 (df). 
             Interst rates in Switzerland. Include negative prices at the end 
             of the dataset. Care is required to calculate the returns! 
@@ -49,12 +48,13 @@ and display one column only per stock.
             See the examples if you decide or need to remove it from the list.}
 }
 
-Function \code{extractData} extracts 8 financiel series (DEXIA and CHF are not converted) 
-and converts them into a 2 dimensions object with any of the following class:
+Function \code{extractData} extracts 8 financial series from matrix mData 
+(DEXIA and CHF are not included) and converts them into a 2 dimensions object 
+with any of the following class:
 \itemize{
-  \item{ "tss" is for timeSeries. }
-  \item{ "xts" is for xts. }
-  \item{ "zoo" is for zoo. }
+  \item{ "tss" is for timeSeries with a timeDate index. }
+  \item{ "xts" is for xts with a POSIXct index. }
+  \item{ "zoo" is for zoo with a Date index. }
   \item{ "dfr" is the usual R data.frame with the Date as index. }
   \item{ "bfr" is a data.frame with the Date in the first column. }
   \item{ "mat" is a matrix with the Date in the rownames. }
@@ -72,6 +72,7 @@ library(timeSeries)
 ### dfData, tData, xData, zData : prices only
 attributes(dfData); attributes(tData); attributes(xData); attributes(zData) 
 lapply(dfData, head, 3)
+lapply( mData, head, 3)
 lapply( tData, head, 3)
 lapply( xData, head, 3)
 lapply( zData, head, 3)
@@ -109,4 +110,3 @@ P. Kiener, Fat tail analysis and package FatTailsR,
 \code{\link{tData}}, \code{\link{xData}}, \code{\link{zData}}, \code{\link{dfData}},
 \code{\link{getDSdata}}.
 }
-

@@ -37,4 +37,3 @@ lines(X, elevate(X, e = 0.5), col = 4)
 lines(X, elevate(X, e = 0),   col = 1)
 
 }
-

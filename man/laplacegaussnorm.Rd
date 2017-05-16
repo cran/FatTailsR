@@ -45,4 +45,3 @@ lgn$dfrQnLn
 \seealso{
 The regression function \code{\link{regkienerLX}}.
 }
-

@@ -2,8 +2,8 @@
 % Please edit documentation in R/n_estimation.R
 \name{estimkiener11}
 \alias{estimkiener11}
-\alias{estimkiener5}
 \alias{estimkiener7}
+\alias{estimkiener5}
 \title{Estimation Functions with 5, 7 or 11 Quantiles}
 \usage{
 estimkiener11(x11, p11, ord = 7, maxk = 10)
@@ -97,4 +97,3 @@ roundcoefk(rbind(coefk, mcoefk), 13)
 \code{\link{elevenprobs}}, \code{\link{paramkienerX}}, \code{\link[stats]{quantile}},
 \code{\link{roundcoefk}}.
 }
-

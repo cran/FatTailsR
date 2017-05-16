@@ -2,8 +2,8 @@
 % Please edit documentation in R/n_estimation.R
 \name{elevenprobs}
 \alias{elevenprobs}
-\alias{fiveprobs}
 \alias{sevenprobs}
+\alias{fiveprobs}
 \title{Eleven, Seven, Five Probabilities}
 \usage{
 elevenprobs(X, parnames = FALSE)
@@ -54,4 +54,3 @@ mtext(eX, side = 4, at = leX, las = 1, line = -3.3)
 \seealso{
 \code{\link{fitkienerX}}, \code{\link{estimkiener11}}.
 }
-

@@ -68,4 +68,3 @@ fitkienerX(DS[[j]], exfitk = exfit3)
 
 }
 \keyword{datasets}
-

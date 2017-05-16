@@ -57,4 +57,3 @@ checkquantiles(matrix((1:12)/16, ncol=3), proba = TRUE, STOP = FALSE)
 ## End(Not run)
 
 }
-

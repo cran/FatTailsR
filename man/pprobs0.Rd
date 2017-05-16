@@ -71,4 +71,3 @@ pprobs9 <- c(0.0001, 0.00025, 0.0005, 0.001, 0.0025, 0.005, 0.01, 0.025, 0.05,
 The conversion function \code{\link{getnamesk}}
 }
 \keyword{datasets}
-

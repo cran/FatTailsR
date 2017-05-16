@@ -273,4 +273,3 @@ reg$fitk[c(exfit1, exfit4)]
     Other estimation function: \code{\link{fitkienerX}} and its derivatives.
     \code{fitk} subsetting: \code{\link{exfit0}}.
 }
-

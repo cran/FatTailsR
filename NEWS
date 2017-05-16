@@ -7,9 +7,24 @@ Suggestions for next versions
 - Robust regression to reduce influence of outliers
 
 
-
-FatTailsR 1.7-0 - 2016-05-15 - current version on CRAN
+FatTailsR 1.7-5 - 2017-05-16 - current version on CRAN
 ======================================================
+- Codename: Sister's birthday
+- Version for MNHN Semin-R conference (2017-06-16)
+-- http://rug.mnhn.fr/semin-r/PDF/JourneeR-2017-Programme.pdf
+- Nothing new in this subversion
+- MAIN NOVELTIES vs 1.7-0:
+
+FatTailsR 1.7-3 - 2017-01-07
+- mData 
+- extractData rewritten: "zoo" produces an index in Date format 
+
+FatTailsR 1.7-2 - 2016-10-26
+- Package generated from Windows and Linux
+
+
+FatTailsR 1.7-0 - 2016-05-15 - in CRAN archives
+===============================================
 - Codename: Dimanche de Pentecote
 - MAIN NOVELTIES vs 1.6-0:
 -- (dpqr)kiener7() vectorized for vector and matrix

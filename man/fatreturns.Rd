@@ -69,4 +69,3 @@ fatreturns(extractData())
 logreturns(getDSdata())
 
 }
-

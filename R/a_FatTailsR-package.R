@@ -26,10 +26,10 @@
 #' can be assigned to the following groups:
 #' \enumerate{
 #'   \item Two datasets presented in different formats:   
-#'         list, data.frame, timeSeries, xts, zoo:
+#'         list, data.frame, matrix, timeSeries, xts, zoo:
 #'         \itemize{
 #'         \item \code{\link{getDSdata}}.
-#'         \item \code{\link{extractData}}, dfData, tData, xData, zData.
+#'         \item \code{\link{extractData}}, dfData, mData, tData, xData, zData.
 #'         }
 #'   \item Functions to check the dimensions of vector, matrix, array, list:
 #'         \itemize{

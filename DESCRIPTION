@@ -6,8 +6,8 @@ Description: Kiener distributions K1, K2, K3, K4 and K7 to characterize
     a high accuracy distribution parameters, quantiles, value-at-risk and expected
     shortfall. Include power hyperbolas and power hyperbolic functions. 
 URL: http://www.inmodelia.com/fattailsr-en.html
-Version: 1.7-0
-Date: 2016-05-15
+Version: 1.7-5
+Date: 2017-05-16
 Author: Patrice Kiener
 Maintainer: Patrice Kiener <fattailsr@inmodelia.com>
 Depends: R (>= 3.1.0)
@@ -21,7 +21,7 @@ Collate: 'a_FatTailsR-package.R' 'b_data.R' 'c_trigohp.R' 'd_logishp.R'
         'i_kiener4.R' 'j_kiener7.R' 'k_kienerES.R' 'l_moments.R'
         'm_laplaceroll.R' 'n_estimation.R' 'o_estimation2.R'
         'p_regression.R'
-RoxygenNote: 5.0.1
-Packaged: 2016-05-15 09:15:00 UTC; Patrice
+RoxygenNote: 6.0.1
+Packaged: 2017-05-16 18:32:27 UTC; Patrice
 Repository: CRAN
-Date/Publication: 2016-05-15 14:43:27
+Date/Publication: 2017-05-16 19:05:13 UTC

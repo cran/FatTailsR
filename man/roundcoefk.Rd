@@ -57,4 +57,3 @@ roundcoefk(mat, dgts = 15)
 
 
 }
-

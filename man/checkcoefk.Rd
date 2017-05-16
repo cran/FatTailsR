@@ -30,4 +30,3 @@ checkcoefk(coefk)
 checkcoefk(t(coefk), STOP = FALSE)
 
 }
-

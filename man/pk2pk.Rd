@@ -83,4 +83,3 @@ Local conversion functions \code{\link{aw2k}},
 Kiener distributions K1, K2, K3 and K4: \code{\link{kiener1}}, 
 \code{\link{kiener2}}, \code{\link{kiener3}}, \code{\link{kiener4}}
 }
-

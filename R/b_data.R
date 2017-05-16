@@ -81,10 +81,10 @@ return(DS)
 
 
 
-#' @title Datasets dfData, tData, xData, zData, extractData : dfData
+#' @title Datasets dfData, mData, tData, xData, zData, extractData : dfData
 #'
 #' @description
-#' A list of datasets in data.frame, timeSeries, xts and zoo formats. 
+#' A list of datasets in data.frame, matrix, timeSeries, xts and zoo formats. 
 #' This is the data.frame format. 
 #' Visit \code{\link{extractData}} for more information. 
 #' 
@@ -93,10 +93,22 @@ return(DS)
 #' @name dfData
 NULL
 
-#' @title Datasets dfData, tData, xData, zData, extractData : tData
+#' @title Datasets dfData, mData, tData, xData, zData, extractData : mData
 #'
 #' @description
-#' A list of datasets in data.frame, timeSeries, xts and zoo formats. 
+#' A list of datasets in data.frame, matrix, timeSeries, xts and zoo formats. 
+#' This is the matrix format. 
+#' Visit \code{\link{extractData}} for more information. 
+#' 
+#' @keywords datasets
+#' @docType data
+#' @name mData
+NULL
+
+#' @title Datasets dfData, mData, tData, xData, zData, extractData : tData
+#'
+#' @description
+#' A list of datasets in data.frame, matrix, timeSeries, xts and zoo formats. 
 #' This is the timeSeries format. 
 #' Visit \code{\link{extractData}} for more information. 
 #' 
@@ -105,10 +117,10 @@ NULL
 #' @name tData
 NULL
 
-#' @title Datasets dfData, tData, xData, zData, extractData : xData
+#' @title Datasets dfData, mData, tData, xData, zData, extractData : xData
 #'
 #' @description
-#' A list of datasets in data.frame, timeSeries, xts and zoo formats. 
+#' A list of datasets in data.frame, matrix, timeSeries, xts and zoo formats. 
 #' This is the xts format. 
 #' Visit \code{\link{extractData}} for more information. 
 #' 
@@ -117,10 +129,10 @@ NULL
 #' @name xData
 NULL
 
-#' @title Datasets dfData, tData, xData, zData, extractData : zData
+#' @title Datasets dfData, mData, tData, xData, zData, extractData : zData
 #'
 #' @description
-#' A list of datasets in data.frame, timeSeries, xts and zoo formats. 
+#' A list of datasets in data.frame, matrix, timeSeries, xts and zoo formats. 
 #' This is the zoo format. 
 #' Visit \code{\link{extractData}} for more information. 
 #' 
@@ -131,40 +143,38 @@ NULL
 
 
 
-#' @title Datasets dfData, tData, xData, zData, extractData : extractData
+#' @title Datasets dfData, mData, tData, xData, zData, extractData : extractData
 #'
 #' @description 
-#' dfData, tData, xData, zData are datasets made of lists of data.frame, timeSeries, 
-#' xts and zoo components. They describe dates and prices of 10 financial series
+#' dfData, mData, tData, xData, zData are datasets made of lists of data.frame, matrix, 
+#' timeSeries, xts and zoo components. They describe prices and returns of 10 financial series
 #' used in the documents and demos presented at 8th and 9th R/Rmetrics conferences  
 #' (2014, 2015). See the references. 
 #' The last serie (CHF, interest rates in Switzerland) exhibits negative prices. 
-#' The (log)returns must be calculated. All distributions of returns exhibit fat tails.
-#' Function \code{extractData} converts subsets of tData, xData, zData from a list 
-#' format to a 2 dimensions format.
+#' All distributions of logreturns exhibit fat tails.
+#' Function \code{extractData} converts subsets of mData, tData, xData, zData.
 #' 
 #' @param    pr	   	 character. Extract prices or returns: \code{c("p","r","prices","returns")}. 
 #' @param    ft    	 character. Output format among \code{c("tss","xts","zoo","dfr","bfr","mat")}. 
 #' @param    start   character. Start date.
 #' @param    end	 character. End date.
-## ## @param    ttData	 dataset. The dataset used by extractData. Do not change it.
 #'
 #' @details
 #' 10 financial series presented in four different formats for convenient use: 
 #' dfData is the complete dataset in data.frame format with dates as row.names 
 #' and one or several columns. 
-#' tData, xData and zData are respectively of timeSeries, xts and zoo formats  
-#' and display one column only per stock. 
+#' tData, xData and zData are lists of timeSeries, xts and zoo formats 
+#' and display only one column per stock. 
 #' \enumerate{
-#'   \item{ "GOLD" from 1999-01-04 to 2013-12-31, dim 3694x1 (df, t, x, z). }
+#'   \item{ "GOLD" from 1999-01-04 to 2013-12-31, dim 3694x1 (df, m, t, x, z). }
 #'   \item{ "DEXIA" from 2008-10-27 to 20009-10-26, dim 255x1 (t, x, z), 255x5 (df). }
-#'   \item{ "SOCGEN" from 1992-07-20 to 2013-12-31, dim 5445x1 (t, x, z), 5445x5 (df). }
-#'   \item{ "VIVENDI" from 1992-07-20 to 2013-12-31, dim 5444x1 (t, x, z) 5444x5 (df). }
-#'   \item{ "EURUSD" from 1999-01-03 to 2013-12-31, dim 3843x1 (t, x, z), 3843x4 (df). }
-#'   \item{ "VIX" from 2004-01-02 to 2013-12-31, dim 2517x1 (t, x, z), 2517x4 (df). }
-#'   \item{ "CAC40" from 1988-01-04 to 2013-12-31, dim 6574x1 (t, x, z), 6574x4 (df). }
-#'   \item{ "DJIA" from 1896-05-26 to 2013-12-31, dim 32064x1 (df, t, x, z). }
-#'   \item{ "SP500" from 1957-01-02 to 2013-12-31, dim 14350x1 (df, t, x, z). }
+#'   \item{ "SOCGEN" from 1992-07-20 to 2013-12-31, dim 5445x1 (m, t, x, z), 5445x5 (df). }
+#'   \item{ "VIVENDI" from 1992-07-20 to 2013-12-31, dim 5444x1 (m, t, x, z) 5444x5 (df). }
+#'   \item{ "EURUSD" from 1999-01-03 to 2013-12-31, dim 3843x1 (m, t, x, z), 3843x4 (df). }
+#'   \item{ "VIX" from 2004-01-02 to 2013-12-31, dim 2517x1 (m, t, x, z), 2517x4 (df). }
+#'   \item{ "CAC40" from 1988-01-04 to 2013-12-31, dim 6574x1 (m, t, x, z), 6574x4 (df). }
+#'   \item{ "DJIA" from 1896-05-26 to 2013-12-31, dim 32064x1 (m, df, t, x, z). }
+#'   \item{ "SP500" from 1957-01-02 to 2013-12-31, dim 14350x1 (m, df, t, x, z). }
 #'   \item{ "CHF" from 1995-01-02 to 2013-09-13, dim 4880x1 (t, x, z), 4880x8 (df). 
 #'             Interst rates in Switzerland. Include negative prices at the end 
 #'             of the dataset. Care is required to calculate the returns! 
@@ -172,12 +182,13 @@ NULL
 #'             See the examples if you decide or need to remove it from the list.}
 #' }
 #' 
-#' Function \code{extractData} extracts 8 financiel series (DEXIA and CHF are not converted) 
-#' and converts them into a 2 dimensions object with any of the following class:
+#' Function \code{extractData} extracts 8 financial series from matrix mData 
+#' (DEXIA and CHF are not included) and converts them into a 2 dimensions object 
+#' with any of the following class:
 #' \itemize{
-#'   \item{ "tss" is for timeSeries. }
-#'   \item{ "xts" is for xts. }
-#'   \item{ "zoo" is for zoo. }
+#'   \item{ "tss" is for timeSeries with a timeDate index. }
+#'   \item{ "xts" is for xts with a POSIXct index. }
+#'   \item{ "zoo" is for zoo with a Date index. }
 #'   \item{ "dfr" is the usual R data.frame with the Date as index. }
 #'   \item{ "bfr" is a data.frame with the Date in the first column. }
 #'   \item{ "mat" is a matrix with the Date in the rownames. }
@@ -208,6 +219,7 @@ NULL
 #' ### dfData, tData, xData, zData : prices only
 #' attributes(dfData); attributes(tData); attributes(xData); attributes(zData) 
 #' lapply(dfData, head, 3)
+#' lapply( mData, head, 3)
 #' lapply( tData, head, 3)
 #' lapply( xData, head, 3)
 #' lapply( zData, head, 3)
@@ -234,58 +246,46 @@ NULL
 #' @name extractData
 extractData <- function(pr = "p", ft = "tss",
 						start = "2007-01-01", end = "2013-12-31") {
-# tDataEnv <- new.env(parent = baseenv())
-# utils::data("tData", package = character(0)) # v1.3-10 no visible binding
-if (is.na(charmatch(strtrim(pr, 1)[1], 
-          c("p", "r")))) { 
-		  stop("pr must be p or r, prices or returns.") 
-		  }
-if (is.na(charmatch(ft, 
-          c("tss","xts","zoo","dfr","bfr","mat")))) { 
-		  stop("ft must be tss, xts, zoo, dfr, bfr, mat.") 
-		  }
-	start3   <- as.Date("2006-12-31")
-	end3     <- as.Date("2014-01-01")
-	start2   <- as.Date(start)
-	end2     <- as.Date(end)
-	startend <- as.numeric(c(start3, start2, end2, end3))
-if (checkquantiles(startend, STOP = FALSE)) {
-		start1   <- start2
-		end1     <- end2
-	} else {
-		start1   <- start3
-		end1     <- end3
-		warning("start or end dates are not in range 2007-01-01 - 2013-12-31. Ignored")
-	}
-	# 24/10/2015 10 heures. il faut remplacer tData par 
-	# get("tData") ou get("tData", pos = parent.frame(n = 1)) 
-	lData  <- lapply(get("tData"), timeSeries::window, start = start1, end = end1) 
-	ptD    <- cbind(lData[[1]], lData[[3]], lData[[4]], lData[[5]], 
-				    lData[[6]], lData[[7]], lData[[8]], lData[[9]])
-	colnames(ptD) <- names(lData)[-c(2, 10)]
-	# rtD <- 100 * diff(log(ptD))
-	rtD <- fatreturns(ptD)
-	z   <- if (strtrim(pr, 1)[1] == "p") {
-				switch(ft,
-				"tss" = ptD,
-				"xts" = xts::as.xts(ptD),
-				"zoo" = zoo::as.zoo(ptD),
-				"dfr" = as.data.frame(ptD, stringsAsFactors = FALSE),
-				"bfr" = data.frame(Date = as.Date(rownames(ptD)), ptD, 
-						     row.names = NULL, stringsAsFactors = FALSE),
-				"mat" = as.matrix(ptD))
-			} else {
-				switch(ft,
-				"tss" = rtD,
-				"xts" = xts::as.xts(rtD),
-				"zoo" = zoo::as.zoo(rtD),
-				"dfr" = as.data.frame(rtD, stringsAsFactors = FALSE),
-				"bfr" = data.frame(Date = as.Date(rownames(rtD)), rtD, 
-						     row.names = NULL, stringsAsFactors = FALSE),
-				"mat" = as.matrix(rtD))
-			}
-	# dimnames(z) <- list( "DATES" = dimnames(z)[[1]], 
-                        # "STOCKS" = dimnames(z)[[2]])
+    if (is.na(charmatch(strtrim(pr, 1)[1], 
+              c("p", "r")))) { 
+              stop("pr must be p or r, prices or returns.") 
+    }
+    if (is.na(charmatch(ft, 
+              c("tss","xts","zoo","dfr","bfr","mat")))) { 
+              stop("ft must be tss, xts, zoo, dfr, bfr or mat.") 
+    }
+    start3   <- as.Date("2006-12-31")
+    end3     <- as.Date("2014-01-01")
+    start2   <- as.Date(start)
+    end2     <- as.Date(end)
+    startend <- as.numeric(c(start3, start2, end2, end3))
+    if (checkquantiles(startend, STOP = FALSE)) {
+        start1   <- start2
+        end1     <- end2
+    } else {
+        start1   <- start3
+        end1     <- end3
+        warning("start or end dates were ignored as not in range 2007-01-01 - 2013-12-31")
+    }
+    mD   <- get("mData")
+    DmD  <- as.Date(rownames(mD))
+    win  <- DmD >= start1 & DmD <= end1
+    mat  <- if (strtrim(pr, 1)[1] == "r") { 
+                fatreturns(mD[win,])
+            } else { 
+                mD[win,]
+            }
+    z <- switch(ft,
+        "tss" = timeSeries::timeSeries(mat, 
+                                       as.Date(rownames(mat)), 
+                                       units = colnames(mat)),
+        "xts" = xts::xts(mat, as.POSIXct(rownames(mat))),
+        "zoo" = zoo::zoo(mat, as.Date(rownames(mat))),
+        "dfr" = as.data.frame(mat, stringsAsFactors = FALSE),
+        "bfr" = data.frame("DATE" = rownames(mat), mat, 
+                     row.names = NULL, stringsAsFactors = FALSE),
+        "mat" = mat
+        ) 
 return(z)
 }
 

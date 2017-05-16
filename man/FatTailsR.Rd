@@ -2,8 +2,8 @@
 % Please edit documentation in R/a_FatTailsR-package.R
 \docType{package}
 \name{FatTailsR-package}
-\alias{FatTailsR}
 \alias{FatTailsR-package}
+\alias{FatTailsR}
 \title{Package FatTailsR}
 \description{
 This package includes Kiener distributions K1, K2, K3, K4 and K7 and two estimation 
@@ -27,10 +27,10 @@ It's rather agile and easy to use! The various functions included in this packag
 can be assigned to the following groups:
 \enumerate{
   \item Two datasets presented in different formats:   
-        list, data.frame, timeSeries, xts, zoo:
+        list, data.frame, matrix, timeSeries, xts, zoo:
         \itemize{
         \item \code{\link{getDSdata}}.
-        \item \code{\link{extractData}}, dfData, tData, xData, zData.
+        \item \code{\link{extractData}}, dfData, mData, tData, xData, zData.
         }
   \item Functions to check the dimensions of vector, matrix, array, list:
         \itemize{
@@ -196,4 +196,3 @@ Download it from:
 \keyword{distribution}
 \keyword{models}
 \keyword{symbolmath}
-

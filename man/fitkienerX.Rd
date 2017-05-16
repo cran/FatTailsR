@@ -3,8 +3,8 @@
 \name{fitkienerX}
 \alias{fitkienerX}
 \alias{paramkienerX}
-\alias{paramkienerX5}
 \alias{paramkienerX7}
+\alias{paramkienerX5}
 \title{Estimation and Regression Functions for Kiener Distributions}
 \usage{
 fitkienerX(X, algo = c("r", "reg", "e", "estim"), ord = 7, maxk = 10,
@@ -308,4 +308,3 @@ P. Kiener, Fat tail analysis and package FatTailsR,
 \code{\link{regkienerLX}}, \code{\link{estimkiener11}}, 
            \code{\link{roundcoefk}}, \code{\link{exfit6}}.
 }
-

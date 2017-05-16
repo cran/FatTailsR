@@ -54,4 +54,3 @@ sapply(DS, head)
 \code{\link[timeSeries]{TimeSeriesData}}, \code{\link{regkienerLX}}, 
 \code{\link{fitkienerX}}
 }
-

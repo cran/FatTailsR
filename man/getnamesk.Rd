@@ -48,4 +48,3 @@ getnamesk(pprobs8)
 \seealso{
 Probabilities: \code{\link{pprobs0}}
 }
-

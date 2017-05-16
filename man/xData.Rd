@@ -3,11 +3,10 @@
 \docType{data}
 \name{xData}
 \alias{xData}
-\title{Datasets dfData, tData, xData, zData, extractData : xData}
+\title{Datasets dfData, mData, tData, xData, zData, extractData : xData}
 \description{
-A list of datasets in data.frame, timeSeries, xts and zoo formats. 
+A list of datasets in data.frame, matrix, timeSeries, xts and zoo formats. 
 This is the xts format. 
 Visit \code{\link{extractData}} for more information.
 }
 \keyword{datasets}
-
