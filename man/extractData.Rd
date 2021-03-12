@@ -4,8 +4,7 @@
 \alias{extractData}
 \title{Datasets dfData, mData, tData, xData, zData, extractData : extractData}
 \usage{
-extractData(pr = "p", ft = "tss", start = "2007-01-01",
-  end = "2013-12-31")
+extractData(pr = "p", ft = "tss", start = "2007-01-01", end = "2013-12-31")
 }
 \arguments{
 \item{pr}{character. Extract prices or returns: \code{c("p","r","prices","returns")}.}
@@ -100,11 +99,11 @@ Z <- zData[names(zData)[1:9]]; attributes(Z)
 P. Kiener, Explicit models for bilateral fat-tailed distributions and 
 applications in finance with the package FatTailsR, 8th R/Rmetrics Workshop 
 and Summer School, Paris, 27 June 2014. Download it from: 
-\url{http://www.inmodelia.com/exemples/2014-0627-Rmetrics-Kiener-en.pdf}
+\url{https://www.inmodelia.com/exemples/2014-0627-Rmetrics-Kiener-en.pdf}
 
 P. Kiener, Fat tail analysis and package FatTailsR, 
 9th R/Rmetrics Workshop and Summer School, Zurich, 27 June 2015. 
-\url{http://www.inmodelia.com/exemples/2015-0627-Rmetrics-Kiener-en.pdf}
+\url{https://www.inmodelia.com/exemples/2015-0627-Rmetrics-Kiener-en.pdf}
 }
 \seealso{
 \code{\link{tData}}, \code{\link{xData}}, \code{\link{zData}}, \code{\link{dfData}},

@@ -47,7 +47,7 @@ for (i in seq_along(lst)) {
       checkquantiles(lst[[i]], proba = TRUE, STOP = FALSE), 
       checkquantiles(lst[[i]], proba = FALSE, acceptNA = TRUE, STOP = FALSE), 
       checkquantiles(lst[[i]], proba = TRUE,  acceptNA = TRUE, STOP = FALSE), 
-	     "\\n") 
+	     "\n") 
 }
 
 sapply(lst, checkquantiles, proba = TRUE, acceptNA = TRUE, STOP = FALSE)

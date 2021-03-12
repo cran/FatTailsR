@@ -20,11 +20,9 @@
 \usage{
 dkiener2(x, m = 0, g = 1, a = 3.2, w = 3.2, log = FALSE)
 
-pkiener2(q, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE,
-  log.p = FALSE)
+pkiener2(q, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE, log.p = FALSE)
 
-qkiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE,
-  log.p = FALSE)
+qkiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE, log.p = FALSE)
 
 rkiener2(n, m = 0, g = 1, a = 3.2, w = 3.2)
 
@@ -38,14 +36,11 @@ dlkiener2(lp, m = 0, g = 1, a = 3.2, w = 3.2, log = FALSE)
 
 qlkiener2(lp, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE)
 
-varkiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE,
-  log.p = FALSE)
+varkiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE, log.p = FALSE)
 
-ltmkiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE,
-  log.p = FALSE)
+ltmkiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE, log.p = FALSE)
 
-rtmkiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE,
-  log.p = FALSE)
+rtmkiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE, log.p = FALSE)
 
 dtmqkiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE,
   log.p = FALSE)
@@ -339,16 +334,16 @@ round(cbind(p = pp, "1-p" = 1-pp,
 P. Kiener, Explicit models for bilateral fat-tailed distributions and 
 applications in finance with the package FatTailsR, 8th R/Rmetrics Workshop 
 and Summer School, Paris, 27 June 2014.  Download it from:  
-\url{http://www.inmodelia.com/exemples/2014-0627-Rmetrics-Kiener-en.pdf}
+\url{https://www.inmodelia.com/exemples/2014-0627-Rmetrics-Kiener-en.pdf}
 
 P. Kiener, Fat tail analysis and package FatTailsR, 
 9th R/Rmetrics Workshop and Summer School, Zurich, 27 June 2015. 
 Download it from: 
-\url{http://www.inmodelia.com/exemples/2015-0627-Rmetrics-Kiener-en.pdf}
+\url{https://www.inmodelia.com/exemples/2015-0627-Rmetrics-Kiener-en.pdf}
 
 C. Acerbi, D. Tasche, Expected shortfall: a natural coherent alternative to 
 Value at Risk, 9 May 2001. Download it from: 
-\url{http://www.bis.org/bcbs/ca/acertasc.pdf}
+\url{https://www.bis.org/bcbs/ca/acertasc.pdf}
 }
 \seealso{
 Symmetric Kiener distribution K1 \code{\link{kiener1}}, 

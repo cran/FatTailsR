@@ -15,11 +15,11 @@ paramkienerX(X, algo = c("r", "reg", "e", "estim"), ord = 7, maxk = 10,
   mink = 1.53, maxe = 0.5, dgts = 3, parnames = TRUE,
   dimnames = FALSE, ncores = 1)
 
-paramkienerX7(X, dgts = 3, parnames = TRUE, dimnames = FALSE,
-  ncores = 1)
+paramkienerX7(X, dgts = 3, n = 10, maxk = 20, maxe = 0.9,
+  parnames = TRUE, dimnames = FALSE, ncores = 1)
 
-paramkienerX5(X, dgts = 3, parnames = TRUE, dimnames = FALSE,
-  ncores = 1)
+paramkienerX5(X, dgts = 3, i = 4, maxk = 20, maxe = 0.9,
+  parnames = TRUE, dimnames = FALSE, ncores = 1)
 }
 \arguments{
 \item{X}{numeric. Vector, matrix, array or list of quantiles.}
@@ -47,6 +47,12 @@ for quantile estimation.}
 \item{ncores}{integer. The number of cores for parallel processing of arrays.}
 
 \item{parnames}{boolean. Display parameter names.}
+
+\item{n}{integer. The 1:n and (N+i-n):N elements of \code{X} used to 
+calculate synthetic quantiles at probability levels p1 and 1-p1.}
+
+\item{i}{integer. The i-th and (N-i)-th elements of \code{X} used to 
+extract probabilities p1 and 1-p1 and quantiles x(p) and x(1-p).}
 }
 \value{
 \code{paramkienerX}: a vector (or a matrix) of parameter estimates 
@@ -84,9 +90,10 @@ Use for instance \code{\link{exfit0}}, ..., \code{\link{exfit7}}.
 \description{
 Several functions to estimate the parameters of asymmetric Kiener distributions 
 and display the results in a numeric vector or in a matrix. 
-Algorithm \code{"reg"} (the default) uses a nonlinear regression model, 
-is slow but accurate. Algorithm \code{"estim"} just uses 5 to 11 quantiles, 
-is very fast but less accurate.
+Algorithm \code{"reg"} (the default) uses a nonlinear regression and handle 
+difficult cases. Algorithm \code{"estim"} has been completely rewritten 
+in version 1.8-0 and is now very accurate, even for \code{k<1}. Adjustement 
+on extreme quantiles can be controlled very precisely.
 }
 \details{
 FatTailsR package currently uses two different algorithms to estimate the 
@@ -302,7 +309,7 @@ paramkienerX7(arr, ncores = 2)
 \references{
 P. Kiener, Fat tail analysis and package FatTailsR, 
 9th R/Rmetrics Workshop and Summer School, Zurich, 27 June 2015. 
-\url{http://www.inmodelia.com/exemples/2015-0627-Rmetrics-Kiener-en.pdf}
+\url{https://www.inmodelia.com/exemples/2015-0627-Rmetrics-Kiener-en.pdf}
 }
 \seealso{
 \code{\link{regkienerLX}}, \code{\link{estimkiener11}}, 

@@ -10,16 +10,19 @@ estimkiener11(x11, p11, ord = 7, maxk = 10)
 
 estimkiener7(x7, p7, maxk = 10)
 
-estimkiener5(x5, p5, maxk = 10)
+estimkiener5(x5, p5, maxk = 20, maxe = 0.9)
 }
 \arguments{
 \item{ord}{integer. Option for probability selection and treatment.}
 
-\item{maxk}{numeric. Maximum allowed value for k (kappa).}
+\item{maxk}{numeric. Maximum value for k (kappa).}
 
 \item{x5, x7, x11}{vector of 5, 7 or 11 quantiles.}
 
 \item{p5, p7, p11}{vector of 5, 7 or 11 probabilities.}
+
+\item{maxe}{numeric. Maximum value for abs(e) (epsilon).
+Maximum is \code{maxe = 1}.}
 }
 \description{
 Several functions to estimate the parameters of asymmetric Kiener distributions 

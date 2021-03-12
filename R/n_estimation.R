@@ -13,13 +13,18 @@
 #'   \item{ \code{c(p1, p2, 0.25, 0.50, 0.75, 1-p2, 1-p1)} }
 #'   \item{ \code{c(p1, 0.25, 0.50, 0.75, 1-p1)} }
 #' }
-#' where p1, p2 and p3 are the most extreme probabilities of the dataset \code{X} 
-#' with values finishing either by \code{.x01} or \code{.x025} or \code{.x05}. 
-#' Parameters names are displayed if \code{parnames = TRUE}.
+#' where p1, p2 and p3 are the most extreme probabilities with values finishing 
+#' by \code{..01}, \code{..025} or \code{..05} that can be extracted from the 
+#' dataset \code{X}. Parameters names are displayed if \code{parnames = TRUE}.
 #' 
+#' From version 1.8-0, p1 and 1-p1 can be associated to the i-th and (N-i)-th element.
 #' 
 #' @param    X	       numeric. Vector of quantiles.
 #' @param    parnames  boolean. Output parameter vector with or without names.
+#' @param    i	       integer. The i-th and (N-i)-th elements for which the 
+#'                     probabilities p1 and 1-p1 are calculated. If (i == 0), the 
+#'                     method used before version 1.8-0 : the extreme finishing 
+#'                     by \code{..01}, \code{..025} or \code{..05}.
 #' 
 #' @seealso  \code{\link{fitkienerX}}, \code{\link{estimkiener11}}.
 #' 
@@ -74,14 +79,24 @@ return(p7)
 }
 #' @export
 #' @rdname elevenprobs
-fiveprobs <- function(X, parnames = FALSE) { 
-	listp <- c(as.numeric(c(0.25, 0.5, 1) %o% 10^(-8:-1)), 0.15, 0.20)
-	ltX   <- length(X)
-	p1    <- listp[findInterval(1/ltX, listp) + 1]
-	p5    <- c(p1, 0.25, 0.50, 0.75, 1-p1)
-	np5   <- character(length(p5))
-	for (i in 1:length(np5)) { np5[i] <- format(p5[i], nsmall=2, scientific=FALSE) } 
-	names(p5) <- if (parnames) { np5 } else { NULL }
+fiveprobs <- function (X, i = 4, parnames = FALSE) {
+    X  <- sort(as.numeric(X[is.finite(X)]))
+    N  <- length(X)
+    if (i == 0) {
+        listp <- c(as.numeric(c(0.25, 0.5, 1) %o% 10^(-8:-1)), 
+                   0.15, 0.20)
+        p1 <- listp[findInterval(1/N, listp) + 1]
+        p5 <- c(p1, 0.25, 0.5, 0.75, 1-p1)
+    } else { 
+        p5 <- c(i/(N+1), 0.25, 0.50, 0.75, (N+1-i)/(N+1))
+    }
+    if (parnames) {
+        np5 <- character(length(p5))
+        for (i in 1:length(np5)) {
+            np5[i] <- format(p5[i], nsmall = 2, scientific = FALSE)
+        } 
+        names(p5) <- np5 
+    }
 return(p5)
 }
 
@@ -172,7 +187,9 @@ return(z)
 #' @param    x5,x7,x11	   vector of 5, 7 or 11 quantiles. 
 #' @param    p5,p7,p11	   vector of 5, 7 or 11 probabilities. 
 #' @param    ord	       integer. Option for probability selection and treatment.
-#' @param    maxk	       numeric. Maximum allowed value for k (kappa).
+#' @param    maxk          numeric. Maximum value for k (kappa).
+#' @param    maxe	       numeric. Maximum value for abs(e) (epsilon).
+#'                         Maximum is \code{maxe = 1}.
 #' 
 #' @details
 #' These functions, called by \code{paramkienerX5}, \code{paramkienerX7}, 
@@ -294,26 +311,35 @@ return(z)
 }
 #' @export
 #' @rdname estimkiener11
-estimkiener5 <- function(x5, p5, maxk = 10) {
-	if (length(x5) != 5) {stop("length(x5) is of wrong size. Must be 5.")}
-	if (length(p5) != 5) {stop("length(p5) is of wrong size. Must be 5.")}
-	names(x5) <- NULL
-	if (checkquantiles(x5, STOP = FALSE)) {
-		dx  <- abs(x5 - x5[3])
-		lp5 <- logit(p5)
-		m   <- x5[3]
-		k   <- .hestimkappa6(lp5[4], lp5[5], dx[1], dx[2], dx[4], dx[5], maxk)
-		d   <- log(dx[5]/dx[1]) /2/lp5[5] 
-		d   <- if (abs(d) > (0.90/k)) {sign(d)*0.90/k} else {d}	
-		g   <- sqrt(dx[2]*dx[4]) /2/k /sinh(lp5[4] /k)
-		e   <- kd2e(k, d)
-		a   <- ke2a(k, e)
-		w   <- ke2w(k, e)
-		z   <- c(m, g, a, k, w, d, e)
-	} else {
-		z   <- c(NA, NA, NA, NA, NA, NA, NA) 
-	}
-	names(z) <- c("m", "g", "a", "k", "w", "d", "e")
+estimkiener5 <- function(x5, p5, maxk = 20, maxe = 0.90) {
+    names(x5) <- names(p5) <- NULL
+    if (length(x5) != 5) {stop("length(x5) is wrong. Must be 5.")}
+    if (length(p5) != 5) {stop("length(p5) is wrong. Must be 5.")}
+    if (checkquantiles(x5, STOP = FALSE)) {
+        dx  <- abs(x5 - x5[3])
+        lp  <- logit(p5)
+        m   <- x5[3]
+        d   <- log((x5[5]-x5[3])/(x5[3]-x5[1]))/2/lp[5]
+        Q   <- (x5[5]-x5[1])/(x5[4]-x5[2])*cosh(d*lp[4])/cosh(d*lp[5])
+        fOPT<- function (k, q, p, Q) {
+            (Q - sinh(logit(p)/k)/sinh(logit(q)/k))^2 
+        }
+        k   <- if (Q <= sinh(lp[5]/maxk)/sinh(lp[4]/maxk)) {
+                    maxk
+               } else { 
+                    optimize(fOPT, c(0.1, maxk), tol = 0.0001, 
+                             q = p5[4], p = p5[5], Q = Q)$minimum
+               }
+        k   <- min(k, abs(1/d)*maxe)
+        e   <- kd2e(k, d)
+        a   <- kd2a(k, d)
+        w   <- kd2w(k, d)
+        g   <- (x5[4]-x5[2])/4/k/sinh(lp[4]/k)/cosh(d*lp[4])
+        z   <- c(m, g, a, k, w, d, e)
+    } else {
+        z   <- c(NA, NA, NA, NA, NA, NA, NA) 
+    }
+    names(z) <- c("m", "g", "a", "k", "w", "d", "e")
 return(z)
 }
 

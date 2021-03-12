@@ -6,8 +6,7 @@
 \alias{replaceNA}
 \title{Simple and Elaborated Prices to Returns}
 \usage{
-fatreturns(x, log = TRUE, per = "cent", e = NULL, dfrcol = 1,
-  na.rm = TRUE)
+fatreturns(x, log = TRUE, per = "cent", e = NULL, dfrcol = 1, na.rm = TRUE)
 
 logreturns(x)
 

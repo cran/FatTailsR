@@ -10,12 +10,17 @@ elevenprobs(X, parnames = FALSE)
 
 sevenprobs(X, parnames = FALSE)
 
-fiveprobs(X, parnames = FALSE)
+fiveprobs(X, i = 4, parnames = FALSE)
 }
 \arguments{
 \item{X}{numeric. Vector of quantiles.}
 
 \item{parnames}{boolean. Output parameter vector with or without names.}
+
+\item{i}{integer. The i-th and (N-i)-th elements for which the 
+probabilities p1 and 1-p1 are calculated. If (i == 0), the 
+method used before version 1.8-0 : the extreme finishing 
+by \code{..01}, \code{..025} or \code{..05}.}
 }
 \description{
 Extract from a dataset \code{X} a vector of 11, 7 or 5 probabilities: 
@@ -24,9 +29,11 @@ Extract from a dataset \code{X} a vector of 11, 7 or 5 probabilities:
   \item{ \code{c(p1, p2, 0.25, 0.50, 0.75, 1-p2, 1-p1)} }
   \item{ \code{c(p1, 0.25, 0.50, 0.75, 1-p1)} }
 }
-where p1, p2 and p3 are the most extreme probabilities of the dataset \code{X} 
-with values finishing either by \code{.x01} or \code{.x025} or \code{.x05}. 
-Parameters names are displayed if \code{parnames = TRUE}.
+where p1, p2 and p3 are the most extreme probabilities with values finishing 
+by \code{..01}, \code{..025} or \code{..05} that can be extracted from the 
+dataset \code{X}. Parameters names are displayed if \code{parnames = TRUE}.
+
+From version 1.8-0, p1 and 1-p1 can be associated to the i-th and (N-i)-th element.
 }
 \examples{
 

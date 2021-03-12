@@ -11,7 +11,23 @@
 \alias{exfit6}
 \alias{exfit7}
 \title{Parameter Subsets}
-\format{An object of class \code{character} of length 2.}
+\format{
+An object of class \code{character} of length 2.
+
+An object of class \code{character} of length 7.
+
+An object of class \code{character} of length 8.
+
+An object of class \code{character} of length 6.
+
+An object of class \code{character} of length 6.
+
+An object of class \code{character} of length 6.
+
+An object of class \code{character} of length 33.
+
+An object of class \code{character} of length 35.
+}
 \usage{
 exfit0
 

@@ -9,10 +9,10 @@
 #' @description
 #' Several functions to estimate the parameters of asymmetric Kiener distributions 
 #' and display the results in a numeric vector or in a matrix. 
-#' Algorithm \code{"reg"} (the default) uses a nonlinear regression model, 
-#' is slow but accurate. Algorithm \code{"estim"} just uses 5 to 11 quantiles, 
-#' is very fast but less accurate.
-#'
+#' Algorithm \code{"reg"} (the default) uses a nonlinear regression and handle 
+#' difficult cases. Algorithm \code{"estim"} has been completely rewritten 
+#' in version 1.8-0 and is now very accurate, even for \code{k<1}. Adjustement 
+#' on extreme quantiles can be controlled very precisely. 
 #' 
 #' @param    X	       numeric. Vector, matrix, array or list of quantiles.
 #' @param    algo      character. The algorithm used: \code{"r"} or \code{"reg"}  
@@ -22,6 +22,10 @@
 #' @param    maxk	   numeric. The maximum value of tail parameter \code{k}.
 #' @param    mink	   numeric. The minimum value of tail parameter \code{k}.
 #' @param    maxe	   numeric. The maximum value of absolute tail parameter \code{|e|}.
+#' @param    i   	   integer. The i-th and (N-i)-th elements of \code{X} used to 
+#'                     extract probabilities p1 and 1-p1 and quantiles x(p) and x(1-p).
+#' @param    n   	   integer. The 1:n and (N+i-n):N elements of \code{X} used to 
+#'                     calculate synthetic quantiles at probability levels p1 and 1-p1.
 #' @param    probak    numeric. Ordered vector of probabilities.
 #' @param    dgts      integer. The rounding of output parameters. 
 #' @param    exfitk    character. A vector of parameter names to subset the output.
@@ -238,7 +242,7 @@
 #' @references
 #' P. Kiener, Fat tail analysis and package FatTailsR, 
 #' 9th R/Rmetrics Workshop and Summer School, Zurich, 27 June 2015. 
-#' \url{http://www.inmodelia.com/exemples/2015-0627-Rmetrics-Kiener-en.pdf}
+#' \url{https://www.inmodelia.com/exemples/2015-0627-Rmetrics-Kiener-en.pdf}
 #
 #' @seealso   \code{\link{regkienerLX}}, \code{\link{estimkiener11}}, 
 #'            \code{\link{roundcoefk}}, \code{\link{exfit6}}.
@@ -633,33 +637,30 @@ return(z)
 
 #' @export
 #' @rdname fitkienerX
-paramkienerX7 <- function(X, dgts = 3, parnames = TRUE, dimnames = FALSE, ncores = 1) { 
-cubekienerX7 <- function(X, dgts, parnames, ncores) {
+paramkienerX7 <- function(X, dgts = 3, n = 10, maxk = 20, maxe = 0.90, 
+                          parnames = TRUE, dimnames = FALSE, ncores = 1) { 
+cubekienerX7 <- function(X, dgts, n, maxk, maxe, parnames, ncores) {
 	mc <- .hnbcores(ncores)
 	cl <- parallel::makeCluster(mc, methods = TRUE)
-	z  <- aperm(parallel::parApply(cl, X, c(1,2), 	            .hparamkienerX7, dgts, parnames), c(2,1,3))
+	z  <- aperm(parallel::parApply(cl, X, c(1,2),
+                .hparamkienerX7, dgts, n, maxk, maxe, parnames), 
+                c(2,1,3))
 	parallel::stopCluster(cl)
 return(z)
 }
 listkienerX7 <- function(X, dgts, parnames, dimnames, ncores) {
-	z2 <- drop(sapply(X, paramkienerX7, dgts, parnames, 
-	                  dimnames, ncores, simplify = "array"))
+	z2 <- drop(sapply(X, paramkienerX7, dgts, n, maxk, maxe, 
+	                  parnames, dimnames, ncores, simplify = "array"))
 	z  <- switch(dimdimc(z2), "2" = t(z2), "3" = aperm(z2, c(3,2,1)),
 	                          stop("cannot handle this format"))
 return(z)
 }
 z <- switch(dimdimc(X),  
-	 "1" = .hparamkienerX7(X, dgts, parnames),
-	 "2" = t(apply(X, 2, .hparamkienerX7, dgts, parnames)),
-	 "3" = cubekienerX7(X, dgts, parnames, ncores),
-	"-1" = listkienerX7(X, dgts, parnames, dimnames, ncores),
+	 "1" = .hparamkienerX7(X, dgts, n, maxk, maxe, parnames),
+	 "2" = t(apply(X, 2, .hparamkienerX7, dgts, n, maxk, maxe, parnames)),
+	 "3" = cubekienerX7(X, dgts, n, maxk, maxe, parnames, ncores),
+	"-1" = listkienerX7(X, dgts, n, maxk, maxe, parnames, dimnames, ncores),
 	stop("paramkienerX7 cannot handle this format")
-	 # "3" = aperm(apply(X, c(1,2), .hparamkienerX7, dgts, parnames), c(2,1,3)),
-	# "-1" = t(simplify2array(parallel::mclapply(X, .hparamkienerX7, 
-				# dgts, parnames, mc.cores=mc.cores))),
-	# "-1" = t(sapply(X, .hparamkienerX7, dgts, parnames)),
-	# "numeric" "matrix" "array" "list" "error"
-	# "array" params x dates x stocks # aperm dates x params x stocks
 	)
 if (dimnames) {
 	if (dimdim1(z) == 2) {
@@ -676,51 +677,73 @@ return(z)
 }
 
 
-.hparamkienerX7 <- function(X, dgts = NULL, parnames = TRUE) { 
-	X   <- sort(as.numeric(X[is.finite(X)]))
-	if (length(X) > 14) { 
-		p7    <- sevenprobs(X)
-		x7    <- quantile(X, probs = p7, na.rm = TRUE, names = FALSE, type = 6) 
-		coefk <- estimkiener7(x7, p7) 
-	} else { 
-		coefk <- rep(NA, 7) 
-	}
-z  <- roundcoefk(coefk, dgts, parnames)
+.hparamkienerX7 <- function(X, dgts = NULL, n = 10, maxk = 20, maxe = 0.90, 
+                            parnames = TRUE) {
+    x   <- sort(as.numeric(X[is.finite(X)]))
+    if (length(x) > 14) { 
+        funK <- function (k, lq, lp, Q) { (Q - sinh(lp/k)/sinh(lq/k))^2 }
+        lpx  <- logit(ppoints(length(x), a = 0))
+        lp75 <- logit(0.75)
+        x25  <- quantile(x, 0.25, names = FALSE, type = 6)
+        m    <- median(x)
+        x75  <- quantile(x, 0.75, names = FALSE, type = 6)
+        lp   <- tail(lpx, n)
+        hx   <- rev(head(x, n))
+        tx   <- tail(x, n )
+        d    <- log((tx-m)/(m-hx))/2/lp
+        Q    <- (tx-hx)/(x75-x25)*cosh(d*lp75)/cosh(d*lp)
+        QTF  <- (Q <= sinh(lp/maxk)/sinh(lp75/maxk))
+        k    <- rep(maxk, n)
+        for (i in 1:n) {
+            if (!QTF[i]) { 
+                k[i] <- optimize(funK, 
+                    c(0.1, maxk), 
+                    tol = 0.0001, 
+                    lq  = lp75, 
+                    lp  = lp[i], 
+                    Q   = Q[i])$minimum
+            }
+        }
+        d   <- mean(d)
+        k   <- min(mean(k), abs(1/d)*maxe)
+        e   <- kd2e(k, d)
+        a   <- ke2a(k, e)
+        w   <- ke2w(k, e)
+        g   <- (x75-x25)/4/k/sinh(lp75/k)/cosh(d*lp75)
+        coefk <- c(m, g, a, k, w, d, e)
+    } else {
+        coefk <- rep(NA, 7) 
+    }
+    z  <- roundcoefk(coefk, dgts, parnames)
 return(z)
-} 
+}
 
 
 #' @export
 #' @rdname fitkienerX
-paramkienerX5 <- function(X, dgts = 3, parnames = TRUE, dimnames = FALSE, ncores = 1) { 
-cubekienerX5 <- function(X, dgts, parnames, ncores) {
+paramkienerX5 <- function(X, dgts = 3, i = 4, maxk = 20, maxe = 0.9, 
+                          parnames = TRUE, dimnames = FALSE, ncores = 1) { 
+cubekienerX5 <- function(X, dgts, i, maxk, maxe, parnames, ncores) {
 	mc <- .hnbcores(ncores)
 	cl <- parallel::makeCluster(mc, methods = TRUE)
 	z  <- aperm(parallel::parApply(cl, X, c(1,2), 
-	            .hparamkienerX5, dgts, parnames), c(2,1,3))
+	            .hparamkienerX5, dgts, i, maxk, maxe, parnames), c(2,1,3))
 	parallel::stopCluster(cl)
 return(z)
 }
-listkienerX5 <- function(X, dgts, parnames, dimnames, ncores) {
-	z2 <- drop(sapply(X, paramkienerX5, dgts, parnames, 
+listkienerX5 <- function(X, dgts, i, maxk, maxe, parnames, dimnames, ncores) {
+	z2 <- drop(sapply(X, paramkienerX5, dgts, i, maxk, maxe, parnames, 
 	                  dimnames, ncores, simplify = "array"))
 	z  <- switch(dimdimc(z2), "2" = t(z2), "3" = aperm(z2, c(3,2,1)),
 	                          stop("cannot handle this format"))
 return(z)
 }
 z <- switch(dimdimc(X) ,  
-	 "1" = .hparamkienerX5(X, dgts, parnames),
-	 "2" = t(apply(X, 2, .hparamkienerX5, dgts, parnames)),
-	 "3" = cubekienerX5(X, dgts, parnames, ncores),
-	"-1" = listkienerX5(X, dgts, parnames, dimnames, ncores),
+	 "1" = .hparamkienerX5(X, dgts, i, maxk, maxe, parnames),
+	 "2" = t(apply(X, 2, .hparamkienerX5, dgts, i, maxk, maxe, parnames)),
+	 "3" = cubekienerX5(X, dgts, i, maxk, maxe, parnames, ncores),
+	"-1" = listkienerX5(X, dgts, i, maxk, maxe, parnames, dimnames, ncores),
 	stop("paramkienerX5 cannot handle this format")
-	 # "3" = aperm(apply(X, c(1,2), .hparamkienerX5, dgts, parnames), c(2,1,3)),
-	# mc.cores <- if(tolower(.Platform$OS.type) == "windows") {1} else {mc}
-	# "-1" = t(simplify2array(parallel::mclapply(X, .hparamkienerX5, 
-				# dgts, parnames, mc.cores=mc.cores))),
-	# "-1" = t(sapply(X, .hparamkienerX5, dgts, parnames)),
-	# "numeric" "matrix" "array" "list" "error"
-	# "array" params x dates x stocks # aperm dates x params x stocks
 	)
 if (dimnames) {
 	if (dimdim1(z) == 2) {
@@ -736,17 +759,18 @@ if (dimnames) {
 return(z)
 }
 
-
-.hparamkienerX5 <- function(X, dgts = NULL, parnames = TRUE) { 
-	X   <- sort(as.numeric(X[is.finite(X)]))
-	if (length(X) > 14) { 
-		p5    <- fiveprobs(X)
-		x5    <- quantile(X, probs = p5, na.rm = TRUE, names = FALSE, type = 6) 
-		coefk <- estimkiener5(x5, p5) 
-	} else {
-		coefk <- rep(NA, 7) 
-	}
-z  <- roundcoefk(coefk, dgts, parnames)
+.hparamkienerX5 <- function(X, dgts = NULL, i = 0, maxk = 20, maxe = 0.90, 
+                            parnames = TRUE) { 
+    X   <- sort(as.numeric(X[is.finite(X)]))
+    if (length(X) > 14) { 
+        p5    <- fiveprobs(X, i = i)
+        x5    <- quantile(X, probs = p5, na.rm = TRUE, 
+                          names = FALSE, type = 6) 
+        coefk <- estimkiener5(x5, p5, maxk = maxk, maxe = maxe) 
+    } else {
+        coefk <- rep(NA, 7) 
+    }
+    z  <- roundcoefk(coefk, dgts, parnames)
 return(z)
 }
 

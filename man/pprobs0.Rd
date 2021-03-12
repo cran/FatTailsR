@@ -13,7 +13,27 @@
 \alias{pprobs8}
 \alias{pprobs9}
 \title{Several Vectors of Probabilities}
-\format{An object of class \code{numeric} of length 9.}
+\format{
+An object of class \code{numeric} of length 9.
+
+An object of class \code{numeric} of length 4.
+
+An object of class \code{numeric} of length 6.
+
+An object of class \code{numeric} of length 6.
+
+An object of class \code{numeric} of length 6.
+
+An object of class \code{numeric} of length 18.
+
+An object of class \code{numeric} of length 13.
+
+An object of class \code{numeric} of length 17.
+
+An object of class \code{numeric} of length 23.
+
+An object of class \code{numeric} of length 29.
+}
 \usage{
 pprobs0
 
