@@ -20,9 +20,11 @@
 \usage{
 dkiener2(x, m = 0, g = 1, a = 3.2, w = 3.2, log = FALSE)
 
-pkiener2(q, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE, log.p = FALSE)
+pkiener2(q, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE,
+  log.p = FALSE)
 
-qkiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE, log.p = FALSE)
+qkiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE,
+  log.p = FALSE)
 
 rkiener2(n, m = 0, g = 1, a = 3.2, w = 3.2)
 
@@ -36,11 +38,14 @@ dlkiener2(lp, m = 0, g = 1, a = 3.2, w = 3.2, log = FALSE)
 
 qlkiener2(lp, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE)
 
-varkiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE, log.p = FALSE)
+varkiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE,
+  log.p = FALSE)
 
-ltmkiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE, log.p = FALSE)
+ltmkiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE,
+  log.p = FALSE)
 
-rtmkiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE, log.p = FALSE)
+rtmkiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE,
+  log.p = FALSE)
 
 dtmqkiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE,
   log.p = FALSE)
@@ -166,7 +171,7 @@ probability. It is defined for lp in (-Inf, +Inf) by:
 into positive numbers with the following rule:
    \deqn{ varkiener2 <- if(p <= 0.5) { - qkiener2 } else { qkiener2 } }
 Usual values in finance are \code{p = 0.01}, \code{p = 0.05}, \code{p = 0.95} and 
-\code{p = 0.99}. \code{lower.tail = FALSE} uses \code{1-p} rather than {p}.
+\code{p = 0.99}. \code{lower.tail = FALSE} uses \code{1-p} rather than \code{p}.
 
 \code{ltmkiener2}, \code{rtmkiener2} and \code{eskiener2} are respectively the 
 left tail mean, the right tail mean and the expected shortfall of the distribution 
@@ -178,7 +183,7 @@ Right tail mean is the integrale from \code{p} to \code{+Inf} of the quantile fu
 Expected shortfall turns negative numbers into positive numbers with the following rule:
    \deqn{ eskiener2 <- if(p <= 0.5) { - ltmkiener2 } else { rtmkiener2 } }
 Usual values in finance are \code{p = 0.01}, \code{p = 0.025}, \code{p = 0.975} and 
-\code{p = 0.99}. \code{lower.tail = FALSE} uses \code{1-p} rather than {p}.
+\code{p = 0.99}. \code{lower.tail = FALSE} uses \code{1-p} rather than \code{p}.
 
 \code{dtmqkiener2} is the difference between the left tail mean and the quantile 
 when (p <= 0.5) and the difference between the right tail mean and the quantile 

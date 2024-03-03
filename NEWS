@@ -2,8 +2,33 @@
 
 
 
-FatTailsR 1.8-0 - 2021-03-12 - current version on CRAN
+FatTailsR 1.8-5 - 2024-03-03 - current version on CRAN
 ======================================================
+- Version packaged with R-4.3.2 and sent to CRAN (R-4.3.3)
+
+
+FatTailsR 1.8-4 - 2024-02-29
+============================
+- Prepared for R-4.3.2
+- rewrite 2x {p} as \code{p} in f_kiener12347 to pass new checks
+- replace \item{}{} by \item in m_laplaceroll to pass new checks
+- rename FatTailsR-package.R and arrange @include in b_data.R
+- split b_data.R in a_data.R and b_fatreturns.R. Arrange the @include
+- DESCRIPTION: arrange collate
+
+
+FatTailsR 1.8-3 - 2022-11-10
+============================
+- Prepared for R-4.2.2
+
+
+FatTailsR 1.8-2 - 2022-04-30
+============================
+- Prepared with R-4.2.0
+
+
+FatTailsR 1.8-0 - 2021-03-12 - in CRAN archives
+===============================================
 - Prepared for R-4.1.0
 - 36 http links changed to https thanks to urlchecker package
 - Roxygen 7.1.1

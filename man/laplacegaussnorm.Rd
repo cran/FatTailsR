@@ -12,12 +12,12 @@ laplacegaussnorm(X)
 \value{
 A list with the following data.frame:
 \itemize{
-  \item{dfrXPn}{data.frame. X = initial quantiles. Pn = estimated normal probabilites.}
-  \item{dfrXLn}{data.frame. X = initial quantiles. Ln = logit of estimated normal probabilites.}
-  \item{dfrXDn}{data.frame. X = initial quantiles. Dn = estimated normal density.}
-  \item{coefn}{numeric. The mean and the standard deviation of the dataset.}
-  \item{dfrQnPn}{data.frame. Qn = estimated quantiles of interest. Pn = probability.} 
-  \item{dfrQnPn}{data.frame. Qn = estimated quantiles of interest. Pn = logit of probability.}
+  \item dfrXPn: data.frame. X = initial quantiles. Pn = estimated normal probabilites.
+  \item dfrXLn: data.frame. X = initial quantiles. Ln = logit of estimated normal probabilites.
+  \item dfrXDn: data.frame. X = initial quantiles. Dn = estimated normal density.
+  \item coefn: numeric. The mean and the standard deviation of the dataset.
+  \item dfrQnPn: data.frame. Qn = estimated quantiles of interest. Pn = probability. 
+  \item dfrQnPn: data.frame. Qn = estimated quantiles of interest. Pn = logit of probability.
 }
 }
 \description{

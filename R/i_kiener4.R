@@ -138,7 +138,7 @@
 #' into positive numbers with the following rule:
 #'    \deqn{ varkiener4 <- if(p <= 0.5) { - qkiener4 } else { qkiener4 } }
 #' Usual values in finance are \code{p = 0.01}, \code{p = 0.05}, \code{p = 0.95} and 
-#' \code{p = 0.99}. \code{lower.tail = FALSE} uses \code{1-p} rather than {p}.
+#' \code{p = 0.99}. \code{lower.tail = FALSE} uses \code{1-p} rather than \code{p}.
 #' 
 #' \code{ltmkiener4}, \code{rtmkiener4} and \code{eskiener4} are respectively the 
 #' left tail mean, the right tail mean and the expected shortfall of the distribution 
@@ -150,7 +150,7 @@
 #' Expected shortfall turns negative numbers into positive numbers with the following rule:
 #'    \deqn{ eskiener4 <- if(p <= 0.5) { - ltmkiener4 } else { rtmkiener4 } }
 #' Usual values in finance are \code{p = 0.01}, \code{p = 0.025}, \code{p = 0.975} and 
-#' \code{p = 0.99}. \code{lower.tail = FALSE} uses \code{1-p} rather than {p}.
+#' \code{p = 0.99}. \code{lower.tail = FALSE} uses \code{1-p} rather than \code{p}.
 #'
 #' \code{dtmqkiener4} is the difference between the left tail mean and the quantile 
 #' when (p <= 0.5) and the difference between the right tail mean and the quantile 

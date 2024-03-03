@@ -20,9 +20,11 @@
 \usage{
 dkiener4(x, m = 0, g = 1, k = 3.2, e = 0, log = FALSE)
 
-pkiener4(q, m = 0, g = 1, k = 3.2, e = 0, lower.tail = TRUE, log.p = FALSE)
+pkiener4(q, m = 0, g = 1, k = 3.2, e = 0, lower.tail = TRUE,
+  log.p = FALSE)
 
-qkiener4(p, m = 0, g = 1, k = 3.2, e = 0, lower.tail = TRUE, log.p = FALSE)
+qkiener4(p, m = 0, g = 1, k = 3.2, e = 0, lower.tail = TRUE,
+  log.p = FALSE)
 
 rkiener4(n, m = 0, g = 1, k = 3.2, e = 0)
 
@@ -36,13 +38,17 @@ dlkiener4(lp, m = 0, g = 1, k = 3.2, e = 0, log = FALSE)
 
 qlkiener4(lp, m = 0, g = 1, k = 3.2, e = 0, lower.tail = TRUE)
 
-varkiener4(p, m = 0, g = 1, k = 3.2, e = 0, lower.tail = TRUE, log.p = FALSE)
+varkiener4(p, m = 0, g = 1, k = 3.2, e = 0, lower.tail = TRUE,
+  log.p = FALSE)
 
-ltmkiener4(p, m = 0, g = 1, k = 3.2, e = 0, lower.tail = TRUE, log.p = FALSE)
+ltmkiener4(p, m = 0, g = 1, k = 3.2, e = 0, lower.tail = TRUE,
+  log.p = FALSE)
 
-rtmkiener4(p, m = 0, g = 1, k = 3.2, e = 0, lower.tail = TRUE, log.p = FALSE)
+rtmkiener4(p, m = 0, g = 1, k = 3.2, e = 0, lower.tail = TRUE,
+  log.p = FALSE)
 
-dtmqkiener4(p, m = 0, g = 1, k = 3.2, e = 0, lower.tail = TRUE, log.p = FALSE)
+dtmqkiener4(p, m = 0, g = 1, k = 3.2, e = 0, lower.tail = TRUE,
+  log.p = FALSE)
 
 eskiener4(p, m = 0, g = 1, k = 3.2, e = 0, lower.tail = TRUE,
   log.p = FALSE, signedES = FALSE)
@@ -192,7 +198,7 @@ probability. It is defined for lp in (-Inf, +Inf) by:
 into positive numbers with the following rule:
    \deqn{ varkiener4 <- if(p <= 0.5) { - qkiener4 } else { qkiener4 } }
 Usual values in finance are \code{p = 0.01}, \code{p = 0.05}, \code{p = 0.95} and 
-\code{p = 0.99}. \code{lower.tail = FALSE} uses \code{1-p} rather than {p}.
+\code{p = 0.99}. \code{lower.tail = FALSE} uses \code{1-p} rather than \code{p}.
 
 \code{ltmkiener4}, \code{rtmkiener4} and \code{eskiener4} are respectively the 
 left tail mean, the right tail mean and the expected shortfall of the distribution 
@@ -204,7 +210,7 @@ Right tail mean is the integrale from \code{p} to \code{+Inf} of the quantile fu
 Expected shortfall turns negative numbers into positive numbers with the following rule:
    \deqn{ eskiener4 <- if(p <= 0.5) { - ltmkiener4 } else { rtmkiener4 } }
 Usual values in finance are \code{p = 0.01}, \code{p = 0.025}, \code{p = 0.975} and 
-\code{p = 0.99}. \code{lower.tail = FALSE} uses \code{1-p} rather than {p}.
+\code{p = 0.99}. \code{lower.tail = FALSE} uses \code{1-p} rather than \code{p}.
 
 \code{dtmqkiener4} is the difference between the left tail mean and the quantile 
 when (p <= 0.5) and the difference between the right tail mean and the quantile 

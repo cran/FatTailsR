@@ -13,7 +13,8 @@
 \alias{kekurtosis}
 \title{Moments Associated To Kiener Distribution Parameters}
 \usage{
-kmoments(coefk, model = "K2", lengthx = NA, dgts = NULL, dimnames = FALSE)
+kmoments(coefk, model = "K2", lengthx = NA, dgts = NULL,
+  dimnames = FALSE)
 
 xmoments(x, dgts = NULL, dimnames = FALSE)
 

@@ -16,11 +16,14 @@
 \usage{
 hkiener1(p, m = 0, g = 1, k = 3.2, lower.tail = TRUE, log.p = FALSE)
 
-hkiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE, log.p = FALSE)
+hkiener2(p, m = 0, g = 1, a = 3.2, w = 3.2, lower.tail = TRUE,
+  log.p = FALSE)
 
-hkiener3(p, m = 0, g = 1, k = 3.2, d = 0, lower.tail = TRUE, log.p = FALSE)
+hkiener3(p, m = 0, g = 1, k = 3.2, d = 0, lower.tail = TRUE,
+  log.p = FALSE)
 
-hkiener4(p, m = 0, g = 1, k = 3.2, e = 0, lower.tail = TRUE, log.p = FALSE)
+hkiener4(p, m = 0, g = 1, k = 3.2, e = 0, lower.tail = TRUE,
+  log.p = FALSE)
 
 hkiener7(p, coefk = c(0, 1, 3.2, 3.2, 3.2, 0, 0), lower.tail = TRUE,
   log.p = FALSE)

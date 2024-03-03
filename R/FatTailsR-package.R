@@ -200,7 +200,7 @@
 #' @rdname  FatTailsR
 #' @aliases FatTailsR
 #' @name    FatTailsR-package
-#' @docType package
+"_PACKAGE"
 NULL
 
 

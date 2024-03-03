@@ -36,13 +36,17 @@ dlkiener1(lp, m = 0, g = 1, k = 3.2, log = FALSE)
 
 qlkiener1(lp, m = 0, g = 1, k = 3.2, lower.tail = TRUE)
 
-varkiener1(p, m = 0, g = 1, k = 3.2, lower.tail = TRUE, log.p = FALSE)
+varkiener1(p, m = 0, g = 1, k = 3.2, lower.tail = TRUE,
+  log.p = FALSE)
 
-ltmkiener1(p, m = 0, g = 1, k = 3.2, lower.tail = TRUE, log.p = FALSE)
+ltmkiener1(p, m = 0, g = 1, k = 3.2, lower.tail = TRUE,
+  log.p = FALSE)
 
-rtmkiener1(p, m = 0, g = 1, k = 3.2, lower.tail = TRUE, log.p = FALSE)
+rtmkiener1(p, m = 0, g = 1, k = 3.2, lower.tail = TRUE,
+  log.p = FALSE)
 
-dtmqkiener1(p, m = 0, g = 1, k = 3.2, lower.tail = TRUE, log.p = FALSE)
+dtmqkiener1(p, m = 0, g = 1, k = 3.2, lower.tail = TRUE,
+  log.p = FALSE)
 
 eskiener1(p, m = 0, g = 1, k = 3.2, lower.tail = TRUE, log.p = FALSE,
   signedES = FALSE)
@@ -152,7 +156,7 @@ probability lp = logit(p). It is defined for lp in (-Inf, +Inf) by:
 into positive numbers with the following rule:
    \deqn{ varkiener1 <- if(p <= 0.5) (- qkiener1) else (qkiener1) }
 Usual values in finance are \code{p = 0.01}, \code{p = 0.05}, \code{p = 0.95} and 
-\code{p = 0.99}. \code{lower.tail = FALSE} uses \code{1-p} rather than {p}.
+\code{p = 0.99}. \code{lower.tail = FALSE} uses \code{1-p} rather than \code{p}.
 
 \code{ltmkiener1}, \code{rtmkiener1} and \code{eskiener1} are respectively the 
 left tail mean, the right tail mean and the expected shortfall of the distribution 
@@ -164,7 +168,7 @@ Right tail mean is the integrale from \code{p} to \code{+Inf} of the quantile fu
 Expected shortfall turns negative numbers into positive numbers with the following rule:
    \deqn{ eskiener1 <- if(p <= 0.5) (- ltmkiener1) else (rtmkiener1) }
 Usual values in finance are \code{p = 0.01}, \code{p = 0.025}, \code{p = 0.975} and 
-\code{p = 0.99}. \code{lower.tail = FALSE} uses \code{1-p} rather than {p}.
+\code{p = 0.99}. \code{lower.tail = FALSE} uses \code{1-p} rather than \code{p}.
 
 \code{dtmqkiener1} is the difference between the left tail mean and the quantile 
 when (p <= 0.5) and the difference between the right tail mean and the quantile 
