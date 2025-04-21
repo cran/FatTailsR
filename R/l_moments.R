@@ -1,6 +1,4 @@
-
-
-#' @include k_kienerES.R
+## #' @include k_kienerES.R
 
 
 
@@ -122,7 +120,7 @@
 #' rbind(matcoefk, matmomk[2:5,], matmomx[2:5,])
 #' 
 #' ## Example 4: List + direct calculation = transpose
-#' DS   <- getDSdata() ; dimdim(DS) ; class(DS)
+#' DS   <- getDSdata() ; class(DS)
 #' (pDS <- paramkienerX5(DS, dimnames = FALSE))
 #' (kDS <- kmoments(pDS, lengthx = sapply(DS, length), dgts = 3))
 #' (xDS <- xmoments( DS, dgts = 3))
@@ -174,7 +172,7 @@ z  <- c(
 	"ku" = kkurtosis(coeff) , 
 	"ke" = kekurtosis(coeff) , 
 	"sk" = kskewness(coeff) ,
-	"sd" = sqrt(kcmoment(2, coeff)) ,
+	"sd" = kstandev(coeff) , 
 	"m1" = kmoment(1, coeff) ,
 	"m2" = kmoment(2, coeff) ,
 	"m3" = kmoment(3, coeff) ,
@@ -277,8 +275,8 @@ if (is.na(min(a, w)) || n >= min(a, w) ) { momk <- NA } else {
 	momk <- 0
 	for (i in 0:n) {
 		for (j in 0:i) { 
-			momk <- (momk + choose(n, i) *choose(i, j) 
-					 *m^(n-i) *g^(i) *k^(i) *(-1)^(j) 
+			momk <- (momk + choose(n, i) *m^(n-i) *(sqrt(3)/pi/2*g*k)^(i) 
+					 *choose(i, j) *(-1)^(j) 
 					 *beta(1 -j/a +(i-j)/w,1 +j/a -(i-j)/w) )  
 		} 
 	} 
@@ -309,7 +307,7 @@ if (is.na(min(a, w)) || n >= min(a, w) ) { redcmomk <- NA } else {
 		} 
 	}
 }  
-cmomk  <- redcmomk *g^n *k^n
+cmomk  <- redcmomk *(sqrt(3)/pi/2*g*k)^n
 names(cmomk) <- paste0("u", n)
 cmomk  <- if (is.null(dgts)) {cmomk} else {round(cmomk, dgts)}
 return(cmomk)

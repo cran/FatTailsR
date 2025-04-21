@@ -1,6 +1,4 @@
-
-
-#' @include n_estimation.R
+## #' @include n_estimation.R
 
 
 
@@ -452,7 +450,7 @@ names(hesk)    <- namesk$nhesk
 desvk          <- esk - vark
 names(desvk)   <- namesk$ndesvk
 ## logistique
-logisk         <- qlogis(p = probak, location = coefk[1], scale = 2*coefk[2] )
+logisk         <- qlogis(p = probak, location = coefk[1], scale = sqrt(3)/pi*coefk[2] )
 names(logisk)  <- namesk$nlogisk
 ## quantile - logistique
 dlogisk        <- quantk - logisk
@@ -579,7 +577,9 @@ if (strtrim(algo, 1)[1] == "e") {
 		parini <- .hparamkienerX5(X, parnames = FALSE)
 		if (anyNA(parini)) { 
 				mini   <- median(X)
-				gini   <- 0.25*sd(X)
+				# gini   <- 0.25*sd(X)
+				# since v1.9.1
+				gini   <- sd(X)*pi/sqrt(3)/2
 				qqq    <- quantile(X, c(0.10, 0.50, 0.90), type = 6)
 				dini   <- if (anyNA(qqq)) {0} else {log(abs(qqq[3]-qqq[2])/abs(qqq[2]-qqq[1]))/4.394}
 				kini   <- 4
@@ -596,8 +596,8 @@ if (strtrim(algo, 1)[1] == "e") {
 				eini   <- min(max(-maxe, parini[7]), maxe)
 			}
 		## Regression K4
-		regk0  <- minpack.lm::nlsLM( X ~ FatTailsR::qlkiener4(L, mini, g, k, e), 
-		# regk0  <- nlsLM( X ~ qlkiener4(L, mini, g, k, e), 
+		# regk0  <- minpack.lm::nlsLM( X ~ FatTailsR::qlkiener4(L, mini, g, k, e), 
+		regk0  <- minpack.lm::nlsLM( X ~ qlkiener4(L, mini, g, k, e), 
 						 data = dfrXL, 
 						 start = list(g = gini, k = kini, e = eini), 
 						 lower = c(gmin = 0,   kmin = mink, emin =-maxe), 
@@ -709,7 +709,9 @@ return(z)
         e   <- kd2e(k, d)
         a   <- ke2a(k, e)
         w   <- ke2w(k, e)
-        g   <- (x75-x25)/4/k/sinh(lp75/k)/cosh(d*lp75)
+        # g   <- (x75-x25)/4/k/sinh(lp75/k)/cosh(d*lp75)
+		# since v1.9.1
+        g   <- (x75-x25)*pi/sqrt(3)/2/k/sinh(lp75/k)/cosh(d*lp75)
         coefk <- c(m, g, a, k, w, d, e)
     } else {
         coefk <- rep(NA, 7) 

@@ -1,6 +1,4 @@
-
-
-#' @include FatTailsR-package.R
+## #' @include FatTailsR-package.R
 
 
 

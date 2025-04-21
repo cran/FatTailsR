@@ -1,6 +1,4 @@
-
-
-#' @include m_laplaceroll.R
+## #' @include m_laplaceroll.R
 
 
 
@@ -298,7 +296,9 @@ estimkiener7 <- function(x7, p7, maxk = 10) {
 				+.hestimkappa6(lp7[5], lp7[6], dx[2], dx[3], dx[5], dx[6], maxk))/2
 		d   <- log(dx[7]/dx[1]) /4/lp7[7] + log(dx[6]/dx[2]) /4/lp7[6] 
 		d   <- if (abs(d) > (0.90/k)) {sign(d)*0.90/k} else {d}	
-		g   <- sqrt(dx[3]*dx[5]) /2/k /sinh(lp7[5] /k)
+		# g   <- sqrt(dx[3]*dx[5]) /2/k /sinh(lp7[5] /k)
+		# since v1.9.1
+		g   <- sqrt(dx[3]*dx[5]) *pi/sqrt(3)/k /sinh(lp7[5] /k)
 		e   <- kd2e(k, d)
 		a   <- ke2a(k, e)
 		w   <- ke2w(k, e)
@@ -334,7 +334,9 @@ estimkiener5 <- function(x5, p5, maxk = 20, maxe = 0.90) {
         e   <- kd2e(k, d)
         a   <- kd2a(k, d)
         w   <- kd2w(k, d)
-        g   <- (x5[4]-x5[2])/4/k/sinh(lp[4]/k)/cosh(d*lp[4])
+        # g   <- (x5[4]-x5[2])/4/k/sinh(lp[4]/k)/cosh(d*lp[4])
+		# since v1.9.1
+        g   <- (x5[4]-x5[2])*pi/sqrt(3)/2/k/sinh(lp[4]/k)/cosh(d*lp[4])
         z   <- c(m, g, a, k, w, d, e)
     } else {
         z   <- c(NA, NA, NA, NA, NA, NA, NA) 
@@ -412,8 +414,11 @@ return(k)
 .hestimgamma11 <- function(x11, p11, k, ord) { 
 	dx   <- abs(x11 - x11[6])
     lp11 <- logit(p11)
-	g75  <- sqrt(dx[4]*dx[8]) /2/k /sinh(lp11[8] /k)
-	g65  <- sqrt(dx[5]*dx[7]) /2/k /sinh(lp11[7] /k)
+	# g75  <- sqrt(dx[4]*dx[8]) /2/k /sinh(lp11[8] /k)
+	# g65  <- sqrt(dx[5]*dx[7]) /2/k /sinh(lp11[7] /k)
+	# since v1.9.1
+	g75  <- sqrt(dx[4]*dx[8]) *pi/sqrt(3)/k /sinh(lp11[8] /k)
+	g65  <- sqrt(dx[5]*dx[7]) *pi/sqrt(3)/k /sinh(lp11[7] /k)
 	gmm  <- (g65 + g75)/2
 	g    <- switch(as.character(ord),
 	       "1"=g65,  "2"=g65,  "3"=g65,  "4"=g65, 

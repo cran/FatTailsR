@@ -19,7 +19,14 @@ the theoretical part and several examples on stocks and indices.
 
 A commercial package, \code{FatTailsRplot}, with advanced plotting functions 
 and calculation of matrix of stocks over rolling windows is also developped 
-by the author.
+by the author.  
+
+IMPORTANT: A breaking change has been introduced in version 2.0.0 in order to
+get asymptotic values consistent with the standardized logistic distribution,
+i.e. sd = 1 when kappa = Inf. The scaling parameter g is now combined with 
+the fixed value g*sqrt(3)/pi and replace g/2. Other parameters stay unchanged. 
+Do not update if you need consistent comparisons with versions <= 1.8.6 for 
+the g parameter. Do not mix results with versions <= 1.8.6 and versions >= 2.0.0.
 }
 \details{
 With so many functions, this package could look fat. But it's not! 
@@ -31,10 +38,6 @@ can be assigned to the following groups:
         \itemize{
         \item \code{\link{getDSdata}}.
         \item \code{\link{extractData}}, dfData, mData, tData, xData, zData.
-        }
-  \item Functions to check the dimensions of vector, matrix, array, list:
-        \itemize{
-        \item \code{\link{dimdim}}, dimdim1, dimdimc.
         }
   \item Functions to calculate (positive, negative) prices to returns 
         on vector, matrix, array, list, data.frame, timeSeries, xts, zoo:
@@ -51,20 +54,7 @@ can be assigned to the following groups:
         }
   \item Miscellaneous functions related to the logistic function:
         \itemize{
-        \item \code{\link{logit}}, invlogit, ltmlogis, rtmlogis, eslogis.
-        }
-  \item Power hyperbolas, power hyperbolic functions and their reciprocal functions: 
-        \itemize{
-        \item \code{\link{exphp}}, coshp, sinhp, tanhp, sechp, cosechp, 
-              cotanhp.
-        \item \code{\link{loghp}}, acoshp, asinhp, atanhp, asechp, 
-              acosechp, acotanhp.
-        \item \code{\link{kashp}}, dkashp_dx, ashp.
-        }
-  \item Logishp function, kogit and invkogit = logistic function + power hyperbolas: 
-        \itemize{
-        \item d, p, q, r, dp, dq, l, dl, ql \code{\link{logishp}}.
-        \item \code{\link{kogit}}, invkogit.
+        \item \code{\link{logit}}, invlogit, ltmlogisst, rtmlogisst, eslogis.
         }
   \item Conversion functions between parameters related to Kiener distributions K1, K2, K3, K4:
         \itemize{
@@ -152,7 +142,7 @@ pleg   <- c( paste("m =",  reg$coefr4[1]), paste("g  =", reg$coefr4[2]),
 ## Main plot
 op     <- par(mfrow = c(1,1), mgp = c(1.5,0.8,0), mar = c(3,3,2,1))
 plot(reg$dfrXP, main = nameX)
-legend("top", legend = pleg, cex = 0.9, inset = 0.02 )
+legend(x = min(X), y = 0.5, legend = pleg, cex = 0.9, inset = 0.02 )
 lines(reg$dfrEP, col = 2, lwd = 2)
 points(reg$dfrQkPk, pch = 3, col = 2, lwd = 2, cex = 1.5)
 lines(lgn$dfrXPn, col = 7, lwd = 2)

@@ -3,44 +3,20 @@
 \name{logit}
 \alias{logit}
 \alias{invlogit}
-\alias{ltmlogis}
-\alias{rtmlogis}
-\alias{eslogis}
 \title{Logit and Invlogit Functions}
 \usage{
 logit(p)
 
 invlogit(x)
-
-ltmlogis(p, m = 0, g = 1, lower.tail = TRUE, log.p = FALSE)
-
-rtmlogis(p, m = 0, g = 1, lower.tail = TRUE, log.p = FALSE)
-
-eslogis(p, m = 0, g = 1, lower.tail = TRUE, log.p = FALSE)
 }
 \arguments{
 \item{p}{numeric. one value or a vector between 0 and 1.}
 
 \item{x}{numeric. one value or a vector of numerics.}
-
-\item{m}{numeric. a central parameter (also used in model K1, K2, K3 and K4).}
-
-\item{g}{numeric. a scale parameter (also used in model K1, K2, K3 and K4).}
-
-\item{lower.tail}{logical. If TRUE, use p. If FALSE, use 1-p.}
-
-\item{log.p}{logical. If TRUE, probabilities p are given as log(p).}
 }
 \description{
 The logit and invlogit functions, widely used in this package, are wrappers  
-of \code{\link{qlogis}} and \code{\link{plogis}} functions. 
-
-Functions \code{eslogis} is the expected shortfall of the logistic function 
-(times a factor 2). 
-When \code{p<=0.5}, it is equivalent (times -1) to the left tail mean \code{ltmlogis}. 
-When \code{p>0.5}, it is equivalent to the right tail mean \code{rtmlogis}. 
-\code{ltmlogis} and \code{rtmlogis} are used to calculate the \code{h} parameter 
-in \code{\link{hkiener1}}, \code{hkiener2}, \code{hkiener3}, \code{hkiener4}.
+of \code{\link{qlogis}} and \code{\link{plogis}} functions.
 }
 \details{
 \code{logit} function is defined for p in (0, 1) by: 

@@ -25,7 +25,7 @@ replaceNA(x)
 A positive numeric designates the focal point of the hyperbola 
 to turn negative prices into positive prices, keeping the hierarchy:  
 \code{f(x)=(x+sqrt(x*x+e*e))/2}. There is currently no rules of thumb 
-for the optimal value of \code{e}.}
+for the optimal value of \code{e}. See \code{\link{elevate}}.}
 
 \item{dfrcol}{integer. For data.frame only, designates the column that handles the time 
 and must be processed separately. Use \code{dfrcol = 0} if all columns 
@@ -53,19 +53,9 @@ The results may be as per one, per cent (default), per thousand and per ten thou
 vector, matrix, data.frame and list. It handles properly the first line and the NA values. 
 It does not control time, rownames and colnames but may return them.
 }
-\details{
-Negative prices in financial markets, like interest rates in Europe, are a 
-nightmare as the rough calculation of the returns generates non-sense values.
-\code{elevate} uses an hyperbola and implements the following formula: 
-     \deqn{ elevate(x, e) = (x + sqrt(x*x + e*e)) / 2 }
-
-There is currently no rule of thumb to calculate \code{e}. 
-When \eqn{e = NULL}, there is no change and the output is identical to the input.
-When \eqn{e = 0}, all negative values are turned to 0.
-}
 \examples{
 
 fatreturns(extractData())
-logreturns(getDSdata())
+logreturns(extractData())
 
 }

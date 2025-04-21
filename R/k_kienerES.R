@@ -1,6 +1,4 @@
-
-
-#' @include j_kiener7.R
+## #' @include j_kiener7.R
 
 
 
@@ -53,57 +51,57 @@ NULL
 #' @rdname ckiener1234
 hkiener1 <- function(p, m = 0, g = 1, k = 3.2, 
                      lower.tail = TRUE, log.p = FALSE) {
-    if (log.p)       {p <- exp(p)}
-    if (!lower.tail) {p <- 1-p}
+	if(log.p)       p <- exp(p)
+	if(!lower.tail) p <- 1-p
 	h   <- p
 	for (i in seq_along(p)) {
 		h[i] <- ifelse(p[i] <= 0.5, 
-				(ltmkiener1(p[i], m, g, k) - m) / (ltmlogis(p[i], m, g) - m),
-				(rtmkiener1(p[i], m, g, k) - m) / (rtmlogis(p[i], m, g) - m))
+			(ltmkiener1(p[i], m, g, k) - m) / (ltmlogisst(p[i], m, g) - m),
+			(rtmkiener1(p[i], m, g, k) - m) / (rtmlogisst(p[i], m, g) - m))
 	}
-return(h)
+	h
 }
 #' @export
 #' @rdname ckiener1234
 hkiener2 <- function(p, m = 0, g = 1, a = 3.2, w = 3.2, 
                      lower.tail = TRUE, log.p = FALSE) {
-    if (log.p)       {p <- exp(p)}
-    if (!lower.tail) {p <- 1-p}
+	if(log.p)       p <- exp(p)
+	if(!lower.tail) p <- 1-p
 	h   <- p
 	for (i in seq_along(p)) {
 		h[i] <- ifelse(p[i] <= 0.5, 
-				(ltmkiener2(p[i], m, g, a, w) - m) / (ltmlogis(p[i], m, g) - m),
-				(rtmkiener2(p[i], m, g, a, w) - m) / (rtmlogis(p[i], m, g) - m))
+			(ltmkiener2(p[i], m, g, a, w) - m) / (ltmlogisst(p[i], m, g) - m),
+			(rtmkiener2(p[i], m, g, a, w) - m) / (rtmlogisst(p[i], m, g) - m))
 	}
-return(h)
+	h
 }
 #' @export
 #' @rdname ckiener1234
 hkiener3 <- function(p, m = 0, g = 1, k = 3.2, d = 0, 
                      lower.tail = TRUE, log.p = FALSE) {
-    if (log.p)       {p <- exp(p)}
-    if (!lower.tail) {p <- 1-p}
+	if(log.p)       p <- exp(p)
+	if(!lower.tail) p <- 1-p
 	h   <- p
 	for (i in seq_along(p)) {
 		h[i] <- ifelse(p[i] <= 0.5, 
-				(ltmkiener3(p[i], m, g, k, d) - m) / (ltmlogis(p[i], m, g) - m),
-				(rtmkiener3(p[i], m, g, k, d) - m) / (rtmlogis(p[i], m, g) - m))
+			(ltmkiener3(p[i], m, g, k, d) - m) / (ltmlogisst(p[i], m, g) - m),
+			(rtmkiener3(p[i], m, g, k, d) - m) / (rtmlogisst(p[i], m, g) - m))
 	}
-return(h)
+	h
 }
 #' @export
 #' @rdname ckiener1234
 hkiener4 <- function(p, m = 0, g = 1, k = 3.2, e = 0, 
                      lower.tail = TRUE, log.p = FALSE) {
-    if (log.p)       {p <- exp(p)}
-    if (!lower.tail) {p <- 1-p}
+	if(log.p)       p <- exp(p)
+	if(!lower.tail) p <- 1-p
 	h   <- p
 	for (i in seq_along(p)) {
 		h[i] <- ifelse(p[i] <= 0.5, 
-				(ltmkiener4(p[i], m, g, k, e) - m) / (ltmlogis(p[i], m, g) - m),
-				(rtmkiener4(p[i], m, g, k, e) - m) / (rtmlogis(p[i], m, g) - m))
+			(ltmkiener4(p[i], m, g, k, e) - m) / (ltmlogisst(p[i], m, g) - m),
+			(rtmkiener4(p[i], m, g, k, e) - m) / (rtmlogisst(p[i], m, g) - m))
 	}
-return(h)
+	h
 }
 #' @export
 #' @rdname ckiener1234
@@ -115,59 +113,59 @@ hkiener7 <- function(p, coefk = c(0, 1, 3.2, 3.2, 3.2, 0, 0),
     g <- switch(dck, "1" = coefk[2], "2" = coefk[,2])
     a <- switch(dck, "1" = coefk[3], "2" = coefk[,3]) 
     w <- switch(dck, "1" = coefk[5], "2" = coefk[,5])
-    if (log.p)       {p <- exp(p)}
-    if (!lower.tail) {p <- 1-p}
+	if(log.p)       p <- exp(p)
+	if(!lower.tail) p <- 1-p
 	h <- p
 	names(h) <- getnamesk(p)$nhesk 
 	for (i in seq_along(p)) {
 		h[i] <- ifelse(p[i] <= 0.5, 
-			(ltmkiener2(p[i], m, g, a, w) - m) / (ltmlogis(p[i], m, g) - m),
-			(rtmkiener2(p[i], m, g, a, w) - m) / (rtmlogis(p[i], m, g) - m))
+			(ltmkiener2(p[i], m, g, a, w) - m) / (ltmlogisst(p[i], m, g) - m),
+			(rtmkiener2(p[i], m, g, a, w) - m) / (rtmlogisst(p[i], m, g) - m))
 	}
-return(h)
+	h
 }
 
 #' @export
 #' @rdname ckiener1234
 ckiener1 <- function(p, k = 3.2, lower.tail = TRUE, log.p = FALSE) {
-    if (log.p)       {p <- exp(p)}
-    if (!lower.tail) {p <- 1-p}
-	l <- qlogis(p) 
-	z <- k/l * sinh(l/k)
+	if(log.p)       p <- exp(p)
+	if(!lower.tail) p <- 1-p
+	lp <- logit(p)
+	z  <- k/lp * sinh(lp/k)
 	z[which(z == "NaN")] <- 1
-return(z)
+	z
 }
 #' @export
 #' @rdname ckiener1234
 ckiener2 <- function(p, a = 3.2, w = 3.2, lower.tail = TRUE, log.p = FALSE) {
-    if (log.p)       {p <- exp(p)}
-    if (!lower.tail) {p <- 1-p}
-	l <- qlogis(p) 
+	if(log.p)       p <- exp(p)
+	if(!lower.tail) p <- 1-p
+	lp <- logit(p)
 	k <- aw2k(a, w)
 	e <- aw2e(a, w)
-	z <- k/l * sinh(l/k) * exp(l/k *e)
+	z <- k/lp * sinh(lp/k) * exp(lp/k *e)
 	z[which(z == "NaN")] <- 1
-return(z)
+	z
 }
 #' @export
 #' @rdname ckiener1234
 ckiener3 <- function(p, k = 3.2, d = 0, lower.tail = TRUE, log.p = FALSE) {
-    if (log.p)       {p <- exp(p)}
-    if (!lower.tail) {p <- 1-p}
-	l <- qlogis(p) 
-	z <- k/l * sinh(l/k) * exp(l * d)
+	if(log.p)       p <- exp(p)
+	if(!lower.tail) p <- 1-p
+	lp <- logit(p)
+	z  <- k/lp * sinh(lp/k) * exp(lp * d)
 	z[which(z == "NaN")] <- 1
-return(z)
+	z
 }
 #' @export
 #' @rdname ckiener1234
 ckiener4 <- function(p, k = 3.2, e = 0, lower.tail = TRUE, log.p = FALSE) {
-    if (log.p)       {p <- exp(p)}
-    if (!lower.tail) {p <- 1-p}
-	l <- qlogis(p) 
-	z <- k/l * sinh(l/k) * exp(l/k *e)
+	if(log.p)       p <- exp(p)
+	if(!lower.tail) p <- 1-p
+	lp <- logit(p)
+	z  <- k/lp * sinh(lp/k) * exp(lp/k *e)
 	z[which(z == "NaN")] <- 1
-return(z)
+	z
 }
 #' @export
 #' @rdname ckiener1234
@@ -176,11 +174,13 @@ ckiener7 <- function(p, coefk = c(0, 1, 3.2, 3.2, 3.2, 0, 0),
     checkcoefk(coefk)
     k  <- switch(dimdimc(coefk), "1" = coefk[4], "2" = coefk[,4]) 
     e  <- switch(dimdimc(coefk), "1" = coefk[7], "2" = coefk[,7])
-    if (log.p)       {p <- exp(p)}
-    if (!lower.tail) {p <- 1-p}
-    l  <- qlogis(p) 
-    z  <- k/l * sinh(l/k) * exp(l/k *e)
+	if(log.p)       p <- exp(p)
+	if(!lower.tail) p <- 1-p
+    lp <- logit(p) 
+    z  <- k/lp * sinh(lp/k) * exp(lp/k *e)
     z[which(z == "NaN")] <- 1
-return(z)
+	z
 }
+
+
 

@@ -27,64 +27,46 @@ distributions.
 }
 \details{
 \code{ashp} function is defined for x in (-Inf, +Inf) by: 
-      \deqn{ ashp(x, k) = asinh(x / 2 / k)  }
+      \deqn{ ashp(x, k) = asinh(x/k) }
 \code{kashp} function is defined for x in (-Inf, +Inf) by: 
-      \deqn{ kashp(x, k) = k * asinh(x / 2 / k)  }
+      \deqn{ kashp(x, k) = k * asinh(x/k) }
 \code{dkashp_dx} function is defined for x in (-Inf, +Inf) by: 
-      \deqn{ dkashp_dx(x, k) = 1 / sqrt( x*x/k/k + 4 ) 
-             = 1 / 2 / cosh( ashp(x, k) ) }
+  \deqn{ \frac{d}{dx}kashp(x, k) = \frac{1}{\sqrt{(x/k)^2 + 1}} 
+                                 = \frac{1}{\cosh(ashp(x, k))} }{%
+         dkashp_dx(x, k) = 1/sqrt(x*x/k/k + 1) = 1/cosh(ashp(x, k)) }
 
 If k is a vector, then the use of the function \code{\link[base]{outer}} 
 is recommanded.
 
-The undesired case k=0 returns 0 for kashp and dkashp_dx, 1 for exphp, 
--Inf, NaN, +Inf for ashp.
+The undesired case k=0 returns 0 for kashp and dkashp_dx.
 }
 \examples{
-
 require(graphics)
 
-### Example 1
-x    <- (-3:3)*3 ; names(x) <- x
-kashp(x, k=2)
-k    <- c(-2, 0, 1, 2, 3, 5, 10) ; names(k) <- k
-outer(x, k, kashp)
-outer(x, k, exphp)
+### FUNCTIONS kashp, dkashp_dx, ashp
+xx <- (-3:3)*3
+x  <- (-9:9) ; names(x) <- x
+k  <- c(9999, 8, 5, 3, 2, 1) ; names(k) <- k
+mat1 <- outer(x, k, kashp)    ; mat1
+mat2 <- outer(x, k,dkashp_dx) ; mat2
+mat3 <- outer(x, k,  ashp)    ; mat3
 
-### Example 2
-xmin   <- -10
-xd     <- 0.5
-x      <- seq(xmin, -xmin, xd) ; names(x) <- x
-k      <- c(0.6, 1, 1.5, 2, 3.2, 10) ; names(k) <- k
-olty   <- c(2, 1, 2, 1, 2, 1, 1)
-olwd   <- c(1, 1, 2, 2, 3, 4, 2)
-ocol   <- c(2, 2, 4, 4, 3, 3, 1)
-op     <- par(mfrow = c(2,2), mgp = c(1.5,0.8,0), mar = c(3,3,2,1))
+### GRAPHICS
+op <- par(mfcol = c(2,2), mar = c(3,3,2,1))
+matplot(x, mat1, type="l", lwd=2, xaxt="n", yaxt="n", main="kashp") 
+axis(1, at = xx) ; axis(2, at = xx, las = 1)
+legend("topleft", title = expression(kappa), legend = colnames(mat1),
+       lty = 1:6, col = 1:6, lwd = 2, inset = 0.02, cex = 0.7)
 
-Tkashp <- ts(cbind(outer(x, k, kashp), "x/2" = x/2), start = xmin, deltat = xd)
-plot(Tkashp, plot.type = "single", ylim = c(-5, +5), 
-       lty = olty, lwd = olwd, col = ocol, xaxs = "i", yaxs = "i", xlab = "", 
-       ylab = "", main = "kashp(x, k)" )
-legend("topleft", title = expression(kappa), legend = colnames(Tkashp), 
-       inset = 0.02, lty = olty, lwd = olwd, col = ocol, cex = 0.7 )
+matplot(x, mat2, type="l", lwd=2, xaxt="n", main="dkashp_dx", las=1, ylim=c(0,1)) 
+axis(1, at = xx)
+legend("bottom", title = expression(kappa), legend = colnames(mat1),
+       lty = 1:6, col = 1:6, lwd = 2, inset = 0.02, cex = 0.7)
 
-Tdkashp <- ts(cbind(outer(x, k, dkashp_dx)), start = xmin, deltat = xd)
-plot(Tdkashp, plot.type = "single", ylim = c(0, 0.8), 
-       lty = olty, lwd = olwd, col = ocol, xaxs = "i", yaxs = "i", xlab = "", 
-       ylab = "", main="dkashp_dx(x, k)" )
-legend("topleft", title = expression(kappa), legend = colnames(Tdkashp), 
-       inset = 0.02, lty = olty, lwd = olwd, col = ocol, cex = 0.7 )
+matplot(x, mat3, type="l", lwd=2, xaxt="n", main="ashp", las=1) 
+axis(1, at = xx)
+legend("topleft", title = expression(kappa), legend = colnames(mat1),
+       lty = 1:6, col = 1:6, lwd = 2, inset = 0.02, cex = 0.7)
+par(op)
 
-Tashp <- ts(cbind(outer(x, k, ashp), "x/2" = x/2), start = xmin, deltat = xd)
-plot(Tashp, plot.type = "single", ylim = c(-5, +5), 
-       lty = olty, lwd = olwd, col = ocol, xaxs = "i", yaxs = "i", xlab = "", 
-       ylab = "", main = "ashp(x, k)" )
-legend("topleft", title = expression(kappa), legend = colnames(Tashp), 
-       inset = 0.02, lty = olty, lwd = olwd, col = ocol, cex = 0.7 )
-### End example 2
-
-}
-\seealso{
-The power hyperbolas and the power hyperbolic functions 
-\code{\link{exphp}}.
 }

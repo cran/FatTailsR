@@ -153,7 +153,7 @@ matret    <- 100*diff(log((EuStockMarkets)))
 rbind(matcoefk, matmomk[2:5,], matmomx[2:5,])
 
 ## Example 4: List + direct calculation = transpose
-DS   <- getDSdata() ; dimdim(DS) ; class(DS)
+DS   <- getDSdata() ; class(DS)
 (pDS <- paramkienerX5(DS, dimnames = FALSE))
 (kDS <- kmoments(pDS, lengthx = sapply(DS, length), dgts = 3))
 (xDS <- xmoments( DS, dgts = 3))

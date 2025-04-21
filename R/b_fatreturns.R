@@ -1,5 +1,4 @@
-
-#' @include a_data.R
+## #' @include a_data.R
 
 
 ### 03/04/2016 Copie (mais pas transfert) de FatTailsRplot a FatTailsR 
@@ -17,7 +16,8 @@
 #' Negative prices in financial markets, like interest rates in Europe, are a 
 #' nightmare as the rough calculation of the returns generates non-sense values.
 #' \code{elevate} uses an hyperbola and implements the following formula: 
-#'      \deqn{ elevate(x, e) = (x + sqrt(x*x + e*e)) / 2 }
+#'      \deqn{ elevate(x, e) = \frac{x + \sqrt{x^2 + e^2}}{2} }{%
+#'             elevate(x, e) = (x + sqrt(x*x + e*e)) / 2 }
 #' 
 #' There is currently no rule of thumb to calculate \code{e}. 
 #' When \eqn{e = NULL}, there is no change and the output is identical to the input.
@@ -99,7 +99,7 @@ return(out)
 #'                   A positive numeric designates the focal point of the hyperbola 
 #'                   to turn negative prices into positive prices, keeping the hierarchy:  
 #'                   \code{f(x)=(x+sqrt(x*x+e*e))/2}. There is currently no rules of thumb 
-#'                   for the optimal value of \code{e}.
+#'                   for the optimal value of \code{e}. See \code{\link{elevate}}.
 #' @param    dfrcol  integer. For data.frame only, designates the column that handles the time 
 #'                   and must be processed separately. Use \code{dfrcol = 0} if all columns 
 #'                   must be processed and there is no time (or turn the data.frame to a matrix).
@@ -108,20 +108,10 @@ return(out)
 #'                   calculate the returns accordingly. Force 0 in the first line of the returns 
 #'                   if \code{x[1]=NA}.
 #' 
-#' @details
-#' Negative prices in financial markets, like interest rates in Europe, are a 
-#' nightmare as the rough calculation of the returns generates non-sense values.
-#' \code{elevate} uses an hyperbola and implements the following formula: 
-#'      \deqn{ elevate(x, e) = (x + sqrt(x*x + e*e)) / 2 }
-#' 
-#' There is currently no rule of thumb to calculate \code{e}. 
-#' When \eqn{e = NULL}, there is no change and the output is identical to the input.
-#' When \eqn{e = 0}, all negative values are turned to 0.
-#' 
 #' @examples 
 #' 
 #' fatreturns(extractData())
-#' logreturns(getDSdata())
+#' logreturns(extractData())
 #' 
 #' @export
 #' @name  fatreturns

@@ -134,19 +134,30 @@ Conversion functions between parameters \code{a}, \code{k}, \code{w},
 \code{k} (kappa) is the harmonic mean of \code{a} and \code{w} and 
 describes a global tail parameter. 
 They are defined by: 
-\deqn{ aw2k(a, w) = k = 2 / (1/a + 1/w) = \frac{2}{\frac{1}{a} +\frac{1}{w}}  }
-\deqn{ aw2d(a, w) = d = (-1/a + 1/w) / 2 = \frac{-\frac{1}{a} +\frac{1}{w}}{2} }
-\deqn{ aw2e(a, w) = e = (a - w) / (a + w) = \frac{a-w}{a+w} }
-\deqn{ kd2a(k, d) = a = 1 / ( 1/k - d) = \frac{1}{\frac{1}{k} - d} }
-\deqn{ kd2w(k, d) = w = 1 / ( 1/k + d) = \frac{1}{\frac{1}{k} + d} }
-\deqn{ ke2a(k, e) = a = k / (1 - e) = \frac{k}{1-e} }
-\deqn{ ke2w(k, e) = w = k / (1 + e) = \frac{k}{1+e} }
-\deqn{ ke2d(k, e) = d = e / k = \frac{e}{k} }
-\deqn{ kd2e(k, d) = e = k * d }
-\deqn{ de2k(k, e) = k = e / d = \frac{e}{d} }
+\itemize{
+\item \eqn{ aw2k(a, w) = k = \frac{2}{\frac{1}{a} + \frac{1}{w}} }{%
+            aw2k(a, w) = k = 2 / (1/a + 1/w) }
+\item \eqn{ aw2d(a, w) = d = \frac{-\frac{1}{a} +\frac{1}{w}}{2} }{%
+            aw2d(a, w) = d = (-1/a + 1/w) / 2 }
+\item \eqn{ aw2e(a, w) = e = \frac{a-w}{a+w} }{%
+            aw2e(a, w) = e = (a - w) / (a + w) }
+\item \eqn{ kd2a(k, d) = a = \frac{1}{\frac{1}{k} - d} }{%
+            kd2a(k, d) = a = 1 / ( 1/k - d) }
+\item \eqn{ kd2w(k, d) = w = \frac{1}{\frac{1}{k} + d} }{%
+            kd2w(k, d) = w = 1 / ( 1/k + d) }
+\item \eqn{ ke2a(k, e) = a = \frac{k}{1-e} }{%
+            ke2a(k, e) = a = k / (1 - e) }
+\item \eqn{ ke2w(k, e) = w = \frac{k}{1+e} }{%
+            ke2w(k, e) = w = k / (1 + e) }
+\item \eqn{ ke2d(k, e) = d = \frac{e}{k} }{%
+            ke2d(k, e) = d = e / k }
+\item \eqn{ kd2e(k, d) = e = k * d }{%
+            kd2e(k, d) = e = k * d }
+\item \eqn{ de2k(k, e) = k = \frac{e}{d} }{%
+            de2k(k, e) = k = e / d }
+}
 }
 \examples{
-
 aw2k(4, 6); aw2d(4, 6); aw2e(4, 6)
 outer(1:6, 1:6, aw2k)
 

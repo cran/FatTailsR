@@ -1,6 +1,4 @@
-
-
-#' @include o_estimation2.R
+## #' @include o_estimation2.R
 
 
 
@@ -305,6 +303,9 @@ Xs       <- sd(X)
 parini   <- .hparamkienerX5(X, parnames = FALSE)
 if (anyNA(parini)) { 
 	gini   <- 0.25*Xs
+	# gini   <- 0.25*Xs
+	# since v1.9.1
+	gini   <- Xs*pi/sqrt(3)/2
 	qqq    <- quantile(X, c(0.10, 0.50, 0.90), type = 6)
 	dini   <- if (anyNA(qqq)) {0} else {log(abs(qqq[3]-qqq[2])/abs(qqq[2]-qqq[1]))/4.394}
 	kini   <- 4

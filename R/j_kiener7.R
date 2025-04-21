@@ -1,6 +1,4 @@
-
-
-#' @include i_kiener4.R
+## #' @include i_kiener4.R
 
 
 
@@ -52,17 +50,43 @@
 #' Kiener distribution \code{K7} is designed after \code{\link{kiener2}} 
 #' but uses as input \code{coefk} rather than \code{m}, \code{g}, \code{a} 
 #' and \code{w}. 
+#'  
+#' \code{m} is the median of the distribution. \code{g} is the scale parameter 
+#' and is linked for any value of \code{a} and \code{w} to the density at the 
+#' median through the relation
+#' \deqn{ g * dkiener7(x=m, coefk=coefk) = \frac{\pi}{4\sqrt{3}} \approx 0.453 }{%
+#'        g * dkiener7(x=m, coefk=coefk) = pi/4/sqrt(3) = 0.453 approximatively}
 #'
-#' The d, p functions have no explicit forms. They are provided here for 
-#' convenience. They are estimated from a reverse optimization on the quantile 
-#' function and can be (very) slow, depending the number of points to estimate. 
-#' We recommand to use the quantile function as much as possible. 
-#' WARNING: Results may become inconsistent when \code{a} or \code{w} are
-#' smaller than 1. 
+#' When \code{a = Inf} and \code{w = Inf}, \code{g} is very close to \code{sd(x)}. 
+#' NOTE: In order to match this standard deviation, the value of \code{g} has 
+#' been updated from versions < 1.9.0 by a factor 
+#' \eqn{ \frac{2\pi}{\sqrt{3}}}{ 2 pi/sqrt(3) }.
+#' 
+#' The functions \code{dkiener2347}, \code{pkiener2347} and \code{lkiener2347} 
+#' have no explicit forms. Due to a poor optimization algorithm, their
+#' calculations in versions < 1.9 were unreliable. In versions > 1.9, a much better 
+#' algorithm was found and the optimization is conducted in a fast way to avoid 
+#' a lengthy optimization. The two extreme elements (minimum, maximum) of the 
+#' given \code{x} or \code{q} arguments are sent to a second order optimizer that 
+#' minimize the residual error of the \code{lkiener2347} function and return the 
+#' estimated lower and upper logit values. Then a sequence of logit values of 
+#' length 51 times the length of \code{x} or \code{q} is generated between these 
+#' lower and upper values and the corresponding quantiles are calculated with 
+#' the function \code{qlkiener2347}. These 51 times more numerous quantiles are
+#' then compared to the original \code{x} or \code{q} arguments and the closest 
+#' values with their associated logit values are selected. The probabilities are then 
+#' calculated with the function \code{invlogit} and the densities are calculated 
+#' with the function \code{dlkiener2347}. The accuracy of this approach depends  
+#' on the sparsity of the initial \code{x} or \code{q} sequences. A 4 digits 
+#' accuracy can be expected, enough for most usages. 
 #'
 #' \code{qkiener7} function is defined for p in (0, 1) by: 
-#'   \deqn{ qkiener7(p, coefk) = 
-#'                   m + g * k * (- exp(-logit(p)/a) + exp(logit(p)/w) ) }
+#'  \deqn{ 
+#'    qkiener7(p, coefk) = m + \frac{\sqrt{3}}{\pi}*g*k* 
+#'     \left(-exp\left(-\frac{logit(p)}{a} +\frac{logit(p)}{w}\right)\right)
+#'  }{%
+#'    qkiener7(p, coefk) = m + sqrt(3)/pi*g*k*(-exp(-logit(p)/a) +exp(logit(p)/w))  
+#'  }
 #' where k is the harmonic mean of the tail parameters \code{a} and \code{w} 
 #' calculated by \eqn{k = aw2k(a, w)}.
 #'
@@ -73,37 +97,52 @@
 #'
 #' \code{dpkiener7} is the density function calculated from the probability p. 
 #' It is defined for p in (0, 1) by: 
-#'   \deqn{ dpkiener7(p, coefk) = 
-#'          p * (1 - p) / k / g / ( exp(-logit(p)/a)/a + exp(logit(p)/w)/w }
+#'  \deqn{
+#'    dpkiener7(p, coefk) = \frac{\pi}{\sqrt{3}}\frac{p(1-p)}{g}\frac{2}{k}
+#'     \left[ +\frac{1}{a}exp\left(-\frac{logit(p)}{a}\right) 
+#'            +\frac{1}{w}exp\left( \frac{logit(p)}{w}\right) \right]^{-1} 
+#'  }{%
+#'    dpkiener7(p, coefk) = pi/sqrt(3)*p*(1-p)/g*2/k/(+exp(-logit(p)/a)/a +exp(logit(p)/w)/w) 
+#'  }
 #'
 #' \code{dqkiener7} is the derivate of the quantile function calculated from 
 #' the probability p. It is defined for p in (0, 1) by: 
-#'   \deqn{ dqkiener7(p, coefk) = 
-#'          k * g / p / (1 - p) * ( exp(-logit(p)/a)/a + exp(logit(p)/w)/w ) }
-#'
-#' \code{lkiener7} function is estimated from a reverse optimization and can 
-#' be (very) slow depending the number of points to estimate. Initialization 
-#' is done by assuming a symmetric distribution \code{\link{lkiener1}} 
-#' around the harmonic mean \code{k}, then optimization is performed to 
-#' take into account the true values \code{a} and \code{w}. 
-#' The result can be then compared to the empirical probability logit(p). 
-#' WARNING: Results may become inconsistent when \code{a} or \code{w} are
-#' smaller than 1. 
+#'  \deqn{
+#'    dqkiener7(p, coefk) = \frac{\sqrt{3}}{\pi}\frac{g}{p(1-p)}\frac{k}{2}
+#'     \left[ +\frac{1}{a}exp\left(-\frac{logit(p)}{a}\right) 
+#'            +\frac{1}{w}exp\left( \frac{logit(p)}{w}\right) \right]
+#'  }{%
+#'    dqkiener4(p,m,g,k,e) = sqrt(3)/pi*g/p/(1-p)*k/2*( exp(-logit(p)/a)/a + exp(logit(p)/w)/w)
+#'  }
+#' with \code{a} and \code{w} extracted from \code{coefk}. 
 #'
 #' \code{dlkiener7} is the density function calculated from the logit of the 
-#' probability lp = logit(p).  
-#' it is defined for lp in (-Inf, +Inf) by: 
-#'    \deqn{ dlkiener7(lp, coefk) = 
-#'           p * (1 - p) / k / g / ( exp(-lp/a)/a + exp(lp/w)/w ) }
+#' probability lp = logit(p) defined in (-Inf, +Inf). The formula is adapted 
+#' from distribution K2: 
+#'  \deqn{
+#'    dlkiener7(lp, coefk) = \frac{\pi}{\sqrt{3}}\frac{p(1-p)}{g}\frac{2}{k}
+#'     \left[ +\frac{1}{a}exp\left(-\frac{lp}{a}\right) 
+#'            +\frac{1}{w}exp\left( \frac{lp}{w}\right) \right]^{-1} 
+#'  }{%
+#'    dlkiener7(lp, coefk) = pi/sqrt(3)*p*(1-p)/g*2/k/(+exp(-lp/a)/a +exp(lp/w)/w) 
+#'  }
 #'
 #' \code{qlkiener7} is the quantile function calculated from the logit of the 
 #' probability. It is defined for lp in (-Inf, +Inf) by: 
-#'    \deqn{ qlkiener7(lp, coefk) = 
-#'           m + g * k * ( - exp(-lp/a) + exp(lp/w) ) }
+#'  \deqn{ 
+#'    qlkiener7(lp, coefk) = m + \frac{\sqrt{3}}{\pi}*g*k* 
+#'     \left(-exp\left(-\frac{lp}{a} +\frac{lp}{w}\right)\right)
+#'  }{%
+#'    qlkiener7(lp, coefk) = m + sqrt(3)/pi*g*k*(-exp(-lp/a) +exp(lp/w))  
+#'  }
 #' 
 #' \code{varkiener7} designates the Value a-risk and turns negative numbers 
 #' into positive numbers with the following rule:
-#'    \deqn{ varkiener7 <- if(p <= 0.5) { - qkiener7 } else { qkiener7 } }
+#'  \deqn{ 
+#'    varkiener7 <- if\;(p <= 0.5)\;\; (- qkiener7)\;\; else\;\; (qkiener7) 
+#'  }{%
+#'    varkiener7 <- if (p <= 0.5) (- qkiener7) else (qkiener7) 
+#'  }
 #' Usual values in finance are \code{p = 0.01}, \code{p = 0.05}, \code{p = 0.95} and 
 #' \code{p = 0.99}. \code{lower.tail = FALSE} uses \code{1-p} rather than \code{p}.
 #' 
@@ -115,7 +154,11 @@
 #' Right tail mean is the integrale from \code{p} to \code{+Inf} of the quantile function 
 #' \code{qkiener7} divided by 1-p.
 #' Expected shortfall turns negative numbers into positive numbers with the following rule:
-#'    \deqn{ eskiener7 <- if(p <= 0.5) { - ltmkiener7 } else { rtmkiener7 } }
+#'  \deqn{ 
+#'    eskiener7 <- if\;(p <= 0.5)\;\; (- ltmkiener7)\;\; else\;\; (rtmkiener7) 
+#'  }{%
+#'    eskiener7 <- if(p <= 0.5) (- ltmkiener7) else (rtmkiener7)
+#'  }
 #' Usual values in finance are \code{p = 0.01}, \code{p = 0.025}, \code{p = 0.975} and 
 #' \code{p = 0.99}. \code{lower.tail = FALSE} uses \code{1-p} rather than \code{p}.
 #'
@@ -202,11 +245,11 @@ dkiener7 <- function(x, coefk = c(0, 1, 3.2, 3.2, 3.2, 0, 0),
 		lp <-  lkiener7(x,  coefk)
 		v  <- dlkiener7(lp, coefk)
 		if (log) {v <- log(v)}
-	return(v)
+		v
 	}
 	if (dimdim1(coefk) == 1) { coefk <- t(as.matrix(coefk)) }
 	v <- drop(apply(coefk, 1, fundk7, x, log))
-return(v)
+	v
 }
 
 #' @export
@@ -216,13 +259,13 @@ pkiener7 <- function(q, coefk = c(0, 1, 3.2, 3.2, 3.2, 0, 0),
     checkcoefk(coefk)
 	funpk7 <- function(coefk, q, lower.tail, log.p) {
 		lp <- lkiener7(q, coefk)
-		v  <- if (lower.tail) {invlogit(lp)} else {1 - invlogit(lp)}
-		if (log.p) {v <- log(v)}
-	return(v)
+		v  <- if (lower.tail) invlogit(lp) else 1 - invlogit(lp)
+		if (log.p) v <- log(v)
+		v
 	}
 	if (dimdim1(coefk) == 1) { coefk <- t(as.matrix(coefk)) }
 	v <- drop(apply(coefk, 1, funpk7, q, lower.tail, log.p))
-return(v)
+	v
 }
 
 #' @export
@@ -237,14 +280,15 @@ qkiener7 <- function(p, coefk = c(0, 1, 3.2, 3.2, 3.2, 0, 0),
 		a <- switch(dck, "1" = coefk[3], "2" = coefk[,3]) 
 		k <- switch(dck, "1" = coefk[4], "2" = coefk[,4])
 		w <- switch(dck, "1" = coefk[5], "2" = coefk[,5])
-		v <- m + g * k * (- exp(-logit(p)/a) + exp(logit(p)/w) )
-	return(v)
+		# since v1.9.0
+		v <- m + sqrt(3)/pi*g*k*(- exp(-logit(p)/a) + exp(logit(p)/w))/2
+		v
 	}
-    if (log.p)       {p <- exp(p)}
-    if (!lower.tail) {p <- 1-p}
+    if (log.p)       p <- exp(p)
+    if (!lower.tail) p <- 1-p
 	names(p) <- getnamesk(p)$nquantk
 	v        <- drop(apply(as.matrix(p), 1, funqk7, coefk))
-return(v)
+	v
 }
 
 #' @export
@@ -259,14 +303,15 @@ rkiener7 <- function(n, coefk = c(0, 1, 3.2, 3.2, 3.2, 0, 0),
 		a <- switch(dck, "1" = coefk[3], "2" = coefk[,3]) 
 		k <- switch(dck, "1" = coefk[4], "2" = coefk[,4])
 		w <- switch(dck, "1" = coefk[5], "2" = coefk[,5])
-		if (!same_p) { p <- runif(length(p)) }
-		v <- m + g * k * (- exp(-logit(p)/a) + exp(logit(p)/w) )
-	return(v)
+		if (!same_p) p <- runif(length(p))
+		# since v1.9.0
+		v <- m + sqrt(3)/pi*g*k*(- exp(-logit(p)/a) + exp(logit(p)/w))/2
+		v
 	}
-	if (dimdim1(coefk) == 1) { coefk <- t(as.matrix(coefk)) }
+	if (dimdim1(coefk) == 1) coefk <- t(as.matrix(coefk))
 	p <- runif(n)
 	v <- drop(apply(coefk, 1, funqk7, p, same_p))
-return(v)
+	v
 }
 
 #' @export
@@ -280,13 +325,13 @@ dpkiener7 <- function(p, coefk = c(0, 1, 3.2, 3.2, 3.2, 0, 0),
 		a <- switch(dck, "1" = coefk[3], "2" = coefk[,3]) 
 		k <- switch(dck, "1" = coefk[4], "2" = coefk[,4])
 		w <- switch(dck, "1" = coefk[5], "2" = coefk[,5])
-		v <- p * (1 - p) / k / g / ( exp(-logit(p)/a)/a + exp(logit(p)/w)/w )
-		if (log) {v <- log(v)}
-	return(v)
+		# since v1.9.0
+		v <- p*(1-p)*pi/sqrt(3)/g/k/( exp(-logit(p)/a)/a + exp(logit(p)/w)/w)*2
+		if(log) log(v) else v
 	}
 	names(p) <- getnamesk(p)$ndensk
 	v        <- drop(apply(as.matrix(p), 1, fundpk7, coefk, log))
-return(v)
+	v
 }
 
 #' @export
@@ -301,30 +346,47 @@ dqkiener7 <- function(p, coefk = c(0, 1, 3.2, 3.2, 3.2, 0, 0),
 		a <- switch(dck, "1" = coefk[3], "2" = coefk[,3]) 
 		k <- switch(dck, "1" = coefk[4], "2" = coefk[,4])
 		w <- switch(dck, "1" = coefk[5], "2" = coefk[,5])
-		v <- k * g / p / (1 - p) * ( exp(-logit(p)/a)/a + exp(logit(p)/w)/w )
-		if (log) {v <- log(v)}
-	return(v)
+		# since v1.9.0
+		v <- 1/p/(1-p)*sqrt(3)/pi*g*k*( exp(-logit(p)/a)/a + exp(logit(p)/w)/w)/2
+		if(log) log(v) else v
 	}
 	names(p) <- getnamesk(p)$ndquantk
 	v        <- drop(apply(as.matrix(p), 1, fundqk7, coefk, log))
-return(v)
+	v
 }
 
 #' @export
 #' @rdname kiener7
-lkiener7 <- function(x, coefk = c(0, 1, 3.2, 3.2, 3.2, 0, 0)) { 
+lkiener7 <- function(x, coefk = c(0, 1, 3.2, 3.2, 3.2, 0, 0)) {
     checkcoefk(coefk)
 	funlk7 <- function(coefk, x) {
-		## lkiener1 = k * asinh((x - m)/g / 2 / k) 
-		lp.ini <- lkiener1(x, coefk[1], coefk[2], coefk[4])
-		f      <- function(lp) sum( (x - qlkiener7(lp, coefk))^2 )
-		lp.fin <- nlm(f, lp.ini)
-		v      <- lp.fin$estimate
-	return(v)
+		funnlslm2 <- function(x, m, g, a, w, lpi) { 
+			fn  <- function(lp) x - qlkiener2(lp, m, g, a, w)
+			opt <- minpack.lm::nls.lm(par=lpi, fn=fn)
+			opt$par
+		}
+		fuv <- function(u, v) {
+			z <- abs(u-v)
+			which(z == min(z))[1]
+		}
+		m   <- coefk[1]
+		g   <- coefk[2]
+		a   <- coefk[3]
+		w   <- coefk[4]
+		k   <- coefk[5]
+		d   <- coefk[6]
+		lk  <- lkiener1(range(x), m, g, k=k)
+		lp2 <- lk*exp(-lk*d*g^0.5)
+		lr2 <- funnlslm2(range(x), m, g, a, w, range(lp2))
+		l5  <- seq(range(lr2)[1], range(lr2)[2],
+	               length.out=max(50001, length(x)*51))
+		q5  <- qlkiener2(l5, m, g, a, w)
+		id5 <- sapply(x, fuv, q5)
+		lpi <- l5[id5]
+		lpi
 	}
-	if (dimdim1(coefk) == 1) { coefk <- t(as.matrix(coefk)) }
-	v <- drop(apply(coefk, 1, funlk7, x))
-return(v)
+	if (dimdim1(coefk) == 1) coefk <- t(as.matrix(coefk))
+	drop(apply(coefk, 1, funlk7, x))
 }
 
 
@@ -340,13 +402,13 @@ dlkiener7 <- function(lp, coefk = c(0, 1, 3.2, 3.2, 3.2, 0, 0),
 		k <- switch(dck, "1" = coefk[4], "2" = coefk[,4])
 		w <- switch(dck, "1" = coefk[5], "2" = coefk[,5])
 		p <- invlogit(lp)
-		v <- p * (1 - p) / k / g / ( exp(-lp/a)/a + exp(lp/w)/w )
-		if (log) {v <- log(v)}
-	return(v)
+		# since v1.9.0
+		v <- p*(1-p)*pi/sqrt(3)/g /k/( exp(-lp/a)/a + exp(lp/w)/w)*2
+		if(log) log(v) else v
 	}
-	names(lp) <- paste0("lp",round(lp,1))
+	names(lp) <- paste0("lp", round(lp,1))
 	v  <- drop(apply(as.matrix(lp), 1, fundqk7, coefk, log))
-return(v)
+	v
 }
 
 #' @export
@@ -362,12 +424,13 @@ qlkiener7 <- function(lp, coefk = c(0, 1, 3.2, 3.2, 3.2, 0, 0),
 		k <- switch(dck, "1" = coefk[4], "2" = coefk[,4])
 		w <- switch(dck, "1" = coefk[5], "2" = coefk[,5])
 		if (!lower.tail) {lp <- -lp}
-		v <- m + g * k * ( - exp(-lp/a) + exp(lp/w) )
-	return(v)
+		# since v1.9.0
+		v <- m + sqrt(3)/pi*g *k *(- exp(-lp/a) + exp(lp/w))/2
+		v
 	}
 	names(lp) <- paste0("lp", round(lp, 1))
 	v  <- drop(apply(as.matrix(lp), 1, funqlk7, coefk, lower.tail))
-return(v)
+	v
 }
 
 #' @export
@@ -380,17 +443,18 @@ varkiener7 <- function(p, coefk = c(0, 1, 3.2, 3.2, 3.2, 0, 0),
 		}        else {   qkiener7(p, coefk)
 		}
 	}
-    if (log.p)       {p <- exp(p)}
-    if (!lower.tail) {p <- 1-p}
+	if(log.p)       p <- exp(p)
+	if(!lower.tail) p <- 1-p
 	names(p) <- getnamesk(p)$nvark
 	va <- drop(apply(as.matrix(p), 1, funvark7, coefk))
-return(va)
+	va
 }
 
 #' @export
 #' @rdname kiener7
 ltmkiener7 <- function(p, coefk = c(0, 1, 3.2, 3.2, 3.2, 0, 0), 
                        lower.tail = TRUE, log.p = FALSE) {
+    checkcoefk(coefk)
 	funltmk7 <- function(p, coefk, lower.tail) {
 		dck <- dimdimc(coefk)
 		m <- switch(dck, "1" = coefk[1], "2" = coefk[,1])
@@ -399,27 +463,31 @@ ltmkiener7 <- function(p, coefk = c(0, 1, 3.2, 3.2, 3.2, 0, 0),
 		k <- switch(dck, "1" = coefk[4], "2" = coefk[,4])
 		w <- switch(dck, "1" = coefk[5], "2" = coefk[,5])
 		ltm <- if (lower.tail) {
-				m+g*k/p*(
+				# m+g*k/p*(
+				# since v1.9.2
+				m+sqrt(3)/pi/2*g*k/p*(
 					-pbeta(p, 1-1/a, 1+1/a)*beta(1-1/a, 1+1/a)
 					+pbeta(p, 1+1/w, 1-1/w)*beta(1+1/w, 1-1/w))	
 			} else {
-				m+g*k/p*(
+				# m+g*k/p*(
+				# since v1.9.2
+				m+sqrt(3)/pi/2*g*k/p*(
 					-pbeta(p, 1+1/a, 1-1/a)*beta(1+1/a, 1-1/a)
 					+pbeta(p, 1-1/w, 1+1/w)*beta(1-1/w, 1+1/w))
 			}
-	return(ltm)
+		ltm
 	}
-    checkcoefk(coefk)
     if (log.p)  {p <- exp(p)}
 	names(p) <- getnamesk(p)$nltmk
 	ltm      <- drop(apply(as.matrix(p), 1, funltmk7, coefk, lower.tail))
-return(ltm)
+	ltm
 }
 
 #' @export
 #' @rdname kiener7
 rtmkiener7 <- function(p, coefk = c(0, 1, 3.2, 3.2, 3.2, 0, 0), 
                        lower.tail = TRUE, log.p = FALSE) {
+    checkcoefk(coefk)
 	funrtmk7 <- function(p, coefk, lower.tail) {
 		dck <- dimdimc(coefk)
 		m <- switch(dck, "1" = coefk[1], "2" = coefk[,1])
@@ -428,21 +496,24 @@ rtmkiener7 <- function(p, coefk = c(0, 1, 3.2, 3.2, 3.2, 0, 0),
 		k <- switch(dck, "1" = coefk[4], "2" = coefk[,4])
 		w <- switch(dck, "1" = coefk[5], "2" = coefk[,5])
 		rtm <- if (!lower.tail) {
-			m+g*k/(1-p)*(
+			# m+g*k/(1-p)*(
+			# since v1.9.2
+			m+sqrt(3)/pi/2*g*k/(1-p)*(
 				-pbeta(1-p, 1-1/a, 1+1/a)*beta(1-1/a, 1+1/a)
 				+pbeta(1-p, 1+1/w, 1-1/w)*beta(1+1/w, 1-1/w))	
 		} else {
-			m+g*k/(1-p)*(
+			# m+g*k/(1-p)*(
+			# since v1.9.2
+			m+sqrt(3)/pi/2*g*k/(1-p)*(
 				-pbeta(1-p, 1+1/a, 1-1/a)*beta(1+1/a, 1-1/a)
 				+pbeta(1-p, 1-1/w, 1+1/w)*beta(1-1/w, 1+1/w))
 		}
-	return(rtm)
+		rtm
 	}
-    checkcoefk(coefk)
     if (log.p)  {p <- exp(p)}
 	names(p) <- getnamesk(p)$nrtmk
 	rtm      <- drop(apply(as.matrix(p), 1, funrtmk7, coefk, lower.tail))
-return(rtm)
+	rtm
 }
 
 #' @export
@@ -458,12 +529,12 @@ dtmqkiener7 <- function(p, coefk = c(0, 1, 3.2, 3.2, 3.2, 0, 0),
 			rtmkiener7(p, coefk, lower.tail, log.p) 
 			- qkiener7(p, coefk, lower.tail, log.p)
 		}
-	return(dtmq)
+		dtmq
 	}
 	names(p) <- getnamesk(p)$ndtmqk
 	dtmq <- drop(apply(as.matrix(p), 1, fundtmqk7, 
 	                   coefk, lower.tail, log.p))
-return(dtmq)
+	dtmq
 }
 
 #' @export
@@ -471,8 +542,8 @@ return(dtmq)
 eskiener7 <- function(p, coefk = c(0, 1, 3.2, 3.2, 3.2, 0, 0), 
                       lower.tail = TRUE, log.p = FALSE, signedES = FALSE) {
     checkcoefk(coefk)
-    if (log.p)       {p <- exp(p)}
-    if (!lower.tail) {p <- 1-p}
+	if(log.p)       p <- exp(p)
+	if(!lower.tail) p <- 1-p
 	funesk7 <- function(p, coefk, signedES) {
 		if (signedES) {
 			if (p <= 0.5) {	ltmkiener7(p, coefk)
@@ -486,7 +557,7 @@ eskiener7 <- function(p, coefk = c(0, 1, 3.2, 3.2, 3.2, 0, 0),
 	}
 	names(p) <- getnamesk(p)$nesk
 	es <- drop(apply(as.matrix(p), 1, funesk7, coefk, signedES))
-return(es)
+	es
 }
 
 

@@ -1,60 +1,57 @@
-
-
-#' @include d_logishp.R
-
+## #' @include d_logishp.R
 
 
 
-#' @title Length and Dimensions of Vector, Matrix, Array, Data.Frame, List
-#'
-#' @description
-#' Dimensions and length of vector, matrix, array, data.frame and list. 
-#' A friendly version of \code{dim} that returns the true dimension 
-#' rather than the sometimes unexpected \code{NULL} value. 
-#' The number of dimensions appears first, then the length in each dimension. 
-#' A special case is list: the list's length (number of items) is turned into a 
-#' negative integer and the dimension/length of each item is either positive 
-#' if the item is a vector, matrix, array or data.frame or negative if the item 
-#' is itself a list. Only the first level of the list is explored. 
-#' 
-#' \code{dimdim1} and \code{dimdimc} return the first item of \code{dimdim}, 
-#' thus the true dimension, either as an integer or as a character 
-#' and, in this latest case, always \code{"-1"} for lists. 
-#' 
-#' Notes: From version 1.6.2 (April 2016), \code{dimdim(NULL) = c(0, 0)}.  
-#' (before \code{c(1, 0)}). Hence, \code{dimdim1(NULL) = 0} and 
-#' \code{dimdimc(NULL) = "0"}. 
-#' Some problems may occur with S4 objects like 
-#' \code{dimdim(qualityTools::fracDesign(k = 3, gen = "C = AB"))}.
-#' 
-#' @param        x    vector, matrix, array, data.frame, list.
-#' 
-#' @examples
-#' 
-#' require(timeSeries)
-#' 
-#' dimdim(NULL) 
-#' dimdim(NA); dimdim(NaN); dimdim(Inf); dimdim(TRUE); dimdim(FALSE)
-#' dimdim(11:39)
-#' dimdim(LETTERS[1:8])
-#' dimdim(matrix(1:60, ncol=5))
-#' dimdim(extractData())
-#' dimdim(as.data.frame(extractData()))
-#' dimdim(data.frame(X=1:2, Y=1:4, Z=LETTERS[1:8]))
-#' dimdim(array(1:240, c(8,6,5)))
-#' dimdim(array(1:240, c(4,2,6,5)))
-#' dimdim(getDSdata())
-#' dimdim(zData)
-#' dimdim(xData)
-#' dimdim(tData)
-#' 
-#' dimdim1(matrix(1:60, ncol=5))
-#' dimdimc(matrix(1:60, ncol=5))
-#' dimdim1(tData)
-#' dimdimc(tData)
-#' 
-#' @export
-#' @name dimdim
+## #' @title Length and Dimensions of Vector, Matrix, Array, Data.Frame, List
+## #'
+## #' @description
+## #' Dimensions and length of vector, matrix, array, data.frame and list. 
+## #' A friendly version of \code{dim} that returns the true dimension 
+## #' rather than the sometimes unexpected \code{NULL} value. 
+## #' The number of dimensions appears first, then the length in each dimension. 
+## #' A special case is list: the list's length (number of items) is turned into a 
+## #' negative integer and the dimension/length of each item is either positive 
+## #' if the item is a vector, matrix, array or data.frame or negative if the item 
+## #' is itself a list. Only the first level of the list is explored. 
+## #' 
+## #' \code{dimdim1} and \code{dimdimc} return the first item of \code{dimdim}, 
+## #' thus the true dimension, either as an integer or as a character 
+## #' and, in this latest case, always \code{"-1"} for lists. 
+## #' 
+## #' Notes: From version 1.6.2 (April 2016), \code{dimdim(NULL) = c(0, 0)}.  
+## #' (before \code{c(1, 0)}). Hence, \code{dimdim1(NULL) = 0} and 
+## #' \code{dimdimc(NULL) = "0"}. 
+## #' Some problems may occur with S4 objects like 
+## #' \code{dimdim(qualityTools::fracDesign(k = 3, gen = "C = AB"))}.
+## #' 
+## #' @param        x    vector, matrix, array, data.frame, list.
+## #' 
+## #' @examples
+## #' 
+## #' require(timeSeries)
+## #' 
+## #' dimdim(NULL) 
+## #' dimdim(NA); dimdim(NaN); dimdim(Inf); dimdim(TRUE); dimdim(FALSE)
+## #' dimdim(11:39)
+## #' dimdim(LETTERS[1:8])
+## #' dimdim(matrix(1:60, ncol=5))
+## #' dimdim(extractData())
+## #' dimdim(as.data.frame(extractData()))
+## #' dimdim(data.frame(X=1:2, Y=1:4, Z=LETTERS[1:8]))
+## #' dimdim(array(1:240, c(8,6,5)))
+## #' dimdim(array(1:240, c(4,2,6,5)))
+## #' dimdim(getDSdata())
+## #' dimdim(zData)
+## #' dimdim(xData)
+## #' dimdim(tData)
+## #' 
+## #' dimdim1(matrix(1:60, ncol=5))
+## #' dimdimc(matrix(1:60, ncol=5))
+## #' dimdim1(tData)
+## #' dimdimc(tData)
+## #'
+## #' @export
+## #' @name dimdim
 dimdim    <- function(x) { 
 	z  <- 	if (is.list(x) & !is.data.frame(x)) { 
 				c(-length(x), sapply(x, dimdim1))
@@ -74,11 +71,13 @@ dimdim    <- function(x) {
 	names(z) <- NULL
 return(z)
 }
-#' @export
-#' @rdname dimdim
+
+## #' @export
+## #' @rdname dimdim
 dimdim1 <- function(x) { dimdim(x)[1] }
-#' @export
-#' @rdname dimdim
+
+## #' @export
+## #' @rdname dimdim
 dimdimc <- function(x) {
 	ddim  <- dimdim(x)[1] 
 	z     <- if (ddim < 0) {"-1"} else {as.character(ddim)}
@@ -106,23 +105,34 @@ return(z)
 #' \code{k} (kappa) is the harmonic mean of \code{a} and \code{w} and 
 #' describes a global tail parameter. 
 #' They are defined by: 
-#' \deqn{ aw2k(a, w) = k = 2 / (1/a + 1/w) = \frac{2}{\frac{1}{a} +\frac{1}{w}}  }
-#' \deqn{ aw2d(a, w) = d = (-1/a + 1/w) / 2 = \frac{-\frac{1}{a} +\frac{1}{w}}{2} }
-#' \deqn{ aw2e(a, w) = e = (a - w) / (a + w) = \frac{a-w}{a+w} }
-#' \deqn{ kd2a(k, d) = a = 1 / ( 1/k - d) = \frac{1}{\frac{1}{k} - d} }
-#' \deqn{ kd2w(k, d) = w = 1 / ( 1/k + d) = \frac{1}{\frac{1}{k} + d} }
-#' \deqn{ ke2a(k, e) = a = k / (1 - e) = \frac{k}{1-e} }
-#' \deqn{ ke2w(k, e) = w = k / (1 + e) = \frac{k}{1+e} }
-#' \deqn{ ke2d(k, e) = d = e / k = \frac{e}{k} }
-#' \deqn{ kd2e(k, d) = e = k * d }
-#' \deqn{ de2k(k, e) = k = e / d = \frac{e}{d} }
-#'
+#' \itemize{
+#' \item \eqn{ aw2k(a, w) = k = \frac{2}{\frac{1}{a} + \frac{1}{w}} }{%
+#'             aw2k(a, w) = k = 2 / (1/a + 1/w) }
+#' \item \eqn{ aw2d(a, w) = d = \frac{-\frac{1}{a} +\frac{1}{w}}{2} }{%
+#'             aw2d(a, w) = d = (-1/a + 1/w) / 2 }
+#' \item \eqn{ aw2e(a, w) = e = \frac{a-w}{a+w} }{%
+#'             aw2e(a, w) = e = (a - w) / (a + w) }
+#' \item \eqn{ kd2a(k, d) = a = \frac{1}{\frac{1}{k} - d} }{%
+#'             kd2a(k, d) = a = 1 / ( 1/k - d) }
+#' \item \eqn{ kd2w(k, d) = w = \frac{1}{\frac{1}{k} + d} }{%
+#'             kd2w(k, d) = w = 1 / ( 1/k + d) }
+#' \item \eqn{ ke2a(k, e) = a = \frac{k}{1-e} }{%
+#'             ke2a(k, e) = a = k / (1 - e) }
+#' \item \eqn{ ke2w(k, e) = w = \frac{k}{1+e} }{%
+#'             ke2w(k, e) = w = k / (1 + e) }
+#' \item \eqn{ ke2d(k, e) = d = \frac{e}{k} }{%
+#'             ke2d(k, e) = d = e / k }
+#' \item \eqn{ kd2e(k, d) = e = k * d }{%
+#'             kd2e(k, d) = e = k * d }
+#' \item \eqn{ de2k(k, e) = k = \frac{e}{d} }{%
+#'             de2k(k, e) = k = e / d }
+#' }
+#' 
 #' @seealso 
 #' The asymmetric Kiener distributions K2, K3, K4:  
 #' \code{\link{kiener2}}, \code{\link{kiener3}}, \code{\link{kiener4}}
 #'
 #' @examples
-#' 
 #' aw2k(4, 6); aw2d(4, 6); aw2e(4, 6)
 #' outer(1:6, 1:6, aw2k)
 #' 

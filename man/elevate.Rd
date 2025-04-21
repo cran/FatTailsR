@@ -19,7 +19,8 @@ and maintain at the same time the hierachy between all prices.
 Negative prices in financial markets, like interest rates in Europe, are a 
 nightmare as the rough calculation of the returns generates non-sense values.
 \code{elevate} uses an hyperbola and implements the following formula: 
-     \deqn{ elevate(x, e) = (x + sqrt(x*x + e*e)) / 2 }
+     \deqn{ elevate(x, e) = \frac{x + \sqrt{x^2 + e^2}}{2} }{%
+            elevate(x, e) = (x + sqrt(x*x + e*e)) / 2 }
 
 There is currently no rule of thumb to calculate \code{e}. 
 When \eqn{e = NULL}, there is no change and the output is identical to the input.
