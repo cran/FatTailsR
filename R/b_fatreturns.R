@@ -156,7 +156,8 @@ fatreturns  <- function(x, log = TRUE, per = "cent", e = NULL, dfrcol = 1, na.rm
 			rownames(z) <- rownames(x)
 			colnames(z) <- colnames(x)
 			if (is(x, "zoo")) {zoo::index(z) <- zoo::index(x)}
-			if (is(x, "timeSeries")) {timeSeries::time(z) <- timeSeries::time(x)}
+			# if (is(x, "timeSeries")) {timeSeries::time(z) <- timeSeries::time(x)}
+			if (is(x, "timeSeries")) {timeSeries::time(z) <- stats::time(x)}
 		}
 	return(z)
 	}

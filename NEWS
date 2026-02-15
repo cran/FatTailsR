@@ -1,8 +1,16 @@
 === FatTailsR: Kiener Distributions and Fat Tails in Finance ===
 
 
-FatTailsR 2.0.0 - 2025-04-21 - current version on CRAN
+FatTailsR 2.0.1 - 2026-02-15 - current version on CRAN
 ======================================================
+- Version packaged with R-4.5.2 and sent to CRAN (R-4.5.2)
+- fatreturns.R: change timeSeries::time(z) <- timeSeries::time(x) to 
+  timeSeries::time(z) <- stat::time(x) as per Georgi Boshnakov's recommandation
+  to cope with the next version of timeSeries
+
+
+FatTailsR 2.0.0 - 2025-04-21 - in CRAN archives
+===============================================
 - Version packaged with R-4.5.0 and sent to CRAN (R-4.5.0)
 - First version on CRAN with the scaling parameter (x-m)*pi/sqrt(3)/g to get sd=1 at k=Inf
 - BREAK with previous results for the g parameter (other parameters stay unchanged). 
